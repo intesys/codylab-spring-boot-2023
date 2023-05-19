@@ -19,7 +19,7 @@
 
         <slf4j.version>2.0.7</slf4j.version>
         <logback.version>1.4.6</logback.version>
-
+        <junit.version>5.9.3</junit.version>
     </properties>
 
     <dependencies>
@@ -38,6 +38,14 @@
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
             <version>${logback.version}</version>
+        </dependency>
+
+        <!-- testing -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

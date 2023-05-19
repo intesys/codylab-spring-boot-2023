@@ -8,7 +8,10 @@ public class IssueTracker {
     private static Logger log = LoggerFactory.getLogger(IssueTracker.class);
 
     public static void main(String[] args) {
-        String message = AppConfiguration.appProperties().getProperty("app.message");
-        log.info("Message: {}", message);
+        log.info("Message: {}", getMessage());
+    }
+
+    public static String getMessage() {
+        return AppConfiguration.appProperties().getProperty("app.message");
     }
 }
