@@ -20,9 +20,17 @@
         <slf4j.version>2.0.7</slf4j.version>
         <logback.version>1.4.6</logback.version>
         <junit.version>5.9.3</junit.version>
+        <javalin.version>5.4.2</javalin.version>
     </properties>
 
     <dependencies>
+
+        <!-- web -->
+        <dependency>
+            <groupId>io.javalin</groupId>
+            <artifactId>javalin</artifactId>
+            <version>${javalin.version}</version>
+        </dependency>
         <!-- logging -->
         <dependency>
             <groupId>org.slf4j</groupId>
