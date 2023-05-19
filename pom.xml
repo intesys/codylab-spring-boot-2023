@@ -21,6 +21,7 @@
         <logback.version>1.4.6</logback.version>
         <junit.version>5.9.3</junit.version>
         <javalin.version>5.4.2</javalin.version>
+        <jackson.version>2.14.2</jackson.version>
     </properties>
 
     <dependencies>
@@ -31,6 +32,13 @@
             <artifactId>javalin</artifactId>
             <version>${javalin.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+
+
         <!-- logging -->
         <dependency>
             <groupId>org.slf4j</groupId>
