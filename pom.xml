@@ -23,6 +23,7 @@
         <javalin.version>5.5.0</javalin.version>
         <logback.version>1.4.7</logback.version>
         <slf4j-api.version>2.0.7</slf4j-api.version>
+        <jackson.version>2.15.0</jackson.version>
     </properties>
 
     <dependencies>
@@ -46,6 +47,12 @@
             <groupId>io.javalin</groupId>
             <artifactId>javalin</artifactId>
             <version>${javalin.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
         </dependency>
 
         <!-- testing -->
