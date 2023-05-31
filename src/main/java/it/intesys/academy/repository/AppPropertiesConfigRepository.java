@@ -1,17 +1,21 @@
-package it.intesys.academy;
+package it.intesys.academy.repository;
+
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-public class AppConfig {
+/**
+ * Repository per pescare dei messaggi dal file di property
+ */
+public class AppPropertiesConfigRepository implements ConfigRepository {
 
-    public static Properties appProperties;
+    private static Properties appProperties;
 
-    public static Properties appProperties() {
+    private static Properties appProperties() {
         if (appProperties == null) {
             Properties prop = new Properties();
-            try (InputStream input = AppConfig.class.getClassLoader()
+            try (InputStream input = AppPropertiesConfigRepository.class.getClassLoader()
                     .getResourceAsStream("application.properties")) {
                 prop.load(input);
             } catch (IOException ex) {
@@ -21,5 +25,10 @@ public class AppConfig {
         }
 
         return appProperties;
+    }
+
+
+    public String getProperty(String propertyKey) {
+        return appProperties().getProperty(propertyKey);
     }
 }
