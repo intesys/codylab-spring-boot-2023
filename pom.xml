@@ -24,6 +24,8 @@
         <!-- test -->
         <junit.version>5.9.3</junit.version>
 
+        <!-- javalin -->
+        <javalin.version>5.4.2</javalin.version>
     </properties>
 
     <dependencies>
@@ -50,6 +52,14 @@
             <artifactId>junit-jupiter-api</artifactId>
             <version>5.9.3</version>
             <scope>test</scope>
+        </dependency>
+
+
+        <!-- javalin -->
+        <dependency>
+            <groupId>io.javalin</groupId>
+            <artifactId>javalin</artifactId>
+            <version>5.4.2</version>
         </dependency>
     </dependencies>
 
