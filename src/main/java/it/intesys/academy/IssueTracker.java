@@ -9,7 +9,11 @@ public class IssueTracker {
 
     public static void main(String[] args) {
 
-        var message = AppConfig.appProperties().getProperty("app.message");
-        log.info("Message: {}", message);
+
+        log.info("Message: {}", getMessage());
+    }
+
+    public static String getMessage() {
+        return AppConfig.appProperties().getProperty("app.message");
     }
 }
