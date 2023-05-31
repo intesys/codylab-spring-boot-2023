@@ -19,7 +19,6 @@ public class IssueTracker {
                 .get("/codyLab", ctx -> ctx.json(messageDto))
                 .start(Integer.valueOf(AppConfig.appProperties().getProperty("server.port")));
 
-
     }
     public static String getMessage(){
         return AppConfig.appProperties().getProperty("app.message");
