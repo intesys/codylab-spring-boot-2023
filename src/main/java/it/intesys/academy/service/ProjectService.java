@@ -23,4 +23,16 @@ public class ProjectService {
 
         return message;
     }
-}
+    public static boolean existTable(String tableName){
+        Connection conn = DatabaseManager.getConnection();
+        try{
+
+            return conn.createStatement().execute("SELECT * FROM " + tableName);
+        }
+        catch(Exception e){
+            DatabaseManager.closeConnection(conn);
+        }
+        return Boolean.FALSE;
+    };
+};
+
