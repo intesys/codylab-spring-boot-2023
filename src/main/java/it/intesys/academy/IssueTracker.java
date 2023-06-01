@@ -17,6 +17,7 @@ public class IssueTracker {
 
         var app = Javalin.create()
                 .get("/", ctx -> ctx.json(messageService.getMessage()))
+                .get("/connection", ctx -> ctx.json(messageService.getMessage()))
                 .start(applicationPort);
     }
 
