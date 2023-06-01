@@ -20,7 +20,8 @@ public class IssueTracker {
         Javalin.create()
                 .get("/", ctx -> ctx.json(messageService.getMessage()))
                 .get("/connection", ctx -> ctx.json(projectService.testConnection()))
-                .get("/exist-table", ctx -> ctx.json(projectService.existTable("Projects")))
+                .get("/read-project", ctx -> ctx.json(projectService.readProject()))
+                .get("/read-issue", ctx -> ctx.json(projectService.readIssueProject()))
                 .start(applicationPort);
     }
 

@@ -3,9 +3,7 @@ package it.intesys.academy.database;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class DatabaseManager {
     private static final Logger log = LoggerFactory.getLogger(DriverManager.class);
@@ -27,6 +25,24 @@ public class DatabaseManager {
         try{
             if(conn != null){
                 conn.close();
+            }
+        }catch (SQLException ex){
+            log.error("Error type: ",ex);
+        }
+    }
+    public static void closeStatement(Statement stmt){
+        try{
+            if(stmt != null){
+                stmt.close();
+            }
+        }catch (SQLException ex){
+            log.error("Error type: ",ex);
+        }
+    }
+    public static void closeResultSet(ResultSet set){
+        try{
+            if(set != null){
+                set.close();
             }
         }catch (SQLException ex){
             log.error("Error type: ",ex);
