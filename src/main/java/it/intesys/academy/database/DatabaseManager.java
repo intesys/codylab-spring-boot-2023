@@ -7,7 +7,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 public class DatabaseManager {
 
@@ -46,18 +45,6 @@ public class DatabaseManager {
 
     }
 
-    public static void closeStmt(Statement stmt) {
-
-        try {
-
-            if (stmt != null) stmt.close();
-
-        }
-        catch (SQLException e) {
-                log.error("Some errors occur during closing connection", e);
-        }
-
-    }
     public static void closeResultSet(ResultSet resultSet) {
 
         try {
