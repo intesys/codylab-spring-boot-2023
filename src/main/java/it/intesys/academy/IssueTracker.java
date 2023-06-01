@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 
 public class IssueTracker {
 
-    private static Logger log = LoggerFactory.getLogger(IssueTracker.class);
+    public static Logger log = LoggerFactory.getLogger(IssueTracker.class);
 
     public static void main(String[] args) {
         var applicationPort = Integer.parseInt(AppConfiguration.appProperties().getProperty("app.port"));
@@ -20,7 +20,7 @@ public class IssueTracker {
         Javalin.create()
                 .get("/", ctx -> ctx.json(messageService.getMessage()))
                 .get("/connection", ctx -> ctx.json(projectService.testConnection()))
-                .get("/projects", ctx -> ctx.json(projectService.existTable("Projects")))
+                .get("/projects", ctx -> ctx.json(projectService.readProjects()))
                 .start(applicationPort);
     }
 
