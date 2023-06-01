@@ -1,12 +1,13 @@
 package it.intesys.academy.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProjectDTO {
     private String name;
     private String description;
 
-    private List<IssueDTO> issue;
+    private List<IssueDTO> issue = new ArrayList<>();
 
     private int id;
 
@@ -26,6 +27,10 @@ public class ProjectDTO {
 
     public void setIssue(List<IssueDTO> issue) {
         this.issue = issue;
+    }
+
+    public void addIssue(IssueDTO issue) {
+        this.issue.add(issue);
     }
 
     public String getName() {

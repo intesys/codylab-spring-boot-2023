@@ -53,7 +53,7 @@ public class ProjectService {
         return lista;
     }
 
-    public static List<IssueDTO> readIssueProject(){
+    public static List<IssueDTO> readIssue(){
         Connection conn =null;
         List<IssueDTO> lista = new ArrayList<>();
         Statement stmt=null;
@@ -61,10 +61,10 @@ public class ProjectService {
         try{
             conn = DatabaseManager.getConnection();
             stmt = conn.createStatement();
-            set = stmt.executeQuery("SELECT id,name,description,author FROM Issues ");
+            set = stmt.executeQuery("SELECT id,nome,descrizione,author FROM Issues ");
 
             while (set.next()){
-                lista.add(new IssueDTO(set.getInt("id"), set.getString("name"), set.getString("description"), set.getString("author")));
+                lista.add(new IssueDTO(set.getInt("id"), set.getString("nome"), set.getString("descrizione"), set.getString("author")));
             }
 
         }catch (Exception e){
@@ -73,6 +73,43 @@ public class ProjectService {
             DatabaseManager.closeConnection(conn);
             DatabaseManager.closeStatement(stmt);
             DatabaseManager.closeResultSet(set);
+        }
+        return lista;
+    }
+
+    public static List<ProjectDTO> readIssueForProject(){
+        Connection conn =null;
+        List<ProjectDTO> lista = new ArrayList<>();
+        Statement stmtProject=null;
+        ResultSet setProject = null;
+        Statement stmtIssue=null;
+        ResultSet setIssue = null;
+        try{
+            conn = DatabaseManager.getConnection();
+            stmtProject = conn.createStatement();
+            stmtIssue = conn.createStatement();
+            setProject = stmtProject.executeQuery("SELECT id,name,description FROM Projects");
+
+
+            while (setProject.next()){
+                int projectID = setProject.getInt("id");
+                ProjectDTO project = (new ProjectDTO(projectID, setProject.getString("name"), setProject.getString("description")));
+                lista.add(project);
+                setIssue = stmtIssue.executeQuery("SELECT id,nome,descrizione,author FROM Issues WHERE projectId = "+projectID);
+                while(setIssue.next()){
+                    project.addIssue( new IssueDTO(setIssue.getInt("id"),setIssue.getString("nome"),setIssue.getString("descrizione"),setIssue.getString("author")));
+                }
+            }
+
+
+        }catch (Exception e){
+            DatabaseManager.closeConnection(conn);
+        }finally {
+            DatabaseManager.closeConnection(conn);
+            DatabaseManager.closeStatement(stmtIssue);
+            DatabaseManager.closeResultSet(setIssue);
+            DatabaseManager.closeResultSet(setProject);
+            DatabaseManager.closeStatement(stmtProject);
         }
         return lista;
     }

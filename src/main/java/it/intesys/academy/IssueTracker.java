@@ -21,7 +21,8 @@ public class IssueTracker {
                 .get("/", ctx -> ctx.json(messageService.getMessage()))
                 .get("/connection", ctx -> ctx.json(projectService.testConnection()))
                 .get("/read-project", ctx -> ctx.json(projectService.readProject()))
-                .get("/read-issue", ctx -> ctx.json(projectService.readIssueProject()))
+                .get("/read-issue", ctx -> ctx.json(projectService.readIssue()))
+                .get("/read-issue-for-project", ctx -> ctx.json(projectService.readIssueForProject()))
                 .start(applicationPort);
     }
 
