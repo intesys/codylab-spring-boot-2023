@@ -24,7 +24,7 @@ public class ProjectService {
         return message;
     }
 
-    private static boolean existTable(String tableName){
+    public static boolean existTable(String tableName){
         Connection conn = DatabaseManager.getConnection();
 
         try{
