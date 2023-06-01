@@ -5,14 +5,16 @@ import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 public class DatabaseManager {
 
     private static final Logger log = LoggerFactory.getLogger(DriverManager.class);
 
     public static final String USER = "sa";
-    public static final String PASSWORD = "";
+    public static final String PASSWORD = "password";
 
     public static Connection getConnection() {
 
@@ -43,4 +45,30 @@ public class DatabaseManager {
         }
 
     }
+
+    public static void closeStmt(Statement stmt) {
+
+        try {
+
+            if (stmt != null) stmt.close();
+
+        }
+        catch (SQLException e) {
+                log.error("Some errors occur during closing connection", e);
+        }
+
+    }
+    public static void closeResultSet(ResultSet resultSet) {
+
+        try {
+
+            if (resultSet != null) resultSet.close();
+
+        }
+        catch (SQLException e) {
+                log.error("Some errors occur during closing connection", e);
+        }
+
+    }
+
 }
