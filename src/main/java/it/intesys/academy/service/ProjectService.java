@@ -38,41 +38,39 @@ public class ProjectService {
 
         List<Integer> userProjects = settingsService.getUserProjects(username);
 
-        List<ProjectDTO> projects = jdbcTemplate.query("SELECT id, name, description FROM Project where id in (?)", new RowMapper<ProjectDTO>() {
-            @Override
-            public ProjectDTO mapRow(ResultSet resultSet, int rowNum) throws SQLException, DataAccessException {
-                return
+        List<ProjectDTO> projects = jdbcTemplate.query("SELECT id, name, description FROM Project where id in (?)",
+                (resultSet, rowNum) ->
                         new ProjectDTO(resultSet.getInt("id"),
                                 resultSet.getString("name"),
-                                resultSet.getString("description"));
-            }
-        }, userProjects.toArray());
-
+                                resultSet.getString("description")),
+                userProjects.toArray()
+        );
 
         List<Integer> projectIds = projects.stream()
                 .map(ProjectDTO::getId)
                 .toList();
 
         Map<Integer, List<IssueDTO>> issuesByProjectId = new HashMap<>();
-        jdbcTemplate.query("SELECT id, name, description, author, projectId FROM Issue WHERE projectId in (?)", new RowCallbackHandler() {
-            @Override
-            public void processRow(ResultSet resultSet) throws SQLException, DataAccessException {
-                IssueDTO issueDTO = new IssueDTO();
-                issueDTO.setId(resultSet.getInt("id"));
-                issueDTO.setName(resultSet.getString("name"));
-                issueDTO.setDescription(resultSet.getString("description"));
-                issueDTO.setAuthor(resultSet.getString("author"));
+        jdbcTemplate.query("SELECT id, name, description, author, projectId FROM Issue WHERE projectId in (?)",
 
-                // building map projectId --> [issue1, issue2, issue3]
-                int projectId = resultSet.getInt("projectId");
-                if (!issuesByProjectId.containsKey(projectId)) {
-                    issuesByProjectId.put(projectId, new ArrayList<>());
-                }
+                resultSet -> {
+                    IssueDTO issueDTO = new IssueDTO();
+                    issueDTO.setId(resultSet.getInt("id"));
+                    issueDTO.setName(resultSet.getString("name"));
+                    issueDTO.setDescription(resultSet.getString("description"));
+                    issueDTO.setAuthor(resultSet.getString("author"));
 
-                issuesByProjectId.get(projectId).add(issueDTO);
-            }
+                    // building map projectId --> [issue1, issue2, issue3]
+                    int projectId = resultSet.getInt("projectId");
+                    if (!issuesByProjectId.containsKey(projectId)) {
+                        issuesByProjectId.put(projectId, new ArrayList<>());
+                    }
 
-        }, projectIds.toArray());
+                    issuesByProjectId.get(projectId).add(issueDTO);
+                },
+
+                projectIds.toArray()
+        );
 
 
         for (ProjectDTO dto : projects) {
