@@ -1,5 +1,8 @@
 package it.intesys.academy.dto;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ProjectDTO {
     public String getName() {
         return name;
@@ -36,4 +39,18 @@ public class ProjectDTO {
 
     private String description;
 
+    private List<IssueDTO> issueList = new ArrayList<>();
+
+    public List<IssueDTO> getIssueList() {
+        return issueList;
+    }
+
+    public void setIssueList(List<IssueDTO> issueList) {
+        this.issueList = issueList;
+    }
+
+    public void addIssue(IssueDTO issue){
+        this.issueList.add(issue);
+
+    }
 }

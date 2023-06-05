@@ -4,9 +4,7 @@ package it.intesys.academy.database;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.*;
 
 
 public class DatabaseManager {
@@ -31,6 +29,28 @@ public class DatabaseManager {
     }
 
     public static void closeConnection(Connection conn){
+        try{
+            if (conn != null){
+                conn.close();
+            }
+        }
+        catch(SQLException e){
+            log.error("Some errors occur during closing connection", e);
+        }
+    }
+
+    public static void closeStatement(Statement conn){
+        try{
+            if (conn != null){
+                conn.close();
+            }
+        }
+        catch(SQLException e){
+            log.error("Some errors occur during closing connection", e);
+        }
+    }
+
+    public static void closeResult(ResultSet conn){
         try{
             if (conn != null){
                 conn.close();
