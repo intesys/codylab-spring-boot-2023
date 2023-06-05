@@ -5,6 +5,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import it.intesys.academy.service.ProjectService;
 import it.intesys.academy.service.SettingsService;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import javax.sql.DataSource;
 import java.io.IOException;
@@ -42,8 +43,12 @@ public class AppConfiguration {
         return new JdbcTemplate(dataSource());
     }
 
+    public static NamedParameterJdbcTemplate namedJdbcTemplate() {
+        return new NamedParameterJdbcTemplate(dataSource());
+    }
+
     public static ProjectService projectService() {
-        return new ProjectService(jdbcTemplate(), settingsService());
+        return new ProjectService(namedJdbcTemplate(), settingsService());
     }
 
     public static SettingsService settingsService() {

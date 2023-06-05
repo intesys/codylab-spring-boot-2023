@@ -10,6 +10,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -24,11 +26,11 @@ public class ProjectService {
 
     private static final Logger log = LoggerFactory.getLogger(ProjectService.class);
 
-    private final JdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcTemplate jdbcTemplate;
 
     private final SettingsService settingsService;
 
-    public ProjectService(JdbcTemplate jdbcTemplate, SettingsService settingsService) {
+    public ProjectService(NamedParameterJdbcTemplate jdbcTemplate, SettingsService settingsService) {
         this.jdbcTemplate = jdbcTemplate;
         this.settingsService = settingsService;
     }
@@ -38,12 +40,13 @@ public class ProjectService {
 
         List<Integer> userProjects = settingsService.getUserProjects(username);
 
-        List<ProjectDTO> projects = jdbcTemplate.query("SELECT id, name, description FROM Project where id in (?)",
+        List<ProjectDTO> projects = jdbcTemplate.query(
+                "SELECT id, name, description FROM Project where id in (:projectIds)",
+                Map.of("projectIds", userProjects),
                 (resultSet, rowNum) ->
                         new ProjectDTO(resultSet.getInt("id"),
                                 resultSet.getString("name"),
-                                resultSet.getString("description")),
-                userProjects.toArray()
+                                resultSet.getString("description"))
         );
 
         List<Integer> projectIds = projects.stream()
@@ -51,8 +54,8 @@ public class ProjectService {
                 .toList();
 
         Map<Integer, List<IssueDTO>> issuesByProjectId = new HashMap<>();
-        jdbcTemplate.query("SELECT id, name, description, author, projectId FROM Issue WHERE projectId in (?)",
-
+        jdbcTemplate.query("SELECT id, name, description, author, projectId FROM Issue WHERE projectId in (:projectIds)",
+                new MapSqlParameterSource("projectIds", projectIds),
                 resultSet -> {
                     IssueDTO issueDTO = new IssueDTO();
                     issueDTO.setId(resultSet.getInt("id"));
@@ -67,9 +70,7 @@ public class ProjectService {
                     }
 
                     issuesByProjectId.get(projectId).add(issueDTO);
-                },
-
-                projectIds.toArray()
+                }
         );
 
 
