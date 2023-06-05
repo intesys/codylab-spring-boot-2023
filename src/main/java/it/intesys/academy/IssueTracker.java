@@ -1,7 +1,6 @@
 package it.intesys.academy;
 
 import io.javalin.Javalin;
-import it.intesys.academy.service.ProjectService;
 import it.intesys.academy.service.PropertyMessageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,12 +14,14 @@ public class IssueTracker {
         log.info("Start application on port {}", applicationPort);
 
         var messageService = new PropertyMessageService();
-        var projectService = new ProjectService();
+        var projectService = AppConfiguration.projectService();
 
         Javalin.create()
                 .get("/", ctx -> ctx.json(messageService.getMessage()))
-                .get("/connection", ctx -> ctx.json(projectService.testConnection()))
-                .get("/list-projects", ctx -> ctx.json(projectService.readProjects()))
+                .get("/list-projects", ctx -> {
+                    String username = ctx.queryParam("username");
+                    ctx.json(projectService.readProjects(username));
+                })
                 .start(applicationPort);
     }
 

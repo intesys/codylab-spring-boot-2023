@@ -12,39 +12,6 @@ public class DatabaseManager {
 
     private static final Logger log = LoggerFactory.getLogger(DriverManager.class);
 
-    public static final String USER = "sa";
-    public static final String PASSWORD = "password";
-
-    public static Connection getConnection() {
-
-        Connection conn = null;
-
-        try {
-
-            conn = DriverManager.getConnection("jdbc:h2:~/lesson-1", USER, PASSWORD);
-
-        }
-        catch (SQLException e) {
-            log.error("Some errors occur during database connection", e);
-        }
-
-        return conn;
-
-    }
-
-    public static void closeConnection(Connection conn) {
-
-        try {
-
-            if (conn != null) conn.close();
-
-        }
-        catch (SQLException e) {
-                log.error("Some errors occur during closing connection", e);
-        }
-
-    }
-
     public static void closeResultSet(ResultSet resultSet) {
 
         try {
