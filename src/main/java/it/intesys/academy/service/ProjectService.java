@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class ProjectService {
 
@@ -47,31 +49,22 @@ public class ProjectService {
                 .map(ProjectDTO::getId)
                 .toList();
 
-        Map<Integer, List<IssueDTO>> issuesByProjectId = new HashMap<>();
-        jdbcTemplate.query("SELECT id, name, description, author, projectId FROM Issue WHERE projectId in (:projectIds)",
-                new MapSqlParameterSource("projectIds", projectIds),
-                resultSet -> {
-                    IssueDTO issueDTO = new IssueDTO();
-                    issueDTO.setId(resultSet.getInt("id"));
-                    issueDTO.setName(resultSet.getString("name"));
-                    issueDTO.setDescription(resultSet.getString("description"));
-                    issueDTO.setAuthor(resultSet.getString("author"));
-
-                    // building map projectId --> [issue1, issue2, issue3]
-                    int projectId = resultSet.getInt("projectId");
-                    if (!issuesByProjectId.containsKey(projectId)) {
-                        issuesByProjectId.put(projectId, new ArrayList<>());
-                    }
-
-                    issuesByProjectId.get(projectId).add(issueDTO);
-                }
+        List<IssueDTO> issues = jdbcTemplate.query(
+                "SELECT id, name, description, author, projectId FROM Issue WHERE projectId in (:projectIds)",
+                Map.of("projectIds", projectIds),
+                new BeanPropertyRowMapper<>()
         );
 
+        // group issues by project id
+        Map<Integer, List<IssueDTO>> issuesByProjectId = issues.stream()
+                .collect(Collectors.groupingBy(IssueDTO::getProjectId));
 
+        // add issues to project
         for (ProjectDTO dto : projects) {
             List<IssueDTO> issueDTOS = issuesByProjectId.get(dto.getId());
             issueDTOS.forEach(dto::addIssue);
         }
+
 
         return projects;
 

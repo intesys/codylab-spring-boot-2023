@@ -10,6 +10,8 @@ public class IssueDTO {
 
     private String author;
 
+    private Integer projectId;
+
     public int getId() {
 
         return id;
@@ -48,5 +50,13 @@ public class IssueDTO {
     public void setAuthor(String author) {
 
         this.author = author;
+    }
+
+    public Integer getProjectId() {
+        return projectId;
+    }
+
+    public void setProjectId(Integer projectId) {
+        this.projectId = projectId;
     }
 }
