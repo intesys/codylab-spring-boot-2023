@@ -1,5 +1,11 @@
 package it.intesys.academy;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
+import it.intesys.academy.service.ProjectService;
+import it.intesys.academy.service.SettingsService;
+
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -20,5 +26,22 @@ public class AppConfiguration {
         }
 
         return appProperties;
+    }
+
+    public static DataSource dataSource() {
+        HikariConfig hikariConfig = new HikariConfig();
+        hikariConfig.setJdbcUrl(appProperties().getProperty("db.url"));
+        hikariConfig.setUsername(appProperties().getProperty("db.user"));
+        hikariConfig.setPassword(appProperties().getProperty("db.password"));
+        hikariConfig.setDriverClassName("org.h2.Driver");
+        return new HikariDataSource(hikariConfig);
+    }
+
+    public static ProjectService projectService() {
+        return new ProjectService(dataSource(), settingsService());
+    }
+
+    public static SettingsService settingsService() {
+        return new SettingsService(dataSource());
     }
 }
