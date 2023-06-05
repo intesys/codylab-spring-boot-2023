@@ -6,10 +6,7 @@ import it.intesys.academy.dto.ProjectDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.ResultSetExtractor;
-import org.springframework.jdbc.core.RowCallbackHandler;
-import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.*;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
@@ -43,10 +40,7 @@ public class ProjectService {
         List<ProjectDTO> projects = jdbcTemplate.query(
                 "SELECT id, name, description FROM Project where id in (:projectIds)",
                 Map.of("projectIds", userProjects),
-                (resultSet, rowNum) ->
-                        new ProjectDTO(resultSet.getInt("id"),
-                                resultSet.getString("name"),
-                                resultSet.getString("description"))
+                new BeanPropertyRowMapper<>()
         );
 
         List<Integer> projectIds = projects.stream()
