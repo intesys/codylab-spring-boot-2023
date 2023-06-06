@@ -30,9 +30,9 @@ public class AppConfiguration {
 
     public static DataSource dataSource() {
         HikariConfig hikariConfig = new HikariConfig();
-        hikariConfig.setJdbcUrl(appProperties().getProperty("db.url"));
-        hikariConfig.setUsername(appProperties().getProperty("db.user"));
-        hikariConfig.setPassword(appProperties().getProperty("db.password"));
+        hikariConfig.setJdbcUrl(appProperties().getProperty("database.url"));
+        hikariConfig.setUsername(appProperties().getProperty("database.user"));
+        hikariConfig.setPassword(appProperties().getProperty("database.password"));
         hikariConfig.setDriverClassName("org.h2.Driver");
         return new HikariDataSource(hikariConfig);
     }

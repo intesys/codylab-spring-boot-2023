@@ -8,12 +8,15 @@ import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class ProjectService {
 
@@ -39,8 +42,10 @@ public class ProjectService {
 
         try (Connection conn = dataSource.getConnection()) {
 
-            // todo prepared statement
-            resultSet = conn.createStatement().executeQuery("SELECT id, name, description FROM Project where id in (?)");
+            PreparedStatement psProject = conn.prepareStatement("SELECT id, name, description FROM Project where id = ANY (?)");
+            psProject.setObject(1, userProjects.toArray());
+
+            resultSet = psProject.executeQuery();
 
             while(resultSet.next()) {
 
@@ -55,15 +60,19 @@ public class ProjectService {
                 projectList.add(projectDTO);
             }
 
-            // projectIds
+            // projectIds converted to a list of
             List<Integer> projectIds = projectList.stream()
                     .map(ProjectDTO::getId)
                     .toList();
 
-            //todo prepared statements
-            resultSetIssues = conn.createStatement().executeQuery("SELECT id, name, description, author FROM Issue WHERE projectId in (?)");
+            // We deal with Issues now
+            PreparedStatement psIssues = conn.prepareStatement("SELECT id, name, description, author, projectId FROM Issue WHERE projectId = ANY (?)");
+            psIssues.setObject(1, projectIds.toArray());
+
+            resultSetIssues = psIssues.executeQuery();
 
             Map<Integer, List<IssueDTO>> issuesByProjectId = new HashMap<>();
+
             while (resultSetIssues.next()) {
 
                 IssueDTO issueDTO = new IssueDTO();
@@ -72,7 +81,13 @@ public class ProjectService {
                 issueDTO.setDescription(resultSetIssues.getString("description"));
                 issueDTO.setAuthor(resultSetIssues.getString("author"));
 
-                issuesByProjectId.get(resultSetIssues.getInt("projectId")).add(issueDTO);
+                int projectId = resultSetIssues.getInt("projectId");
+                if (issuesByProjectId.containsKey(projectId)) {
+                    issuesByProjectId.get(projectId).add(issueDTO);
+                }
+                else {
+                    issuesByProjectId.put(projectId, Stream.of(issueDTO).collect(Collectors.toList()));
+                }
 
             }
 
