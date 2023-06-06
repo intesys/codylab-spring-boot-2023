@@ -4,6 +4,7 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import it.intesys.academy.service.ProjectService;
 import it.intesys.academy.service.SettingsService;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
 import java.io.IOException;
@@ -28,7 +29,7 @@ public class AppConfiguration {
         return appProperties;
     }
 
-    public static DataSource dataSource() {
+    private static DataSource dataSource() {
         HikariConfig hikariConfig = new HikariConfig();
         hikariConfig.setJdbcUrl(appProperties().getProperty("database.url"));
         hikariConfig.setUsername(appProperties().getProperty("database.user"));
@@ -37,11 +38,16 @@ public class AppConfiguration {
         return new HikariDataSource(hikariConfig);
     }
 
+    public static JdbcTemplate jdbcTemplate() {
+        return new JdbcTemplate(dataSource());
+    }
+
     public static ProjectService projectService() {
-        return new ProjectService(dataSource(), settingsService());
+        return new ProjectService(jdbcTemplate(), settingsService());
     }
 
     public static SettingsService settingsService() {
         return new SettingsService(dataSource());
     }
+
 }
