@@ -4,7 +4,7 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import it.intesys.academy.service.ProjectService;
 import it.intesys.academy.service.SettingsService;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import javax.sql.DataSource;
 import java.io.IOException;
@@ -37,13 +37,13 @@ public class AppConfiguration {
         hikariConfig.setDriverClassName("org.h2.Driver");
         return new HikariDataSource(hikariConfig);
     }
-
-    public static JdbcTemplate jdbcTemplate() {
-        return new JdbcTemplate(dataSource());
+    
+    private static NamedParameterJdbcTemplate namedJdbcTemplate() {
+        return new NamedParameterJdbcTemplate(dataSource());
     }
 
     public static ProjectService projectService() {
-        return new ProjectService(jdbcTemplate(), settingsService());
+        return new ProjectService(namedJdbcTemplate(), settingsService());
     }
 
     public static SettingsService settingsService() {
