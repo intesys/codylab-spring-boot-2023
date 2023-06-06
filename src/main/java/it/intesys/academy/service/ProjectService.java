@@ -4,6 +4,7 @@ import it.intesys.academy.dto.IssueDTO;
 import it.intesys.academy.dto.ProjectDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import java.util.ArrayList;
@@ -32,10 +33,7 @@ public class ProjectService {
 
                                                        Map.of("projectIds", userProjects),
 
-                                                       (resultSet, rowNum) ->
-                                                           new ProjectDTO(resultSet.getInt("id"),
-                                                                          resultSet.getString("name"),
-                                                                          resultSet.getString("description")));
+                                                       BeanPropertyRowMapper.newInstance(ProjectDTO.class));
 
 
         List<Integer> projectIds = projects.stream()

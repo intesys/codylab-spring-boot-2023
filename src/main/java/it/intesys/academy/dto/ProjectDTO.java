@@ -51,10 +51,8 @@ public class ProjectDTO {
         this.id = id;
     }
 
-    public ProjectDTO(int id, String name, String description) {
+    public ProjectDTO() {
 
-        this.id = id;
-        this.name = name;
-        this.description = description;
     }
+
 }

@@ -37,7 +37,7 @@ public class AppConfiguration {
         hikariConfig.setDriverClassName("org.h2.Driver");
         return new HikariDataSource(hikariConfig);
     }
-    
+
     private static NamedParameterJdbcTemplate namedJdbcTemplate() {
         return new NamedParameterJdbcTemplate(dataSource());
     }
