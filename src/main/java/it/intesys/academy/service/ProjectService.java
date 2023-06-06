@@ -4,15 +4,8 @@ import it.intesys.academy.dto.IssueDTO;
 import it.intesys.academy.dto.ProjectDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementSetter;
-import org.springframework.jdbc.core.RowCallbackHandler;
-import org.springframework.jdbc.core.RowMapper;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,21 +29,14 @@ public class ProjectService {
         List<Integer> userProjects = settingsService.getUserProjects(username);
 
         List<ProjectDTO> projects = jdbcTemplate.query("SELECT id, name, description FROM Project where id = ANY (?)",
-                                                       new PreparedStatementSetter() {
-                                                            @Override
-                                                            public void setValues(PreparedStatement ps)  throws SQLException {
-                                                                ps.setObject(1, userProjects.toArray());
-                                                            }
-                                                        },
-                                                       new RowMapper<ProjectDTO>() {
-                                                           @Override
-                                                           public ProjectDTO mapRow(ResultSet resultSet, int rowNum) throws SQLException, DataAccessException {
-                                                               return
-                                                                   new ProjectDTO(resultSet.getInt("id"),
-                                                                                  resultSet.getString("name"),
-                                                                                  resultSet.getString("description"));
-                                                           }
-                                                       });
+
+                                                       (ps) ->
+                                                           ps.setObject(1, userProjects.toArray()),
+
+                                                       (resultSet, rowNum) ->
+                                                           new ProjectDTO(resultSet.getInt("id"),
+                                                                          resultSet.getString("name"),
+                                                                          resultSet.getString("description")));
 
 
         List<Integer> projectIds = projects.stream()
@@ -60,32 +46,25 @@ public class ProjectService {
         Map<Integer, List<IssueDTO>> issuesByProjectId = new HashMap<>();
 
         jdbcTemplate.query("SELECT id, name, description, author, projectId FROM Issue WHERE projectId = ANY(?)",
-                           new PreparedStatementSetter() {
-                               @Override
-                               public void setValues(PreparedStatement ps)  throws SQLException {
-                                   ps.setObject(1, projectIds.toArray());
-                               }
-                           },
-                           new RowCallbackHandler() {
-                          @Override
-                          public void processRow(ResultSet resultSet) throws SQLException, DataAccessException {
 
-                              IssueDTO issueDTO = new IssueDTO();
-                              issueDTO.setId(resultSet.getInt("id"));
-                              issueDTO.setName(resultSet.getString("name"));
-                              issueDTO.setDescription(resultSet.getString("description"));
-                              issueDTO.setAuthor(resultSet.getString("author"));
+                            (ps) -> ps.setObject(1, projectIds.toArray()),
 
-                              // building map projectId --> [issue1, issue2, issue3]
-                              int projectId = resultSet.getInt("projectId");
+                            (resultSet) -> {
 
-                              if ( Boolean.FALSE.equals(issuesByProjectId.containsKey(projectId)) ) {
-                                  issuesByProjectId.put(projectId, new ArrayList<>());
-                              }
+                                IssueDTO issueDTO = new IssueDTO();
+                                issueDTO.setId(resultSet.getInt("id"));
+                                issueDTO.setName(resultSet.getString("name"));
+                                issueDTO.setDescription(resultSet.getString("description"));
+                                issueDTO.setAuthor(resultSet.getString("author"));
 
-                              issuesByProjectId.get(projectId).add(issueDTO);
-                          }
-        });
+                                // building map projectId --> [issue1, issue2, issue3]
+                                int projectId = resultSet.getInt("projectId");
+                                if ( Boolean.FALSE.equals(issuesByProjectId.containsKey(projectId)) ) {
+                                    issuesByProjectId.put(projectId, new ArrayList<>());
+                                }
+
+                                issuesByProjectId.get(projectId).add(issueDTO);
+                          });
 
         for (ProjectDTO dto : projects) {
             List<IssueDTO> issueDTOS = issuesByProjectId.get(dto.getId());
