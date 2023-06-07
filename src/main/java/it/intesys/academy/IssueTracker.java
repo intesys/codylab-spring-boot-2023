@@ -18,7 +18,7 @@ public class IssueTracker {
 
         Javalin.create()
                 .get("/", ctx -> ctx.json(messageService.getMessage()))
-                .get("/list-projects", ctx -> {
+                .get("/projects", ctx -> {
                     String username = ctx.queryParam("username");
                     ctx.json(projectService.readProjects(username));
                 })

@@ -6,7 +6,15 @@ public class IssueDTO {
 
     private String name;
 
-    private String description;
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    private String message;
 
     private String author;
 
@@ -30,15 +38,7 @@ public class IssueDTO {
         this.name = name;
     }
 
-    public String getDescription() {
 
-        return description;
-    }
-
-    public void setDescription(String description) {
-
-        this.description = description;
-    }
 
     public String getAuthor() {
 
