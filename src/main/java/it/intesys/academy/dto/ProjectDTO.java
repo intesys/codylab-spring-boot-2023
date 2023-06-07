@@ -51,8 +51,5 @@ public class ProjectDTO {
         this.id = id;
     }
 
-    public ProjectDTO() {
-
-    }
 
 }
