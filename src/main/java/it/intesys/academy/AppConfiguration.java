@@ -3,7 +3,11 @@ package it.intesys.academy;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import it.intesys.academy.service.ProjectService;
+import it.intesys.academy.service.PropertyMessageService;
 import it.intesys.academy.service.SettingsService;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import javax.sql.DataSource;
@@ -11,43 +15,50 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+@Configuration
 public class AppConfiguration {
 
-    public static Properties appProperties;
 
-    public static Properties appProperties() {
-        if (appProperties == null) {
-            Properties prop = new Properties();
-            try (InputStream input = AppConfiguration.class.getClassLoader().getResourceAsStream("application.properties")) {
-                prop.load(input);
-            } catch (IOException ex) {
-                throw new IllegalStateException("Property load fail", ex);
-            }
-            appProperties = prop;
+    @Bean
+    public Properties appProperties() {
+        Properties prop = new Properties();
+        try (InputStream input = AppConfiguration.class.getClassLoader().getResourceAsStream("application.properties")) {
+            prop.load(input);
+        } catch (IOException ex) {
+            throw new IllegalStateException("Property load fail", ex);
         }
 
-        return appProperties;
+        return prop;
     }
 
-    private static DataSource dataSource() {
+    @Bean
+    DataSource dataSource(@Qualifier("appProperties") Properties properties) {
         HikariConfig hikariConfig = new HikariConfig();
-        hikariConfig.setJdbcUrl(appProperties().getProperty("database.url"));
-        hikariConfig.setUsername(appProperties().getProperty("database.user"));
-        hikariConfig.setPassword(appProperties().getProperty("database.password"));
+        hikariConfig.setJdbcUrl(properties.getProperty("database.url"));
+        hikariConfig.setUsername(properties.getProperty("database.user"));
+        hikariConfig.setPassword(properties.getProperty("database.password"));
         hikariConfig.setDriverClassName("org.h2.Driver");
         return new HikariDataSource(hikariConfig);
     }
 
-    private static NamedParameterJdbcTemplate namedJdbcTemplate() {
-        return new NamedParameterJdbcTemplate(dataSource());
+    @Bean
+    NamedParameterJdbcTemplate namedJdbcTemplate(DataSource dataSource) {
+        return new NamedParameterJdbcTemplate(dataSource);
     }
 
-    public static ProjectService projectService() {
-        return new ProjectService(namedJdbcTemplate(), settingsService());
+    @Bean
+    public ProjectService projectService(NamedParameterJdbcTemplate namedParameterJdbcTemplate, SettingsService settingsService) {
+        return new ProjectService(namedParameterJdbcTemplate, settingsService);
     }
 
-    public static SettingsService settingsService() {
-        return new SettingsService(dataSource());
+    @Bean
+    public SettingsService settingsService(DataSource dataSource) {
+        return new SettingsService(dataSource);
+    }
+
+    @Bean
+    PropertyMessageService propertyMessageService(@Qualifier("appProperties") Properties properties) {
+        return new PropertyMessageService(properties);
     }
 
 }

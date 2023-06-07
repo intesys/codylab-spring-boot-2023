@@ -1,6 +1,7 @@
 package it.intesys.academy.service;
 
 import it.intesys.academy.dto.MessageDTO;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.Date;
 import java.util.Properties;
@@ -9,7 +10,7 @@ public class PropertyMessageService {
 
     private final Properties properties;
 
-    public PropertyMessageService(Properties properties) {
+    public PropertyMessageService(@Qualifier("appProperties") Properties properties) {
         this.properties = properties;
     }
 
