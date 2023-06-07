@@ -1,0 +1,18 @@
+2023-06-07 09:44:20 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "PROJECTS" not found (this database is empty); SQL statement:
+SELECT id, name, description FROM Projects [42104-214]
+2023-06-07 09:46:51 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "PROJECTS" not found (this database is empty); SQL statement:
+SELECT id, name, description FROM Projects [42104-214]
+2023-06-07 09:57:09 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "PROJECTS" not found (this database is empty); SQL statement:
+SELECT id, name, description FROM Projects [42104-214]
+2023-06-07 09:58:23 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "PROJECTS" not found (this database is empty); SQL statement:
+SELECT id, name, description FROM Projects [42104-214]
+2023-06-07 12:19:01 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "PROJECTS" not found (this database is empty); SQL statement:
+SELECT id, name, description FROM Projects [42104-214]
+2023-06-07 12:27:17 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "PROJECTS" not found (this database is empty); SQL statement:
+SELECT id, name, description FROM PROJECTS [42104-214]
