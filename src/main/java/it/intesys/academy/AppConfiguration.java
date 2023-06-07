@@ -6,6 +6,7 @@ import it.intesys.academy.service.ProjectService;
 import it.intesys.academy.service.PropertyMessageService;
 import it.intesys.academy.service.SettingsService;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
@@ -15,6 +16,7 @@ import javax.sql.DataSource;
 
 @Configuration
 @PropertySource("classpath:application.properties")
+@ComponentScan("it.intesys.academy")
 public class AppConfiguration {
 
 
@@ -31,21 +33,6 @@ public class AppConfiguration {
     @Bean
     NamedParameterJdbcTemplate namedJdbcTemplate(DataSource dataSource) {
         return new NamedParameterJdbcTemplate(dataSource);
-    }
-
-    @Bean
-    public ProjectService projectService(NamedParameterJdbcTemplate namedParameterJdbcTemplate, SettingsService settingsService) {
-        return new ProjectService(namedParameterJdbcTemplate, settingsService);
-    }
-
-    @Bean
-    public SettingsService settingsService(DataSource dataSource) {
-        return new SettingsService(dataSource);
-    }
-
-    @Bean
-    PropertyMessageService propertyMessageService(Environment environment) {
-        return new PropertyMessageService(environment.getProperty("app.message"));
     }
 
 }

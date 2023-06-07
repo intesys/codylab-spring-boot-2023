@@ -1,15 +1,18 @@
 package it.intesys.academy.service;
 
 import it.intesys.academy.dto.MessageDTO;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import java.util.Date;
 
+@Service
 public class PropertyMessageService {
 
     private final String messageString;
 
 
-    public PropertyMessageService(String message) {
+    public PropertyMessageService(@Value("${app.message}") String message) {
         this.messageString = message;
     }
 
