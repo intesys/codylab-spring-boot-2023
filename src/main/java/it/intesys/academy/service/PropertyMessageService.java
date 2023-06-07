@@ -12,8 +12,7 @@ public class PropertyMessageService {
         var messageString = AppConfiguration.appProperties().getProperty("app.message");
 
         var message = new MessageDTO();
-        message.setText(messageString);
-        message.setTimestamp(new Date());
+        message.setComment(messageString);
 
         return message;
     }

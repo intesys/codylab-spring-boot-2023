@@ -1,14 +1,26 @@
 package it.intesys.academy.dto;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class IssueDTO {
 
     private int id;
 
     private String name;
 
-    private String description;
+    private String message;
 
     private String author;
+    private List<MessageDTO> comment = new ArrayList<>();
+
+    public List<MessageDTO> getComment() {
+        return comment;
+    }
+
+    public void setComment(MessageDTO comment) {
+        this.comment.add(comment);
+    }
 
     public int getId() {
 
@@ -30,14 +42,14 @@ public class IssueDTO {
         this.name = name;
     }
 
-    public String getDescription() {
+    public String getMessage() {
 
-        return description;
+        return message;
     }
 
-    public void setDescription(String description) {
+    public void setMessage(String message) {
 
-        this.description = description;
+        this.message = message;
     }
 
     public String getAuthor() {

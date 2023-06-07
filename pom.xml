@@ -23,6 +23,8 @@
         <javalin.version>5.4.2</javalin.version>
         <jackson.version>2.14.2</jackson.version>
         <h2.version>2.1.214</h2.version>
+        <hikariCP.version>5.0.1</hikariCP.version>
+        <spring-jdbc.version>6.0.9</spring-jdbc.version>
     </properties>
 
     <dependencies>
@@ -46,12 +48,12 @@
         <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
-            <version>5.0.1</version>
+            <version>${hikariCP.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-jdbc</artifactId>
-            <version>6.0.9</version>
+            <version>${spring-jdbc.version}</version>
         </dependency>
 
         <!-- logging -->

@@ -4,22 +4,17 @@ import java.util.Date;
 
 public class MessageDTO {
 
-    private String text;
+    private String comment;
     private Date timestamp;
 
-    public String getText() {
-        return text;
+
+    public String getComment() {
+        return comment;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 
-    public Date getTimestamp() {
-        return timestamp;
-    }
 
-    public void setTimestamp(Date timestamp) {
-        this.timestamp = timestamp;
-    }
 }

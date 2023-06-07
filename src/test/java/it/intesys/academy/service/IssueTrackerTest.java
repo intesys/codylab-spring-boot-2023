@@ -9,7 +9,7 @@ class IssueTrackerTest {
     @Test
     @DisplayName("The message is correctly read from application.properties")
     void getMessage() {
-        Assertions.assertEquals("Hello from test properties!", new PropertyMessageService().getMessage().getText());
+        Assertions.assertEquals("Hello from test properties!", new PropertyMessageService().getMessage().getComment());
     }
 
 }
