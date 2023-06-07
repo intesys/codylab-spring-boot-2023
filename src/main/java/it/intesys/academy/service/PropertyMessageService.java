@@ -1,22 +1,19 @@
 package it.intesys.academy.service;
 
 import it.intesys.academy.dto.MessageDTO;
-import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.Date;
-import java.util.Properties;
 
 public class PropertyMessageService {
 
-    private final Properties properties;
+    private final String messageString;
 
-    public PropertyMessageService(@Qualifier("appProperties") Properties properties) {
-        this.properties = properties;
+
+    public PropertyMessageService(String message) {
+        this.messageString = message;
     }
 
     public MessageDTO getMessage() {
-
-        var messageString = properties.getProperty("app.message");
 
         if (messageString.startsWith("Hello")) {
             throw new RuntimeException("BORING!");
