@@ -22,6 +22,7 @@ public class IssueTracker {
                     String username = ctx.queryParam("username");
                     ctx.json(projectService.readProjects(username));
                 })
+
                 .start(applicationPort);
     }
 
