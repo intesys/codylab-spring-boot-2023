@@ -14,6 +14,10 @@ public class CommentDTO {
         this.author = author;
     }
 
+    public CommentDTO() {
+
+    }
+
     public int getId() {
         return id;
     }

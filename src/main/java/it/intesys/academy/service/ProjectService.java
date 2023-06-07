@@ -1,5 +1,6 @@
 package it.intesys.academy.service;
 
+import it.intesys.academy.dto.CommentDTO;
 import it.intesys.academy.dto.IssueDTO;
 import it.intesys.academy.dto.ProjectDTO;
 import org.slf4j.Logger;
@@ -7,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
+import java.security.Key;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -42,6 +44,8 @@ public class ProjectService {
 
         Map<Integer, List<IssueDTO>> issuesByProjectId = new HashMap<>();
 
+        List<Integer> issueIds = new ArrayList<>();
+
         jdbcTemplate.query("SELECT id, name, message, author, projectId FROM Issues WHERE projectId in (:projectIds)",
 
                            Map.of("projectIds", projectIds),
@@ -50,6 +54,7 @@ public class ProjectService {
 
                                 IssueDTO issueDTO = new IssueDTO();
                                 issueDTO.setId(resultSet.getInt("id"));
+                                issueIds.add(resultSet.getInt("id"));
                                 issueDTO.setName(resultSet.getString("name"));
                                 issueDTO.setMessage(resultSet.getString("message"));
                                 issueDTO.setAuthor(resultSet.getString("author"));
@@ -63,14 +68,43 @@ public class ProjectService {
                                 issuesByProjectId.get(projectId).add(issueDTO);
                           });
 
+
+        Map<Integer, List<CommentDTO>> commentByIssueId = new HashMap<>();
+
+        jdbcTemplate.query("SELECT id, comment, author, issueId FROM Comments WHERE issueId in (:issueIds)",
+                Map.of("issueIds", issueIds),
+
+                (resultSet) -> {
+                   CommentDTO commentDTO = new CommentDTO();
+
+
+                    commentDTO.setComment(resultSet.getString("comment"));
+                    int issueID = resultSet.getInt("issueId");
+                    if(Boolean.FALSE.equals(commentByIssueId.containsKey(issueID))){
+                        commentByIssueId.put(issueID, new ArrayList<>());
+                    }
+                    commentByIssueId.get(issueID).add(commentDTO);
+
+
+                }
+        );
+
         for (ProjectDTO dto : projects) {
             List<IssueDTO> issueDTOS = issuesByProjectId.get(dto.getId());
-            issueDTOS.forEach(dto::addIssue);
+
+            for (IssueDTO issue : issueDTOS){
+                List<CommentDTO> commentDTOS = commentByIssueId.get(issue.getId());
+                for (CommentDTO message : commentDTOS) {
+                    issue.addComment(message);
+                }
+                dto.addIssue(issue);
+            }
         }
 
 
         return projects;
 
     }
+
 
 }
