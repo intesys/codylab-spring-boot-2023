@@ -91,12 +91,11 @@ public class ProjectService {
                         commentsByIssuesId.put(issueId, new ArrayList<>());
                     }
 
-                    commentsByIssuesId.get(issueIds).add(commentDTO);
+                    commentsByIssuesId.get(issueId).add(commentDTO);
                 });
 //_____________________________________________________________
         for (ProjectDTO dto : projects) {
             List<IssueDTO> issueDTOS = issuesByProjectId.get(dto.getId());
-
             for (IssueDTO dto1 : issueDTOS) {
                 List<CommentDTO> commentDTOS = commentsByIssuesId.get(dto1.getId());
                 if (commentDTOS != null) {
