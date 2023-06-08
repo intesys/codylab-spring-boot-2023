@@ -87,7 +87,7 @@ public class ProjectService {
                     // building map issueId --> [comment1, comment2, comment3]
 
                     int issueId = resultSet.getInt("issueId");
-                    if (commentsByIssuesId.containsKey(issueIds)==false) {
+                    if (commentsByIssuesId.containsKey(issueId)==false) {
                         commentsByIssuesId.put(issueId, new ArrayList<>());
                     }
 

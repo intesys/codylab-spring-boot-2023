@@ -18,6 +18,10 @@ public class IssueDTO {
         comments.add(comment);
     }
 
+    public ArrayList<CommentDTO> getComments() {
+        return comments;
+    }
+
     public int getId() {
 
         return id;
