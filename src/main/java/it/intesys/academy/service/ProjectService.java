@@ -111,4 +111,15 @@ public class ProjectService {
         return comments;
     }
 
+    public ProjectDTO readProject(Integer idProject){
+        List<ProjectDTO> projects = jdbcTemplate.query("SELECT id, name, description FROM Projects where id = (:projectIds)",
+
+                Map.of("projectIds", idProject),
+
+                BeanPropertyRowMapper.newInstance(ProjectDTO.class));
+
+        ProjectDTO result = projects.get(0);
+        return result;
+    }
+
 }
