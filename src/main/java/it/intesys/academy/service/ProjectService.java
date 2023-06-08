@@ -3,12 +3,10 @@ package it.intesys.academy.service;
 import it.intesys.academy.dto.CommentDTO;
 import it.intesys.academy.dto.IssueDTO;
 import it.intesys.academy.dto.ProjectDTO;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-
-import javax.xml.stream.events.Comment;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,7 +14,7 @@ import java.util.Map;
 
 public class ProjectService {
 
-    private static final Logger log = LoggerFactory.getLogger(ProjectService.class);
+//    private static final Logger log = LoggerFactory.getLogger(ProjectService.class);
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
 
@@ -87,7 +85,7 @@ public class ProjectService {
                     // building map issueId --> [comment1, comment2, comment3]
 
                     int issueId = resultSet.getInt("issueId");
-                    if (commentsByIssuesId.containsKey(issueId)==false) {
+                    if (!commentsByIssuesId.containsKey(issueId)) {
                         commentsByIssuesId.put(issueId, new ArrayList<>());
                     }
 
