@@ -1,5 +1,6 @@
 package it.intesys.academy.service;
 
+import it.intesys.academy.dto.CommentDTO;
 import it.intesys.academy.dto.IssueDTO;
 import it.intesys.academy.dto.ProjectDTO;
 import org.slf4j.Logger;
@@ -91,6 +92,23 @@ public class ProjectService {
                 );
 
         return issues;
+    }
+
+    public List<CommentDTO> readComments(Integer id){
+        List<CommentDTO>comments = new ArrayList<>();
+
+        jdbcTemplate.query("SELECT id,descrizione,author,issueId FROM Comments WHERE issueId = (:issue)",
+                Map.of("issue",id),
+                (resultset)->{
+                    comments.add(new CommentDTO(
+                            resultset.getInt("id"),
+                            resultset.getString("descrizione"),
+                            resultset.getString("author")
+                    ));
+                }
+        );
+
+        return comments;
     }
 
 }
