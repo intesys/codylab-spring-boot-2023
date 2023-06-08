@@ -10,6 +10,16 @@ public class IssueDTO {
 
     private String author;
 
+    public IssueDTO(int id, String name, String description, String author) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.author = author;
+    }
+
+    public IssueDTO() {
+    }
+
     public int getId() {
 
         return id;

@@ -31,7 +31,7 @@ public class ProjectService {
 
         List<Integer> userProjects = settingsService.getUserProjects(username);
 
-        List<ProjectDTO> projects = jdbcTemplate.query("SELECT id, name, description FROM Project where id in (:projectIds)",
+        List<ProjectDTO> projects = jdbcTemplate.query("SELECT id, name, description FROM Projects where id in (:projectIds)",
 
                                                        Map.of("projectIds", userProjects),
 
@@ -44,7 +44,7 @@ public class ProjectService {
 
         Map<Integer, List<IssueDTO>> issuesByProjectId = new HashMap<>();
 
-        jdbcTemplate.query("SELECT id, name, description, author, projectId FROM Issue WHERE projectId in (:projectIds)",
+        jdbcTemplate.query("SELECT id, nome, descrizione, author, projectId FROM Issues WHERE projectId in (:projectIds)",
 
                            Map.of("projectIds", projectIds),
 
@@ -52,8 +52,8 @@ public class ProjectService {
 
                                 IssueDTO issueDTO = new IssueDTO();
                                 issueDTO.setId(resultSet.getInt("id"));
-                                issueDTO.setName(resultSet.getString("name"));
-                                issueDTO.setDescription(resultSet.getString("description"));
+                                issueDTO.setName(resultSet.getString("nome"));
+                                issueDTO.setDescription(resultSet.getString("descrizione"));
                                 issueDTO.setAuthor(resultSet.getString("author"));
 
                                 // building map projectId --> [issue1, issue2, issue3]
@@ -73,6 +73,24 @@ public class ProjectService {
 
         return projects;
 
+    }
+
+    public List<IssueDTO> readIssues(Integer id){
+        List<IssueDTO>issues = new ArrayList<>();
+
+        jdbcTemplate.query("SELECT id,nome,descrizione,author,projectId FROM Issues WHERE projectId = (:project)",
+                Map.of("project",id),
+                (resultset)->{
+                    issues.add(new IssueDTO(
+                            resultset.getInt("id"),
+                            resultset.getString("nome"),
+                            resultset.getString("descrizione"),
+                            resultset.getString("author")
+                    ));
+                }
+                );
+
+        return issues;
     }
 
 }
