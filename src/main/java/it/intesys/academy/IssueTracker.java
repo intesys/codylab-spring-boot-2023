@@ -11,7 +11,9 @@ public class IssueTracker {
     private static final Logger log = LoggerFactory.getLogger(IssueTracker.class);
 
     public static void main(String[] args) {
+
         SpringApplication.run(IssueTracker.class, args);
+
     }
 
 }
