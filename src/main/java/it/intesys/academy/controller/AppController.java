@@ -31,4 +31,5 @@ public class AppController {
     public List<ProjectDTO> getProjects(@RequestParam String userName) {
         return projectService.readProjects(userName);
     }
+
 }

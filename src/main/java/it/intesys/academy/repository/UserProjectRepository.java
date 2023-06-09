@@ -25,10 +25,10 @@ public class UserProjectRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public List<UserProjectDTO> searchUser(Integer userId){
-        return jdbcTemplate.query("SELECT id, username,projectId FROM USER_PROJECTS where id in (:userId)",
+    public List<UserProjectDTO> searchUser(String username){
+        return jdbcTemplate.query("SELECT id, username,projectId FROM USER_PROJECTS where username = (:username)",
 
-                Map.of("userId", userId),
+                Map.of("username", username),
 
                 BeanPropertyRowMapper.newInstance(UserProjectDTO.class));
     }
