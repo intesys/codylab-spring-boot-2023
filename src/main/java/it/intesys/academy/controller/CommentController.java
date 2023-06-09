@@ -24,9 +24,9 @@ public class CommentController {
         this.projectService = projectService;
     }
 
-    @GetMapping("/comments")
-    public List<CommentDTO> getProjects(@RequestParam String issueId) {
+    @GetMapping("/comments/{username}")
+    public List<CommentDTO> getProjects(@PathVariable String username, @RequestParam String issueId) {
 
-        return projectService.readComments(Integer.parseInt(issueId));
+        return projectService.readComments(Integer.parseInt(issueId),username);
     }
 }

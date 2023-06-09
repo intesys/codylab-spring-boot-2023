@@ -4,6 +4,7 @@ import it.intesys.academy.dto.IssueDTO;
 import it.intesys.academy.service.ProjectService;
 import it.intesys.academy.service.PropertyMessageService;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,9 +21,9 @@ public class IssueController {
         this.projectService = projectService;
     }
 
-    @GetMapping("/issues")
-    public List<IssueDTO> getIssues(@RequestParam String projectId){
-        return projectService.readIssues(Integer.parseInt(projectId));
+    @GetMapping("/issues/{username}")
+    public List<IssueDTO> getIssues(@PathVariable String username, @RequestParam String projectId){
+        return projectService.readIssues(Integer.parseInt(projectId),username);
     }
 
 }

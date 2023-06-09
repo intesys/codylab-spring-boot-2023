@@ -66,12 +66,20 @@ public class ProjectService {
         return (projectRepository.searchProject(projectId)).get(0);
     }
 
-    public List<IssueDTO> readIssues(Integer id){
-        return issueRepository.readIssuesForProject(id);
+    public List<IssueDTO> readIssues(Integer id, String username){
+        List<ProjectDTO> projects = projectRepository.searchProjects(settingsService.getUserProjects(username));
+        List<Integer> projectIds = projects.stream()
+                .map(ProjectDTO::getId)
+                .toList();
 
+       if(projectIds.contains(id)){
+           return issueRepository.readIssuesForProject(id);
+       }
+
+       return null;
     }
 
-    public List<CommentDTO> readComments(Integer id){
+    public List<CommentDTO> readComments(Integer id, String username){
         List<CommentDTO>comments = new ArrayList<>();
 
         jdbcTemplate.query("SELECT id,descrizione,author,issueId FROM Comments WHERE issueId = (:issue)",
