@@ -2,6 +2,7 @@ package it.intesys.academy.service;
 
 import it.intesys.academy.dto.IssueDTO;
 import it.intesys.academy.dto.ProjectDTO;
+import it.intesys.academy.repository.IssueRepository;
 import it.intesys.academy.repository.ProjectRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,17 +17,30 @@ public class ProjectService {
     private static final Logger log = LoggerFactory.getLogger(ProjectService.class);
 
     private final ProjectRepository projectRepository;
+
+    private final IssueRepository issueRepository;
     private final SettingsService settingsService;
 
-    public ProjectService(ProjectRepository projectRepository, SettingsService settingsService) {
+    public ProjectService(ProjectRepository projectRepository, IssueRepository issueRepository, SettingsService settingsService) {
 
         this.projectRepository = projectRepository;
+        this.issueRepository = issueRepository;
         this.settingsService = settingsService;
     }
 
-    public List<ProjectDTO> readProjects(String username) {
+    public ProjectDTO readProjectWithIssue(int id) {
 
-        List<Integer> userProjectIds = settingsService.getUserProjects(username);
+        return readProjectsWithIssues(List.of(id)).get(0);
+
+    }
+
+    public List<ProjectDTO> readProjectsWithIssues(String username) {
+
+        return readProjectsWithIssues(settingsService.getUserProjects(username));
+
+    }
+
+    private List<ProjectDTO> readProjectsWithIssues(List<Integer> userProjectIds) {
 
         List<ProjectDTO> userProjects = projectRepository.readProjects(userProjectIds);
 
@@ -40,7 +54,7 @@ public class ProjectService {
                                            .map(ProjectDTO::getId)
                                            .toList();
 
-        List<IssueDTO> issues = projectRepository.readIssues(projectIds);
+        List<IssueDTO> issues = issueRepository.readIssues(projectIds);
 
         for (IssueDTO issue : issues) {
             mapProjects.get(issue.getProjectId()).addIssue(issue);
