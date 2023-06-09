@@ -21,16 +21,24 @@ public class ProjectService {
     private final IssueRepository issueRepository;
     private final SettingsService settingsService;
 
-    public ProjectService(ProjectRepository projectRepository, IssueRepository issueRepository, SettingsService settingsService) {
+    private final UserProjectService userProjectService;
+
+    public ProjectService(ProjectRepository projectRepository, IssueRepository issueRepository, SettingsService settingsService,
+        UserProjectService userProjectService) {
 
         this.projectRepository = projectRepository;
         this.issueRepository = issueRepository;
         this.settingsService = settingsService;
+        this.userProjectService = userProjectService;
     }
 
-    public ProjectDTO readProjectWithIssue(int id) {
+    public ProjectDTO readProjectWithIssue(int projectId, String username) {
 
-        return readProjectsWithIssues(List.of(id)).get(0);
+        if (userProjectService.canThisUserReadThisProject(username, projectId))
+
+            return readProjectsWithIssues(List.of(projectId)).get(0);
+
+        throw new RuntimeException("Security constraints violation");
 
     }
 
