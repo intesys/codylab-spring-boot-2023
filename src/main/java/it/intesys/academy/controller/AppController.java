@@ -1,6 +1,5 @@
 package it.intesys.academy.controller;
 
-
 import it.intesys.academy.dto.MessageDTO;
 import it.intesys.academy.dto.ProjectDTO;
 import it.intesys.academy.service.ProjectService;
@@ -29,6 +28,8 @@ public class AppController {
 
     @GetMapping("/list-projects")
     public List<ProjectDTO> getProjects(@RequestParam String userName) {
+
         return projectService.readProjects(userName);
     }
+
 }
