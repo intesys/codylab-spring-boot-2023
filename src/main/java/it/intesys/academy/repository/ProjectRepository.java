@@ -1,6 +1,5 @@
 package it.intesys.academy.repository;
 
-import it.intesys.academy.dto.IssueDTO;
 import it.intesys.academy.dto.ProjectDTO;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -28,18 +27,6 @@ public class ProjectRepository {
                                                        BeanPropertyRowMapper.newInstance(ProjectDTO.class));
 
         return projects;
-    }
-
-    public List<IssueDTO> readIssues(List<Integer> projectIds) {
-
-        List<IssueDTO> issues =
-            jdbcTemplate.query("SELECT id, name, description, author, projectId FROM Issue WHERE projectId in (:projectIds)",
-
-                               Map.of("projectIds", projectIds),
-
-                               BeanPropertyRowMapper.newInstance(IssueDTO.class));
-
-        return issues;
     }
 
 }
