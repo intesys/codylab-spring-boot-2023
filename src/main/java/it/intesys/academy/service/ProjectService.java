@@ -62,8 +62,16 @@ public class ProjectService {
 
     }
 
-    public ProjectDTO readProject(Integer projectId){
-        return (projectRepository.searchProject(projectId)).get(0);
+    public ProjectDTO readProject(Integer projectId, String username){
+        List<ProjectDTO> projects = projectRepository.searchProjects(settingsService.getUserProjects(username));
+        List<Integer> projectIds = projects.stream()
+                .map(ProjectDTO::getId)
+                .toList();
+
+        if(projectIds.contains(projectId)) {
+            return (projectRepository.searchProject(projectId)).get(0);
+        }
+        return null;
     }
 
     public List<IssueDTO> readIssues(Integer id, String username){
@@ -77,6 +85,19 @@ public class ProjectService {
        }
 
        return null;
+    }
+
+    public IssueDTO readIssue(Integer id, String username){
+        List<ProjectDTO> projects = projectRepository.searchProjects(settingsService.getUserProjects(username));
+        List<Integer> projectIds = projects.stream()
+                .map(ProjectDTO::getId)
+                .toList();
+
+        if(projectIds.contains(id)){
+            return issueRepository.readIssuesForProject(id).get(0);
+        }
+
+        return null;
     }
 
     public List<CommentDTO> readComments(Integer id, String username){
@@ -101,6 +122,32 @@ public class ProjectService {
             );
 
             return comments;
+        }
+        return null;
+    }
+
+    public CommentDTO readComment(Integer id, String username){
+        List<ProjectDTO> projects = projectRepository.searchProjects(settingsService.getUserProjects(username));
+        List<Integer> projectIds = projects.stream()
+                .map(ProjectDTO::getId)
+                .toList();
+
+        if(projectIds.contains(id)) {
+            List<CommentDTO> comments = new ArrayList<>();
+
+            jdbcTemplate.query("SELECT id,descrizione,author,issueId FROM Comments WHERE issueId = (:issue)",
+                    Map.of("issue", id),
+                    (resultset) -> {
+                        comments.add(new CommentDTO(
+                                resultset.getInt("id"),
+                                resultset.getString("descrizione"),
+                                resultset.getString("author"),
+                                resultset.getInt("issueId")
+                        ));
+                    }
+            );
+
+            return comments.get(0);
         }
         return null;
     }

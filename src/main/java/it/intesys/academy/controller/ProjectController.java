@@ -24,8 +24,8 @@ public class ProjectController {
         this.projectService = projectService;
     }
 
-    @GetMapping("/project/{projectId}")
-    public ProjectDTO getProjects(@PathVariable String projectId) {
-        return projectService.readProject(Integer.parseInt(projectId));
+    @GetMapping("/project/{username}")
+    public ProjectDTO getProject(@PathVariable String username,@RequestParam String projectId) {
+        return projectService.readProject(Integer.parseInt(projectId),username);
     }
 }

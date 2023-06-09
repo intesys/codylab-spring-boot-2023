@@ -26,4 +26,9 @@ public class IssueController {
         return projectService.readIssues(Integer.parseInt(projectId),username);
     }
 
+    @GetMapping("/issue/{username}")
+    public IssueDTO getIssue(@PathVariable String username, @RequestParam String projectId){
+        return projectService.readIssue(Integer.parseInt(projectId),username);
+    }
+
 }
