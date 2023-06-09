@@ -21,3 +21,16 @@ CREATE TABLE Issue (
 
 INSERT INTO Issue VALUES (1, 'Form validation problem', 'Email is not validated', 'Enrico Oliosi', 1);
 
+-----------------------------------------------------------------------
+
+CREATE TABLE UserProject (
+       id int not null,
+       username varchar(128) not null,
+       projectId int not null,
+       PRIMARY KEY (id),
+       FOREIGN KEY (projectId) REFERENCES Project(id)
+);
+
+INSERT INTO UserProject VALUES (1, 'eoliosi', 1);
+INSERT INTO UserProject VALUES (2, 'ecostanzi', 2);
+
