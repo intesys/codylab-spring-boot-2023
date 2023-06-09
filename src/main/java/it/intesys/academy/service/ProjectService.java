@@ -80,21 +80,29 @@ public class ProjectService {
     }
 
     public List<CommentDTO> readComments(Integer id, String username){
-        List<CommentDTO>comments = new ArrayList<>();
+        List<ProjectDTO> projects = projectRepository.searchProjects(settingsService.getUserProjects(username));
+        List<Integer> projectIds = projects.stream()
+                .map(ProjectDTO::getId)
+                .toList();
 
-        jdbcTemplate.query("SELECT id,descrizione,author,issueId FROM Comments WHERE issueId = (:issue)",
-                Map.of("issue",id),
-                (resultset)->{
-                    comments.add(new CommentDTO(
-                            resultset.getInt("id"),
-                            resultset.getString("descrizione"),
-                            resultset.getString("author"),
-                            resultset.getInt("issueId")
-                    ));
-                }
-        );
+        if(projectIds.contains(id)) {
+            List<CommentDTO> comments = new ArrayList<>();
 
-        return comments;
+            jdbcTemplate.query("SELECT id,descrizione,author,issueId FROM Comments WHERE issueId = (:issue)",
+                    Map.of("issue", id),
+                    (resultset) -> {
+                        comments.add(new CommentDTO(
+                                resultset.getInt("id"),
+                                resultset.getString("descrizione"),
+                                resultset.getString("author"),
+                                resultset.getInt("issueId")
+                        ));
+                    }
+            );
+
+            return comments;
+        }
+        return null;
     }
 
 }
