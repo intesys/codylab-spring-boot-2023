@@ -49,7 +49,7 @@ public class ProjectRepository {
     }
 
     public List<ProjectDTO> searchProject(Integer projectIds){
-        return jdbcTemplate.query("SELECT id, name, description FROM Projects where id in (:projectIds)",
+        return jdbcTemplate.query("SELECT id, name, description FROM Projects where id = :projectIds",
 
                 Map.of("projectIds", projectIds),
 

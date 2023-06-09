@@ -28,8 +28,8 @@ public class AppController {
         return propertyMessageService.getMessage();
     }
 
-    @GetMapping("/projects/{username}")
-    public List<ProjectDTO> getProjects(@PathVariable String userName) {
+    @GetMapping("/projects")
+    public List<ProjectDTO> getProjects(@RequestParam String userName) {
         return projectService.readProjects(userName);
     }
 

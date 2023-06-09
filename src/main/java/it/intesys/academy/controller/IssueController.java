@@ -21,14 +21,14 @@ public class IssueController {
         this.projectService = projectService;
     }
 
-    @GetMapping("/issues/{username}")
-    public List<IssueDTO> getIssues(@PathVariable String username, @RequestParam String projectId){
-        return projectService.readIssues(Integer.parseInt(projectId),username);
+    @GetMapping("/issues/{projectId}")
+    public List<IssueDTO> getIssues(@RequestParam String username, @PathVariable Integer projectId){
+        return projectService.readIssues(projectId,username);
     }
 
-    @GetMapping("/issue/{username}")
-    public IssueDTO getIssue(@PathVariable String username, @RequestParam String projectId){
-        return projectService.readIssue(Integer.parseInt(projectId),username);
+    @GetMapping("/issue/{projectId}")
+    public IssueDTO getIssue(@RequestParam String username, @PathVariable Integer issueId){
+        return projectService.readIssue(issueId,username);
     }
 
 }

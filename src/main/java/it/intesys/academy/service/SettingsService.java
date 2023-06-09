@@ -11,12 +11,9 @@ import java.util.List;
 @Service
 public class SettingsService {
 
-    private final DataSource dataSource;
-
     private final UserProjectRepository userProjectRepository;
 
-    public SettingsService(DataSource dataSource, UserProjectRepository userProjectRepository) {
-        this.dataSource = dataSource;
+    public SettingsService(UserProjectRepository userProjectRepository) {
         this.userProjectRepository = userProjectRepository;
     }
 

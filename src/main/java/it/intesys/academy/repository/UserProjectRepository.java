@@ -26,7 +26,7 @@ public class UserProjectRepository {
     }
 
     public List<UserProjectDTO> searchUser(String username){
-        return jdbcTemplate.query("SELECT id, username,projectId FROM USER_PROJECTS where username = (:username)",
+        return jdbcTemplate.query("SELECT id, username,projectId FROM USER_PROJECTS where username = :username",
 
                 Map.of("username", username),
 
