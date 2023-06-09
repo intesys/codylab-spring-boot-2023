@@ -5,14 +5,25 @@ public class CommentDTO {
     private String descrizione;
     private String author;
 
+    private int issueId;
+
     public int getId() {
         return id;
     }
 
-    public CommentDTO(int id, String descrizione, String author) {
+    public CommentDTO(int id, String descrizione, String author,int issueId) {
         this.id = id;
         this.descrizione = descrizione;
         this.author = author;
+        this.issueId = issueId;
+    }
+
+    public int getIssueId() {
+        return issueId;
+    }
+
+    public void setIssueId(int issueId) {
+        this.issueId = issueId;
     }
 
     public CommentDTO() {

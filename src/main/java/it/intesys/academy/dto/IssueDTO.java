@@ -4,20 +4,31 @@ public class IssueDTO {
 
     private int id;
 
-    private String name;
+    private String nome;
 
-    private String description;
+    private String descrizione;
 
     private String author;
 
-    public IssueDTO(int id, String name, String description, String author) {
+    private int projectId;
+
+    public IssueDTO(int id, String nome, String descrizione, String author, int projectId) {
         this.id = id;
-        this.name = name;
-        this.description = description;
+        this.nome = nome;
+        this.descrizione= descrizione;
         this.author = author;
+        this.projectId= projectId;
     }
 
     public IssueDTO() {
+    }
+
+    public int getProjectId() {
+        return projectId;
+    }
+
+    public void setProjectId(int projectId) {
+        this.projectId = projectId;
     }
 
     public int getId() {
@@ -30,24 +41,24 @@ public class IssueDTO {
         this.id = id;
     }
 
-    public String getName() {
+    public String getNome() {
 
-        return name;
+        return nome;
     }
 
-    public void setName(String name) {
+    public void setNome(String nome) {
 
-        this.name = name;
+        this.nome = nome;
     }
 
-    public String getDescription() {
+    public String getDescrizione() {
 
-        return description;
+        return descrizione;
     }
 
-    public void setDescription(String description) {
+    public void setDescrizione(String descrizione) {
 
-        this.description = description;
+        this.descrizione = descrizione;
     }
 
     public String getAuthor() {

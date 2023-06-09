@@ -3,6 +3,8 @@ package it.intesys.academy.service;
 import it.intesys.academy.dto.CommentDTO;
 import it.intesys.academy.dto.IssueDTO;
 import it.intesys.academy.dto.ProjectDTO;
+import it.intesys.academy.repository.IssueRepository;
+import it.intesys.academy.repository.ProjectRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -23,75 +25,50 @@ public class ProjectService {
 
     private final SettingsService settingsService;
 
-    public ProjectService(NamedParameterJdbcTemplate jdbcTemplate, SettingsService settingsService) {
+    private final ProjectRepository projectRepository;
+
+    private final IssueRepository issueRepository;
+
+    public ProjectService(NamedParameterJdbcTemplate jdbcTemplate, SettingsService settingsService, ProjectRepository projectRepository, IssueRepository issueRepository) {
         this.jdbcTemplate = jdbcTemplate;
         this.settingsService = settingsService;
+        this.projectRepository = projectRepository;
+        this.issueRepository = issueRepository;
     }
 
     public List<ProjectDTO> readProjects(String username) {
 
-        List<Integer> userProjects = settingsService.getUserProjects(username);
-
-        List<ProjectDTO> projects = jdbcTemplate.query("SELECT id, name, description FROM Projects where id in (:projectIds)",
-
-                                                       Map.of("projectIds", userProjects),
-
-                                                       BeanPropertyRowMapper.newInstance(ProjectDTO.class));
-
+        List<ProjectDTO> projects = projectRepository.searchProjects(settingsService.getUserProjects(username));
 
         List<Integer> projectIds = projects.stream()
                                            .map(ProjectDTO::getId)
                                            .toList();
 
-        Map<Integer, List<IssueDTO>> issuesByProjectId = new HashMap<>();
-
-        jdbcTemplate.query("SELECT id, nome, descrizione, author, projectId FROM Issues WHERE projectId in (:projectIds)",
-
-                           Map.of("projectIds", projectIds),
-
-                            (resultSet) -> {
-
-                                IssueDTO issueDTO = new IssueDTO();
-                                issueDTO.setId(resultSet.getInt("id"));
-                                issueDTO.setName(resultSet.getString("nome"));
-                                issueDTO.setDescription(resultSet.getString("descrizione"));
-                                issueDTO.setAuthor(resultSet.getString("author"));
-
-                                // building map projectId --> [issue1, issue2, issue3]
-                                int projectId = resultSet.getInt("projectId");
-                                if ( Boolean.FALSE.equals(issuesByProjectId.containsKey(projectId)) ) {
-                                    issuesByProjectId.put(projectId, new ArrayList<>());
-                                }
-
-                                issuesByProjectId.get(projectId).add(issueDTO);
-                          });
-
-        for (ProjectDTO dto : projects) {
-            List<IssueDTO> issueDTOS = issuesByProjectId.get(dto.getId());
-            issueDTOS.forEach(dto::addIssue);
+        Map<Integer,ProjectDTO> projectById = new HashMap<>();
+        for(ProjectDTO project:projects){
+            projectById.put(project.getId(),project);
         }
 
+        List<IssueDTO> issues = issueRepository.searchIssues(projectIds);
+
+        for(IssueDTO issue:issues){
+            ProjectDTO project = projectById.get(issue.getProjectId());
+            if(project!=null){
+                project.addIssue(issue);
+            }
+        }
 
         return projects;
 
     }
 
+    public ProjectDTO readProject(Integer projectId){
+        return (projectRepository.searchProject(projectId)).get(0);
+    }
+
     public List<IssueDTO> readIssues(Integer id){
-        List<IssueDTO>issues = new ArrayList<>();
+        return issueRepository.readIssuesForProject(id);
 
-        jdbcTemplate.query("SELECT id,nome,descrizione,author,projectId FROM Issues WHERE projectId = (:project)",
-                Map.of("project",id),
-                (resultset)->{
-                    issues.add(new IssueDTO(
-                            resultset.getInt("id"),
-                            resultset.getString("nome"),
-                            resultset.getString("descrizione"),
-                            resultset.getString("author")
-                    ));
-                }
-                );
-
-        return issues;
     }
 
     public List<CommentDTO> readComments(Integer id){
@@ -103,23 +80,13 @@ public class ProjectService {
                     comments.add(new CommentDTO(
                             resultset.getInt("id"),
                             resultset.getString("descrizione"),
-                            resultset.getString("author")
+                            resultset.getString("author"),
+                            resultset.getInt("issueId")
                     ));
                 }
         );
 
         return comments;
-    }
-
-    public ProjectDTO readProject(Integer idProject){
-        List<ProjectDTO> projects = jdbcTemplate.query("SELECT id, name, description FROM Projects where id = (:projectIds)",
-
-                Map.of("projectIds", idProject),
-
-                BeanPropertyRowMapper.newInstance(ProjectDTO.class));
-
-        ProjectDTO result = projects.get(0);
-        return result;
     }
 
 }
