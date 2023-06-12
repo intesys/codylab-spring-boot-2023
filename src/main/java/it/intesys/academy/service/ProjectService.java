@@ -36,7 +36,7 @@ public class ProjectService {
 
         if (userProjectService.canThisUserReadThisProject(username, projectId))
 
-            return readProjectsWithIssues(List.of(projectId)).get(0);
+            return projectRepository.readProject(projectId);
 
         throw new RuntimeException("Security constraints violation");
 

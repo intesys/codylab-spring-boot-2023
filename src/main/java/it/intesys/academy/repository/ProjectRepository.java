@@ -29,4 +29,14 @@ public class ProjectRepository {
         return projects;
     }
 
+    public ProjectDTO readProject(int projectId) {
+
+        return jdbcTemplate.queryForObject("SELECT id, name, description FROM Project where id = (:projectId)",
+
+                                               Map.of("projectId", projectId),
+
+                                               BeanPropertyRowMapper.newInstance(ProjectDTO.class));
+
+    }
+
 }
