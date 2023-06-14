@@ -1,5 +1,6 @@
 package it.intesys.academy.controller;
 
+import it.intesys.academy.service.IssueService;
 import it.intesys.academy.service.ProjectService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,10 +15,12 @@ public class IndexController {
 
 
     private final ProjectService projectService;
+    private final IssueService issueService;
 
-    public IndexController(ProjectService projectService) {
+    public IndexController(ProjectService projectService, IssueService issueService) {
 
         this.projectService = projectService;
+        this.issueService = issueService;
     }
 
     @GetMapping("/list-projects")
@@ -33,8 +36,9 @@ public class IndexController {
     @GetMapping("/project/{projectId}")
     public String index(Model model, @PathVariable Integer projectId, @RequestParam String userName){
         model.addAttribute("username",userName);
-        model.addAttribute("projects", projectService.readProjectWithIssue(projectId,userName));
-        return "index";
+        model.addAttribute("project", projectService.readProjectWithIssue(projectId,userName));
+        model.addAttribute("issues", issueService.readIssues(projectId,userName));
+        return "project";
     }
 
 }

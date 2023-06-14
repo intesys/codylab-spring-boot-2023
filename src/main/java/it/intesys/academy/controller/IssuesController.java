@@ -1,6 +1,7 @@
 package it.intesys.academy.controller;
 
 import it.intesys.academy.controller.rest.IssueController;
+import it.intesys.academy.service.CommentService;
 import it.intesys.academy.service.IssueService;
 import it.intesys.academy.service.ProjectService;
 import org.springframework.stereotype.Controller;
@@ -15,27 +16,26 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class IssuesController {
     private final IssueService issueService;
 
-    private final ProjectService projectService;
+    private final CommentService commentService;
 
-    public IssuesController(IssueService issueService,ProjectService projectService){
+    public IssuesController(IssueService issueService,CommentService commentService){
         this.issueService = issueService;
-        this.projectService = projectService;
+        this.commentService = commentService;
     }
 
-    @GetMapping("/issues/{projectId}")
-    public String issue(Model model, @PathVariable Integer projectId , @RequestParam String userName){
+    @GetMapping("/issues/{issueId}")
+    public String issue(Model model, @PathVariable Integer issueId , @RequestParam String userName){
         model.addAttribute("username",userName);
-        model.addAttribute("projectId",projectId);
-        model.addAttribute("projects", projectService.readProjectWithIssue(projectId,userName));
-        model.addAttribute("issues", issueService.readIssues(projectId,userName));
+        model.addAttribute("issue", issueService.getIssue(issueId,userName));
+        model.addAttribute("comments", commentService.getComments(issueId,userName));
         return "issue";
     }
 
-    @GetMapping("/issue/{projectId}/{issueId}")
+    /**@GetMapping("/issue/{projectId}/{issueId}")
     public String issue(Model model, @PathVariable Integer projectId, @PathVariable Integer issueId, @RequestParam String userName){
         model.addAttribute("username",userName);
         model.addAttribute("projectId",projectId);
         model.addAttribute("issues", issueService.readIssue(projectId,userName,issueId));
         return "issue";
-    }
+    }*/
 }
