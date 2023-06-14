@@ -2,7 +2,7 @@ package it.intesys.academy.dto;
 
 public class CommentDTO {
 
-    private int id;
+    private Integer id;
 
     private String text;
 
@@ -11,11 +11,11 @@ public class CommentDTO {
     private Integer issueId;
 
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
