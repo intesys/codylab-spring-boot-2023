@@ -32,6 +32,8 @@ public class ProjectService {
 
     public ProjectDTO readProjectWithIssue(int projectId, String username) {
 
+        log.info("Reading project {} with issues, user {}", projectId, username);
+
         if (userProjectService.canThisUserReadThisProject(username, projectId)) {
             ProjectDTO projectDTO = projectRepository.readProject(projectId);
             issueRepository.readIssues(List.of(projectId)).forEach(projectDTO::addIssue);
@@ -44,6 +46,8 @@ public class ProjectService {
 
     public ProjectDTO readProject(int projectId, String username) {
 
+        log.info("Reading project {} , user {}", projectId, username);
+
         if (userProjectService.canThisUserReadThisProject(username, projectId)) {
             return projectRepository.readProject(projectId);
         }
@@ -53,6 +57,7 @@ public class ProjectService {
 
     public List<ProjectDTO> readProjectsWithIssues(String username) {
 
+        log.info("Reading projects for user {}", username);
         return readProjectsWithIssues(userProjectService.getUserProjects(username));
 
     }

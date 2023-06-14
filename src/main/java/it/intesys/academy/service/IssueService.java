@@ -26,11 +26,15 @@ public class IssueService {
 
     public List<IssueDTO> readIssues(Integer projectId) {
 
+        log.info("Reading issues for project {}", projectId);
+
         return issueRepository.readIssues(List.of(projectId));
 
     }
 
     public IssueDTO readIssueWithComments(Integer issueId) {
+
+        log.info("Reading issue {}", issueId);
 
         IssueDTO issueDTO = issueRepository.readIssue(issueId);
         issueDTO.setComments(commentRepository.findCommentsByIssueId(issueId));
