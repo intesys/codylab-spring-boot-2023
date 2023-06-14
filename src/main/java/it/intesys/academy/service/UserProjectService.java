@@ -3,6 +3,8 @@ package it.intesys.academy.service;
 import it.intesys.academy.repository.UserProjectRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UserProjectService {
 
@@ -17,6 +19,10 @@ public class UserProjectService {
 
         return ! userProjectRepository.usernameProjectVisibility(username, projectId).isEmpty();
 
+    }
+
+    public List<Integer> getUserProjects(String username) {
+        return userProjectRepository.getUserProjects(username);
     }
 
 }

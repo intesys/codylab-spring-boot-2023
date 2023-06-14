@@ -19,16 +19,14 @@ public class ProjectService {
     private final ProjectRepository projectRepository;
 
     private final IssueRepository issueRepository;
-    private final SettingsService settingsService;
 
     private final UserProjectService userProjectService;
 
-    public ProjectService(ProjectRepository projectRepository, IssueRepository issueRepository, SettingsService settingsService,
+    public ProjectService(ProjectRepository projectRepository, IssueRepository issueRepository,
         UserProjectService userProjectService) {
 
         this.projectRepository = projectRepository;
         this.issueRepository = issueRepository;
-        this.settingsService = settingsService;
         this.userProjectService = userProjectService;
     }
 
@@ -44,7 +42,7 @@ public class ProjectService {
 
     public List<ProjectDTO> readProjectsWithIssues(String username) {
 
-        return readProjectsWithIssues(settingsService.getUserProjects(username));
+        return readProjectsWithIssues(userProjectService.getUserProjects(username));
 
     }
 
