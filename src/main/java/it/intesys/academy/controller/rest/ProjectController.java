@@ -22,19 +22,19 @@ public class ProjectController {
     }
 
     @GetMapping("/projects")
-    public ResponseEntity<List<ProjectDTO>> getProjects(@RequestParam String userName) {
+    public ResponseEntity<List<ProjectDTO>> getProjects(@RequestHeader(name = "username") String userName) {
 
         return ResponseEntity.ok(projectService.readProjectsWithIssues(userName));
     }
 
     @GetMapping("/projects/{projectId}")
-    public ResponseEntity<ProjectDTO> getProject(@PathVariable int projectId, @RequestParam String username) {
+    public ResponseEntity<ProjectDTO> getProject(@PathVariable int projectId, @RequestHeader(name = "username") String username) {
 
         return ResponseEntity.ok(projectService.readProjectWithIssue(projectId, username));
     }
 
     @PostMapping("/projects")
-    public ResponseEntity<ProjectDTO> createProject(@RequestBody ProjectDTO projectDTO, @RequestParam String username) {
+    public ResponseEntity<ProjectDTO> createProject(@RequestBody ProjectDTO projectDTO, @RequestHeader(name = "username") String username) {
         if (projectDTO.getId() != null) {
             log.error("Bad request, id must be null when creating a new project");
             return ResponseEntity.badRequest().build();
@@ -44,7 +44,7 @@ public class ProjectController {
     }
 
     @PutMapping("/projects/{projectId}")
-    public ResponseEntity<ProjectDTO> updateProject(@PathVariable int projectId, @RequestBody ProjectDTO projectDTO, @RequestParam String username) {
+    public ResponseEntity<ProjectDTO> updateProject(@PathVariable int projectId, @RequestBody ProjectDTO projectDTO, @RequestHeader(name = "username") String username) {
         if (projectDTO.getId() == null) {
             log.error("Bad request, id must not be null when updating a project");
             return ResponseEntity.badRequest().build();
