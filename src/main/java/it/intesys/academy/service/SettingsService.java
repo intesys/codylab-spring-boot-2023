@@ -22,7 +22,7 @@ public class SettingsService {
     public List<Integer> getUserProjects(String username) {
         List<UserProjectDTO> projects = userProjectRepository.getUserProjects(username);
         List<Integer> projectsIds = projects.stream()
-                .map(UserProjectDTO::getId)
+                .map(UserProjectDTO::getProjectId)
                 .toList();
         return projectsIds;
     }

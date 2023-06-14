@@ -6,6 +6,7 @@ import it.intesys.academy.repository.IssueRepository;
 import it.intesys.academy.repository.ProjectRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -56,6 +57,9 @@ public class ProjectService {
 
         for (ProjectDTO p: userProjects) {
             mapProjects.put(p.getId(), p);
+        }
+        for(Integer i:userProjectIds){
+            log.info(String.valueOf(i));
         }
 
         List<Integer> projectIds = userProjects.stream()
