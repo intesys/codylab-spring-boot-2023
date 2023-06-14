@@ -32,7 +32,13 @@ public class ProjectService {
 
     public ProjectDTO readProjectWithIssue(int projectId, String username) {
 
-        if (userProjectService.canThisUserReadThisProject(username, projectId))
+        if (userProjectService.canThisUserReadThisProject(username, projectId)) {
+            ProjectDTO projectDTO = projectRepository.readProject(projectId);
+            issueRepository.readIssues(List.of(projectId)).forEach(projectDTO::addIssue);
+            return projectDTO;
+        }
+
+        throw new RuntimeException("Security constraints violation");
 
             return projectRepository.readProject(projectId);
 
