@@ -2,10 +2,10 @@ app:
   message: Hi from properties!
   port: 8080
 server:
-  port: 8080
+  port: 8081
 spring:
   datasource:
     driver-class-name: org.h2.Driver
-    password: password
-    url: jdbc:h2:~/lesson-1
+    url: jdbc:h2:~/issue-tracker
     username: sa
+    password: password
