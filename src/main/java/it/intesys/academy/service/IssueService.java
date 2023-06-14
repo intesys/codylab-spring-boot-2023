@@ -1,6 +1,7 @@
 package it.intesys.academy.service;
 
 import it.intesys.academy.dto.IssueDTO;
+import it.intesys.academy.dto.ProjectDTO;
 import it.intesys.academy.repository.IssueRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,10 +17,12 @@ public class IssueService {
 
     private final IssueRepository issueRepository;
 
+    private final ProjectService projectService;
+
     private final UserProjectService userProjectService;
 
-    public IssueService(IssueRepository issueRepository, UserProjectService userProjectService) {
-
+    public IssueService(IssueRepository issueRepository, UserProjectService userProjectService, ProjectService projectService) {
+        this.projectService = projectService;
         this.issueRepository = issueRepository;
         this.userProjectService = userProjectService;
     }
@@ -37,6 +40,21 @@ public class IssueService {
             if(issue.getId()==issueId){
                 return issue;
             }
+        }
+        throw new RuntimeException("Error during reading Issue");
+    }
+
+    public IssueDTO getIssue(Integer issueId, String userName){
+        List<ProjectDTO> projects = projectService.readProjectsWithIssues(userName);
+
+        List<Integer> projectsId = projects.stream().map(ProjectDTO::getId).toList();
+
+        IssueDTO issue = issueRepository.readIssue(issueId);
+        //log.info(issue.getNome());
+
+        if(projectsId.contains(issue.getProjectId())){
+            IssueDTO result =  issueRepository.readIssue(issueId);
+            return result;
         }
         throw new RuntimeException("Error during reading Issue");
     }
