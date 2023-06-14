@@ -37,4 +37,10 @@ public class UserProjectRepository {
                 Integer.class);
     }
 
+    public void inserUserProject(String username, Integer projectId) {
+        jdbcTemplate.update("insert into UserProject (username, projectId) values (:username, :projectId)",
+                Map.of("username", username, "projectId", projectId));
+
+    }
+
 }

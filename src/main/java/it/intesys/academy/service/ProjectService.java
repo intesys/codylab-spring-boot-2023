@@ -62,6 +62,16 @@ public class ProjectService {
 
     }
 
+    public ProjectDTO createProject(ProjectDTO projectDTO, String username) {
+
+        log.info("Creating for user {}", username);
+
+        Integer createdProjectId = projectRepository.createProject(projectDTO);
+        userProjectService.associateUserToProject(username, createdProjectId);
+
+        return projectRepository.readProject(createdProjectId);
+    }
+
     private List<ProjectDTO> readProjectsWithIssues(List<Integer> userProjectIds) {
 
         List<ProjectDTO> userProjects = projectRepository.readProjects(userProjectIds);
