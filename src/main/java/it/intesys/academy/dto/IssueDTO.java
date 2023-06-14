@@ -6,9 +6,9 @@ public class IssueDTO {
 
     private int projectId;
 
-    private String name;
+    private String nome;
 
-    private String description;
+    private String descrizione;
 
     private String author;
 
@@ -32,24 +32,24 @@ public class IssueDTO {
         this.id = id;
     }
 
-    public String getName() {
+    public String getNome() {
 
-        return name;
+        return nome;
     }
 
-    public void setName(String name) {
+    public void setNome(String nome) {
 
-        this.name = name;
+        this.nome = nome;
     }
 
-    public String getDescription() {
+    public String getDescrizione() {
 
-        return description;
+        return descrizione;
     }
 
-    public void setDescription(String description) {
+    public void setDescrizione(String descrizione) {
 
-        this.description = description;
+        this.descrizione = descrizione;
     }
 
     public String getAuthor() {

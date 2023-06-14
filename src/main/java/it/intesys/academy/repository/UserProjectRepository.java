@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.Map;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -20,13 +21,22 @@ public class UserProjectRepository {
 
     public Optional<UserProjectDTO> usernameProjectVisibility(String username, Integer projectId) {
 
-        UserProjectDTO project = jdbcTemplate.queryForObject("SELECT id FROM UserProject where projectId = (:projectId) and username = (:username)",
+        UserProjectDTO project = jdbcTemplate.queryForObject("SELECT id FROM User_Projects where projectId = (:projectId) and username = (:username)",
 
                                                                 Map.of("projectId", projectId, "username", username),
 
                                                                 BeanPropertyRowMapper.newInstance(UserProjectDTO.class));
 
         return Optional.ofNullable(project);
+    }
+
+    public List<UserProjectDTO> getUserProjects(String username) {
+
+        List<UserProjectDTO> projects = jdbcTemplate.query("SELECT id, username, projectId FROM User_Projects where username = (:username)",
+                Map.of("username", username),
+                BeanPropertyRowMapper.newInstance(UserProjectDTO.class));
+
+        return projects;
     }
 
 }
