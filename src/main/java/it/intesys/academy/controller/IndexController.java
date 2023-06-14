@@ -30,7 +30,7 @@ public class IndexController {
 
     }
 
-    @GetMapping("/projects/{projectId}")
+    @GetMapping("/project/{projectId}")
     public String index(Model model, @PathVariable Integer projectId, @RequestParam String userName){
         model.addAttribute("username",userName);
         model.addAttribute("projects", projectService.readProjectWithIssue(projectId,userName));

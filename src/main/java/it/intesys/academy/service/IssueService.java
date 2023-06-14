@@ -15,15 +15,19 @@ public class IssueService {
 
     private final IssueRepository issueRepository;
 
-    public IssueService(IssueRepository issueRepository) {
+    private final UserProjectService userProjectService;
+
+    public IssueService(IssueRepository issueRepository, UserProjectService userProjectService) {
 
         this.issueRepository = issueRepository;
+        this.userProjectService = userProjectService;
     }
 
-    public List<IssueDTO> readIssues(Integer projectId) {
-
-        return issueRepository.readIssues(List.of(projectId));
-
+    public List<IssueDTO> readIssues(Integer projectId, String userName) {
+        if(userProjectService.canThisUserReadThisProject(userName,projectId)){
+            return issueRepository.readIssues(List.of(projectId));
+        }
+        throw new RuntimeException("Error during reading Issues");
     }
 
 }
