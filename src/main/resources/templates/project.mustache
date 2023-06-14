@@ -1,7 +1,7 @@
 {{>header}}
 
 <div class="row center-align">
-    <h3>List projects of {{username}}</h3>
+    <h3>Project {{project.id}} {{project.name}}</h3>
 </div>
 <table>
     <thead>
@@ -11,12 +11,12 @@
     </tr>
     </thead>
     <tbody>
-    {{#projects}}
+    {{#project.issues}}
     <tr>
         <td>{{name}}</td>
         <td>{{description}}</td>
     </tr>
-    {{/projects}}
+    {{/project.issues}}
     </tbody>
 </table>
 

@@ -1,6 +1,7 @@
 package it.intesys.academy.service;
 
 import it.intesys.academy.dto.IssueDTO;
+import it.intesys.academy.repository.CommentRepository;
 import it.intesys.academy.repository.IssueRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,14 +16,25 @@ public class IssueService {
 
     private final IssueRepository issueRepository;
 
-    public IssueService(IssueRepository issueRepository) {
+    private final CommentRepository commentRepository;
+
+    public IssueService(IssueRepository issueRepository, CommentRepository commentRepository) {
 
         this.issueRepository = issueRepository;
+        this.commentRepository = commentRepository;
     }
 
     public List<IssueDTO> readIssues(Integer projectId) {
 
         return issueRepository.readIssues(List.of(projectId));
+
+    }
+
+    public IssueDTO readIssueWithComments(Integer issueId) {
+
+        IssueDTO issueDTO = issueRepository.readIssue(issueId);
+        issueDTO.setComments(commentRepository.findCommentsByIssueId(issueId));
+        return issueDTO;
 
     }
 

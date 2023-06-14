@@ -30,4 +30,14 @@ public class IssueRepository {
         return issues;
     }
 
+    public IssueDTO readIssue(Integer issueId) {
+
+        return jdbcTemplate.queryForObject("SELECT id, name, description, author, projectId FROM Issue WHERE id = :issueId",
+
+                Map.of("issueId", issueId),
+
+                BeanPropertyRowMapper.newInstance(IssueDTO.class));
+
+    }
+
 }

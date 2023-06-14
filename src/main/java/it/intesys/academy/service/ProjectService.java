@@ -40,10 +40,15 @@ public class ProjectService {
 
         throw new RuntimeException("Security constraints violation");
 
+    }
+
+    public ProjectDTO readProject(int projectId, String username) {
+
+        if (userProjectService.canThisUserReadThisProject(username, projectId)) {
             return projectRepository.readProject(projectId);
+        }
 
         throw new RuntimeException("Security constraints violation");
-
     }
 
     public List<ProjectDTO> readProjectsWithIssues(String username) {

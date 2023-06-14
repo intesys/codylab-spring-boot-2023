@@ -1,0 +1,21 @@
+{{>header}}
+
+<div class="row center-align">
+    <h2>Project {{project.name}}</h2>
+    <h4>Issue {{issue.id}} - {{issue.name}}</h4>
+    <p>
+        {{issue.description}}
+    </p>
+</div>
+
+{{#issue.comments}}
+<ul class="collection">
+    <li class="collection-item avatar">
+        <i class="material-icons circle">E</i>
+        <span class="title">{{author}}</span>
+        <p>{{text}}</p>
+    </li>
+</ul>
+{{/issue.comments}}
+
+{{>footer}}
