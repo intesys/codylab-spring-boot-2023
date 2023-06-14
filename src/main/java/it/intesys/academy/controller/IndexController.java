@@ -19,7 +19,7 @@ public class IndexController {
         this.projectService = projectService;
     }
 
-    @GetMapping("/list-projects")
+    @GetMapping("/projects")
     public String index(Model model, @RequestParam String userName) {
 
         model.addAttribute("username", userName);

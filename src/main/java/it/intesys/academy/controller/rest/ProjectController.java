@@ -20,13 +20,13 @@ public class ProjectController {
         this.projectService = projectService;
     }
 
-    @GetMapping("/list-projects")
+    @GetMapping("/projects")
     public List<ProjectDTO> getProjects(@RequestParam String userName) {
 
         return projectService.readProjectsWithIssues(userName);
     }
 
-    @GetMapping("/project/{projectId}")
+    @GetMapping("/projects/{projectId}")
     public ProjectDTO getProject(@PathVariable int projectId, @RequestParam String username) {
 
         return projectService.readProjectWithIssue(projectId, username);
