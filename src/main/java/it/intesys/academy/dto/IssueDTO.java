@@ -1,5 +1,8 @@
 package it.intesys.academy.dto;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class IssueDTO {
 
     private int id;
@@ -11,6 +14,20 @@ public class IssueDTO {
     private String descrizione;
 
     private String author;
+
+    private List<CommentDTO> comments= new ArrayList<>();
+
+    public List<CommentDTO> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<CommentDTO> comments) {
+        this.comments = comments;
+    }
+
+    public void addComment(CommentDTO comment){
+        this.comments.add(comment);
+    }
 
     public int getProjectId() {
 
