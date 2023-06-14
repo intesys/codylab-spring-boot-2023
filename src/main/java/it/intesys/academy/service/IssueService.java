@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -28,6 +29,16 @@ public class IssueService {
             return issueRepository.readIssues(List.of(projectId));
         }
         throw new RuntimeException("Error during reading Issues");
+    }
+
+    public IssueDTO readIssue(Integer projectId, String userName, Integer issueId) {
+        List<IssueDTO> issues = readIssues(projectId,userName);
+        for(IssueDTO issue: issues){
+            if(issue.getId()==issueId){
+                return issue;
+            }
+        }
+        throw new RuntimeException("Error during reading Issue");
     }
 
 }

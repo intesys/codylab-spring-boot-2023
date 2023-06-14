@@ -1,14 +1,14 @@
 {{>header}}
 
 <div class="row center-align">
-    <h3>List projects of {{username}}</h3>
+    <h3>List Issues of Project: {{projectId}} of {{username}}</h3>
 </div>
 {{#issues}}
 <div class="row">
     <div class="col s6">
         <div class="card">
             <div class="card-content">
-                <span class="card-title">{{nome}}</span>
+                <span class="card-title">{{id}} -- {{nome}}</span>
                 <p>{{descrizione}}</p>
                 <p>{{author}}</p>
             </div>

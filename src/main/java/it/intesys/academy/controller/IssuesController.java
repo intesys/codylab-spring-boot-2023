@@ -21,7 +21,16 @@ public class IssuesController {
     @GetMapping("/issues/{projectId}")
     public String issue(Model model, @PathVariable Integer projectId , @RequestParam String userName){
         model.addAttribute("username",userName);
+        model.addAttribute("projectId",projectId);
         model.addAttribute("issues", issueService.readIssues(projectId,userName));
+        return "issue";
+    }
+
+    @GetMapping("/issue/{projectId}/{issueId}")
+    public String issue(Model model, @PathVariable Integer projectId, @PathVariable Integer issueId, @RequestParam String userName){
+        model.addAttribute("username",userName);
+        model.addAttribute("projectId",projectId);
+        model.addAttribute("issues", issueService.readIssue(projectId,userName,issueId));
         return "issue";
     }
 }
