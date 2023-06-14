@@ -36,4 +36,15 @@ public class ProjectController {
         return projectService.createProject(projectDTO, username);
     }
 
+    @PutMapping("/projects/{projectId}")
+    public ProjectDTO updateProject(@PathVariable int projectId, @RequestBody ProjectDTO projectDTO, @RequestParam String username) {
+        if (projectDTO.getId() == null) {
+            throw new RuntimeException("Bad request, id must not be null when updating a project");
+        }
+        if (projectDTO.getId() != projectId) {
+            throw new RuntimeException("Bad request, id in path and in body must be the same");
+        }
+        return projectService.updateProject(projectDTO, username);
+    }
+
 }

@@ -54,4 +54,12 @@ public class ProjectRepository {
         return keyHolder.getKey().intValue();
     }
 
+    public int updateProject(ProjectDTO projectDTO) {
+        return jdbcTemplate.update("update Project set name = :name, description = :description where id = :id",
+
+                Map.of("name", projectDTO.getName(), "description", projectDTO.getDescription(), "id",
+                        projectDTO.getId())
+        );
+    }
+
 }
