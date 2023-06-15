@@ -21,7 +21,7 @@ public class UserProjectRepository {
 
     public Optional<UserProjectDTO> usernameProjectVisibility(String username, Integer projectId) {
 
-        UserProjectDTO project = jdbcTemplate.queryForObject("SELECT id FROM UserProject where projectId = (:projectId) and username = (:username)",
+        UserProjectDTO project = jdbcTemplate.queryForObject("SELECT id FROM User_Projects where projectId = (:projectId) and username = (:username)",
 
                                                                 Map.of("projectId", projectId, "username", username),
 
@@ -32,7 +32,7 @@ public class UserProjectRepository {
 
     public List<Integer> getUserProjects(String username) {
 
-        return jdbcTemplate.queryForList("SELECT projectId FROM UserProject where username = :username",
+        return jdbcTemplate.queryForList("SELECT projectId FROM User_Projects where username = :username",
                 Map.of("username", username),
                 Integer.class);
     }

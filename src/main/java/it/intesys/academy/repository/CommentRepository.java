@@ -19,7 +19,7 @@ public class CommentRepository {
 
     public List<CommentDTO> findCommentsByIssueId(Integer issueId) {
         List<CommentDTO> comments =
-                jdbcTemplate.query("SELECT id, text, author, issueId FROM Comment WHERE issueId = :issueId",
+                jdbcTemplate.query("SELECT id, text, author, issueId FROM Comments WHERE issueId = :issueId",
 
                         Map.of("issueId", issueId),
 

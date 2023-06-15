@@ -21,7 +21,7 @@ public class IssueRepository {
     public List<IssueDTO> readIssues(List<Integer> projectIds) {
 
         List<IssueDTO> issues =
-            jdbcTemplate.query("SELECT id, name, description, author, projectId FROM Issue WHERE projectId in (:projectIds)",
+            jdbcTemplate.query("SELECT id, name, description, author, projectId FROM Issues WHERE projectId in (:projectIds)",
 
                                Map.of("projectIds", projectIds),
 
@@ -32,7 +32,7 @@ public class IssueRepository {
 
     public IssueDTO readIssue(Integer issueId) {
 
-        return jdbcTemplate.queryForObject("SELECT id, name, description, author, projectId FROM Issue WHERE id = :issueId",
+        return jdbcTemplate.queryForObject("SELECT id, name, description, author, projectId FROM Issues WHERE id = :issueId",
 
                 Map.of("issueId", issueId),
 
