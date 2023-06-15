@@ -81,4 +81,19 @@ public class ProjectService {
         userProjectService.createUserProject(projectId,username);
         return projectRepository.readProject(projectId);
     }
+
+    public ProjectDTO updateProject(ProjectDTO projectDTO, String username, Integer projectId){
+        if(!userProjectService.canThisUserReadThisProject(username,projectId)){
+            throw new RuntimeException("errore");
+        }
+        projectRepository.updateRepository(projectDTO);
+        return projectRepository.readProject(projectId);
+    }
+
+    public void deleteProject(Integer projectId, String username){
+        if(!userProjectService.canThisUserReadThisProject(username,projectId)){
+            throw new RuntimeException("errore");
+        }
+        projectRepository.deleteProject(projectId);
+    }
 }

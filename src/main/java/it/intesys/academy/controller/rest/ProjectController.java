@@ -34,4 +34,16 @@ public class ProjectController {
         return projectService.createProject(projectDTO,username);
     }
 
+    @PutMapping("/projects/{projectId}")
+    public ProjectDTO putProject(@RequestBody ProjectDTO projectDTO,
+                                 @PathVariable Integer projectId,
+                                 @RequestParam String username){
+        return projectService.updateProject(projectDTO,username,projectId);
+    }
+
+    @DeleteMapping("/projects/{projectId}")
+    public void deleteproject(@PathVariable Integer projectId, @RequestParam String username){
+        projectService.deleteProject(projectId,username);
+    }
+
 }

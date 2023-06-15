@@ -49,9 +49,21 @@ public class ProjectRepository {
         MapSqlParameterSource parameterSource = new MapSqlParameterSource()
                 .addValue("name", projectDTO.getName())
                 .addValue("description", projectDTO.getDescription());
-        int result = jdbcTemplate.update("INSERT INTO PROJECTS (name,description) VALUES (:name,:description)",
+        jdbcTemplate.update("INSERT INTO PROJECTS (name,description) VALUES (:name,:description)",
                 parameterSource, keyHolder);
-        return result;
+        return keyHolder.getKey().intValue();
+    }
+
+    public void updateRepository(ProjectDTO projectDTO){
+        jdbcTemplate.update("UPDATE PROJECTS SET name = :name, description = :description where id = :projectId",
+                Map.of("name",projectDTO.getName(),
+                        "description",projectDTO.getDescription(),
+                        "projectId", projectDTO.getId()));
+    }
+
+    public void deleteProject(Integer projectId){
+        jdbcTemplate.update("Delete FROM Projects where id = :projectId",
+                Map.of("projectid",projectId));
     }
 
 }
