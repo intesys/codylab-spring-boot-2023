@@ -4,9 +4,9 @@ import java.util.List;
 
 public class IssueDTO {
 
-    private int id;
+    private Integer id;
 
-    private int projectId;
+    private Integer projectId;
 
     private String name;
 
@@ -16,22 +16,22 @@ public class IssueDTO {
 
     private List<CommentDTO> comments;
 
-    public int getProjectId() {
+    public Integer getProjectId() {
 
         return projectId;
     }
 
-    public void setProjectId(int projectId) {
+    public void setProjectId(Integer projectId) {
 
         this.projectId = projectId;
     }
 
-    public int getId() {
+    public Integer getId() {
 
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
 
         this.id = id;
     }

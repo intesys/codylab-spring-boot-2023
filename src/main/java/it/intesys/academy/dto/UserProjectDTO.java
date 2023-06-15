@@ -2,26 +2,26 @@ package it.intesys.academy.dto;
 
 public class UserProjectDTO {
 
-    private int id;
-    private int projectId;
+    private Integer id;
+    private Integer projectId;
     private String username;
 
-    public int getId() {
+    public Integer getId() {
 
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
 
         this.id = id;
     }
 
-    public int getProjectId() {
+    public Integer getProjectId() {
 
         return projectId;
     }
 
-    public void setProjectId(int projectId) {
+    public void setProjectId(Integer projectId) {
 
         this.projectId = projectId;
     }
