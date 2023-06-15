@@ -24,14 +24,14 @@ public class ProjectController {
     }
 
     @GetMapping("/projects/{projectId}")
-    public ProjectDTO getProject(@PathVariable int projectId, @RequestParam String username) {
+    public ProjectDTO getProject(@PathVariable int projectId, @RequestHeader("X-User-Name") String username) {
 
         return projectService.readProjectWithIssue(projectId, username);
     }
 
     @PostMapping("/projects")
     public ProjectDTO createProject(@RequestBody ProjectDTO projectDTO,
-                                    @RequestParam String username) {
+                                    @RequestHeader("X-User-Name") String username) {
 
         if (!StringUtils.hasText(projectDTO.getDescription())
         || !StringUtils.hasText(projectDTO.getName())) {
@@ -42,7 +42,7 @@ public class ProjectController {
     }
 
     @PutMapping("/projects/{projectId}")
-    public ProjectDTO updateProject(@PathVariable int projectId, @RequestBody ProjectDTO projectDTO, @RequestParam String username) {
+    public ProjectDTO updateProject(@PathVariable int projectId, @RequestBody ProjectDTO projectDTO, @RequestHeader("X-User-Name")  String username) {
         if (projectDTO.getId() == null) {
             throw new RuntimeException("Bad request, id must not be null when updating a project");
         }
@@ -53,7 +53,7 @@ public class ProjectController {
     }
 
     @PatchMapping("/projects/{projectId}")
-    public ProjectDTO patchProject(@PathVariable int projectId, @RequestBody ProjectDTO projectDTO, @RequestParam String username) {
+    public ProjectDTO patchProject(@PathVariable int projectId, @RequestBody ProjectDTO projectDTO, @RequestHeader("X-User-Name")  String username) {
         if (projectDTO.getId() == null) {
             throw new RuntimeException("Bad request, id must not be null when updating a project");
         }
@@ -64,7 +64,7 @@ public class ProjectController {
     }
 
     @DeleteMapping("/projects/{projectId}")
-    public void deleteProject(@PathVariable Integer projectId, @RequestParam String username) {
+    public void deleteProject(@PathVariable Integer projectId, @RequestHeader("X-User-Name") String username) {
         projectService.deleteProject(projectId, username);
     }
 
