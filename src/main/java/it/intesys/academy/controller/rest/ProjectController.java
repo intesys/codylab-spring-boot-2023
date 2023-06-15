@@ -2,6 +2,7 @@ package it.intesys.academy.controller.rest;
 
 import it.intesys.academy.dto.ProjectDTO;
 import it.intesys.academy.service.ProjectService;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,6 +33,11 @@ public class ProjectController {
     public ProjectDTO createProject(@RequestBody ProjectDTO projectDTO,
                                     @RequestParam String username) {
 
+        if (!StringUtils.hasText(projectDTO.getDescription())
+        || !StringUtils.hasText(projectDTO.getName())) {
+            throw new RuntimeException("Invalid DTO");
+        }
+
         return projectService.createProject(projectDTO, username);
     }
 
@@ -45,5 +51,17 @@ public class ProjectController {
         }
         return projectService.updateProject(projectDTO, username);
     }
+
+    @PatchMapping("/projects/{projectId}")
+    public ProjectDTO patchProject(@PathVariable int projectId, @RequestBody ProjectDTO projectDTO, @RequestParam String username) {
+        if (projectDTO.getId() == null) {
+            throw new RuntimeException("Bad request, id must not be null when updating a project");
+        }
+        if (projectDTO.getId() != projectId) {
+            throw new RuntimeException("Bad request, id in path and in body must be the same");
+        }
+        return projectService.updateProject(projectDTO, username);
+    }
+
 
 }
