@@ -65,4 +65,10 @@ public class ProjectRepository {
                 ));
     }
 
+    public void deleteProject(Integer projectId) {
+
+        jdbcTemplate.update("delete from Project where id = :projectId", Map.of("projectId", projectId));
+
+    }
+
 }
