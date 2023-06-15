@@ -71,6 +71,17 @@ public class ProjectService {
         return projectRepository.readProject(newProjectId);
     }
 
+    public ProjectDTO updateProject(ProjectDTO projectDTO, String userName) {
+        if (!userProjectService.canThisUserReadThisProject(userName, projectDTO.getId())) {
+            throw new RuntimeException("Security constraints violation");
+        }
+
+        projectRepository.updateProject(projectDTO);
+
+
+        return projectRepository.readProject(projectDTO.getId());
+    }
+
     private List<ProjectDTO> readProjectsWithIssues(List<Integer> userProjectIds) {
 
         List<ProjectDTO> userProjects = projectRepository.readProjects(userProjectIds);

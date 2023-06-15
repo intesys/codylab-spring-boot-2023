@@ -8,6 +8,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import javax.swing.*;
 import java.util.List;
 import java.util.Map;
 
@@ -54,6 +55,14 @@ public class ProjectRepository {
         );
 
         return keyHolder.getKey().intValue();
+    }
+
+    public void updateProject(ProjectDTO projectDTO) {
+        jdbcTemplate.update("update Project set name = :name, description = :description where id = :projectId",
+                Map.of("name", projectDTO.getName(),
+                        "description", projectDTO.getDescription(),
+                        "projectId", projectDTO.getId()
+                ));
     }
 
 }
