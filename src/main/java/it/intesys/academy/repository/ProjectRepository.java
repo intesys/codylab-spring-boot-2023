@@ -2,7 +2,10 @@ package it.intesys.academy.repository;
 
 import it.intesys.academy.dto.ProjectDTO;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -37,6 +40,20 @@ public class ProjectRepository {
 
                                                BeanPropertyRowMapper.newInstance(ProjectDTO.class));
 
+    }
+
+    public Integer createProject(ProjectDTO projectDTO) {
+
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        MapSqlParameterSource parameterSource = new MapSqlParameterSource()
+                .addValue("name", projectDTO.getName())
+                .addValue("description", projectDTO.getDescription()
+                );
+        int numberOfInsertedRows = jdbcTemplate.update("INSERT INTO Project (name, description) VALUES (:name, :description)",
+                parameterSource, keyHolder
+        );
+
+        return keyHolder.getKey().intValue();
     }
 
 }
