@@ -60,7 +60,7 @@ public class ProjectController {
         if (projectDTO.getId() != projectId) {
             throw new RuntimeException("Bad request, id in path and in body must be the same");
         }
-        return projectService.updateProject(projectDTO, username);
+        return projectService.patchProject(projectDTO, username);
     }
 
 
