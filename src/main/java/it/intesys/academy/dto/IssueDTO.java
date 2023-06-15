@@ -5,9 +5,9 @@ import java.util.List;
 
 public class IssueDTO {
 
-    private int id;
+    private Integer id;
 
-    private int projectId;
+    private Integer projectId;
 
     private String nome;
 

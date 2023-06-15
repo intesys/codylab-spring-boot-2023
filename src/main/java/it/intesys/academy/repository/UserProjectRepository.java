@@ -39,4 +39,9 @@ public class UserProjectRepository {
         return projects;
     }
 
+    public void insertUserProject(Integer projectId, String userName){
+        jdbcTemplate.update("INSERT INTO User_Projects (username, projectId) Values (:username,:projectId)",
+                Map.of("username",userName, "projectId", projectId));
+    }
+
 }

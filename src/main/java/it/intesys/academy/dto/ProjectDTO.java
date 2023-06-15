@@ -5,7 +5,7 @@ import java.util.List;
 
 public class ProjectDTO {
 
-    private int id;
+    private Integer id;
 
     private String name;
 

@@ -76,4 +76,9 @@ public class ProjectService {
 
     }
 
+    public ProjectDTO createProject(ProjectDTO projectDTO, String username){
+        int projectId = projectRepository.createProject(projectDTO);
+        userProjectService.createUserProject(projectId,username);
+        return projectRepository.readProject(projectId);
+    }
 }

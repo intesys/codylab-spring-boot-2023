@@ -2,8 +2,8 @@ package it.intesys.academy.dto;
 
 public class UserProjectDTO {
 
-    private int id;
-    private int projectId;
+    private Integer id;
+    private Integer projectId;
     private String username;
 
     public int getId() {

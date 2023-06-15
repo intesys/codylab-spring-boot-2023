@@ -19,4 +19,8 @@ public class UserProjectService {
 
     }
 
+    public void createUserProject(Integer projectId, String userName){
+        userProjectRepository.insertUserProject(projectId,userName);
+    }
+
 }
