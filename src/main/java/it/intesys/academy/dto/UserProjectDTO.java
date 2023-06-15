@@ -2,7 +2,7 @@ package it.intesys.academy.dto;
 
 public class UserProjectDTO {
 
-    private Integer id;
+    private Integer id;     //use of wrapper instead of primitive type to avoid problems if null
     private Integer projectId;
     private String username;
 

@@ -62,6 +62,22 @@ public class ProjectService {
 
     }
 
+    public ProjectDTO updateProject(ProjectDTO projectDTO, String userName) {
+        if (!userProjectService.canThisUserReadThisProject(userName, projectDTO.getId())) {
+            throw new RuntimeException("Security constraints violation");
+        }
+
+        projectRepository.updateProject(projectDTO);
+
+        ProjectDTO dbProject = projectRepository.readProject(projectDTO.getId());
+
+        dbProject.setName(projectDTO.getName());
+        dbProject.setDescription(projectDTO.getDescription());
+
+        return dbProject;
+    }
+
+
     private List<ProjectDTO> readProjectsWithIssues(List<Integer> userProjectIds) {
 
         List<ProjectDTO> userProjects = projectRepository.readProjects(userProjectIds);
@@ -84,6 +100,16 @@ public class ProjectService {
 
         return userProjects;
 
+    }
+
+        public ProjectDTO createProject(ProjectDTO projectDTO, String username) {
+
+        log.info("Creating for user {}", username);
+
+        Integer createdProjectId = projectRepository.createProject(projectDTO);
+        userProjectService.associateUserToProject(username, createdProjectId);
+
+        return projectRepository.readProject(createdProjectId);
     }
 
 }

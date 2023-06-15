@@ -25,4 +25,9 @@ public class UserProjectService {
         return userProjectRepository.getUserProjects(username);
     }
 
+
+    public void associateUserToProject(String username, Integer projectId) {
+        userProjectRepository.insertUserProject(username, projectId);
+    }
+
 }

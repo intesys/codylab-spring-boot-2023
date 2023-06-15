@@ -2,11 +2,7 @@ package it.intesys.academy.controller.rest;
 
 import it.intesys.academy.dto.ProjectDTO;
 import it.intesys.academy.service.ProjectService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -30,6 +26,24 @@ public class ProjectController {
     public ProjectDTO getProject(@PathVariable int projectId, @RequestParam String username) {
 
         return projectService.readProjectWithIssue(projectId, username);
+    }
+    @PostMapping("/projects")
+    public ProjectDTO createProject(@RequestBody ProjectDTO projectDTO, @RequestParam String username) {
+        if (projectDTO.getId() != null) {
+            throw new RuntimeException("Bad request, id must be null when creating a new project");
+        }
+        return projectService.createProject(projectDTO, username);
+    }
+
+    @PutMapping("/projects/{projectId}")
+    public ProjectDTO updateProject(@PathVariable int projectId, @RequestBody ProjectDTO projectDTO, @RequestParam String username) {
+        if (projectDTO.getId() == null) {
+            throw new RuntimeException("Bad request, id must not be null when updating a project");
+        }
+        if (projectDTO.getId() != projectId) {
+            throw new RuntimeException("Bad request, id in path and in body must be the same");
+        }
+        return projectService.updateProject(projectDTO, username);
     }
 
 }
