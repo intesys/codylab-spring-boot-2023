@@ -63,7 +63,7 @@ public class ProjectRepository {
 
     public void deleteProject(Integer projectId){
         jdbcTemplate.update("Delete FROM Projects where id = :projectId",
-                Map.of("projectid",projectId));
+                Map.of("projectId",projectId));
     }
 
 }
