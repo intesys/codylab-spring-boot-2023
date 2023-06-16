@@ -71,6 +71,15 @@ public class IssueService {
         if(!userProjectService.canThisUserReadThisProject(username,projectId)){
             throw new RuntimeException("CreateIssues error");
         }
+        if(!userProjectService.canThisUserReadThisProject(username,issueDTO.getProjectId())){
+            throw new RuntimeException("CreateIssues error");
+        }
+        int projectIssueId = issueRepository.readIssue(issueId).getProjectId();
+        if(!(projectIssueId == projectId)){
+            throw new RuntimeException("CreateIssues error");
+        }
+        issueRepository.updateIssue(issueDTO);
+        return issueRepository.readIssue(issueId);
 
     }
 

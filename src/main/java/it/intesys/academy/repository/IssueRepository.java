@@ -70,4 +70,12 @@ public class IssueRepository {
         return keyHolder.getKey().intValue();
     }
 
+    public void updateIssue(IssueDTO issueDTO){
+        jdbcTemplate.update("UPDATE ISSUES SET nome=:nome, descrizione=:descrizione, author=:author, projectId=:projectId WHERE id = :issueId",
+                Map.of("nome", issueDTO.getNome(),
+                        "descrizione", issueDTO.getDescrizione(),
+                        "author", issueDTO.getAuthor(),
+                        "projectId", issueDTO.getProjectId(),
+                        "issueId",issueDTO.getId()));
+    }
 }
