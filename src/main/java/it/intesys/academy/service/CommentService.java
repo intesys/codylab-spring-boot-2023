@@ -47,5 +47,16 @@ public class CommentService {
         return commentRepository.readComment(id);
     }
 
+    public CommentDTO updateComment(CommentDTO commentDTO, String username){
+        IssueDTO issue = issueService.getIssue(commentDTO.getIssueId(),username);
+        commentRepository.updateComment(commentDTO);
+        return commentRepository.readComment(issue.getId());
+    }
+
+    public void deleteComment(Integer commentId, String username){
+        CommentDTO commentDTO = commentRepository.readComment(commentId);
+        IssueDTO issue = issueService.getIssue(commentDTO.getIssueId(),username);
+        commentRepository.removeComment(commentId);
+    }
 
 }

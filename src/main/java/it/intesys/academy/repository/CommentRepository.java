@@ -49,4 +49,17 @@ public class CommentRepository {
          return key.getKey().intValue();
     }
 
+    public void updateComment(CommentDTO commentDTO){
+         jdbcTemplate.update("UPDATE COMMENTS SET descrizione = :descrizione, author = :author, issueId = :issueId where id = :commentId",
+                 Map.of("descrizione", commentDTO.getDescrizione(),
+                         "author", commentDTO.getAuthor(),
+                         "issueId", commentDTO.getIssueId(),
+                         "commentId", commentDTO.getId()));
+    }
+
+    public void removeComment(Integer commentId){
+         jdbcTemplate.update("DELETE FROM COMMENTS WHERE id = :commentId",
+                 Map.of("commentId", commentId));
+    }
+
 }

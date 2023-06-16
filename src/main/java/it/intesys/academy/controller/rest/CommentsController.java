@@ -33,4 +33,16 @@ public class CommentsController {
                                   @RequestParam String username){
         return commentService.createComment(commentDTO, username);
     }
+
+    @PutMapping("/comments")
+    public CommentDTO putComment(@RequestBody CommentDTO commentDTO,
+                                 @RequestParam String username){
+        return commentService.updateComment(commentDTO, username);
+    }
+
+    @DeleteMapping("/comments/{commentId}")
+    public void deleteComment(@PathVariable Integer commentId,
+                              @RequestParam String username){
+        commentService.deleteComment(commentId, username);
+    }
 }
