@@ -4,6 +4,7 @@ import it.intesys.academy.dto.ProjectDTO;
 import it.intesys.academy.service.ProjectService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -62,6 +63,11 @@ public class ProjectController {
             ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok(projectService.updateProject(projectDTO, username));
+    }
+    @DeleteMapping("/projects/{projectId}")
+    public ResponseEntity<Void> deleteProject(@PathVariable Integer projectId, @RequestParam String username) {
+        projectService.deleteProject(projectId, username);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 }

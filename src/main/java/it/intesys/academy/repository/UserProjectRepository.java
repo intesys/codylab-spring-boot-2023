@@ -1,6 +1,7 @@
 package it.intesys.academy.repository;
 
 import it.intesys.academy.dto.UserProjectDTO;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -21,15 +22,19 @@ public class UserProjectRepository {
 
     public Optional<UserProjectDTO> usernameProjectVisibility(String username, Integer projectId) {
 
-        UserProjectDTO project = jdbcTemplate.queryForObject("SELECT id FROM User_Projects where projectId = (:projectId) and username = (:username)",
+        try {
 
-                                                                Map.of("projectId", projectId, "username", username),
+            UserProjectDTO project = jdbcTemplate.queryForObject("SELECT id FROM User_Projects where projectId = (:projectId) and username = (:username)",
 
-                                                                BeanPropertyRowMapper.newInstance(UserProjectDTO.class));
+                    Map.of("projectId", projectId, "username", username),
 
-        return Optional.ofNullable(project);
+                    BeanPropertyRowMapper.newInstance(UserProjectDTO.class));
+
+            return Optional.ofNullable(project);
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
-
     public List<Integer> getUserProjects(String username) {
 
         return jdbcTemplate.queryForList("SELECT projectId FROM User_Projects where username = :username",

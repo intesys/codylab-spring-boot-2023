@@ -3,18 +3,18 @@
 <div class="row center-align">
     <h3>List projects of {{username}}</h3>
 </div>
-<table>
+<table class="center-align">
     <thead>
     <tr>
-        <th>Name</th>
-        <th>Description</th>
+        <th class="center-align">Name</th>
+        <th class="center-align">Description</th>
     </tr>
     </thead>
     <tbody>
     {{#projects}}
-    <tr>
-        <td><a href="projects/{{id}}?userName={{username}}">{{name}}</a></td>
-        <td>{{description}}</td>
+    <tr class="center-align">
+        <td class="center-align"><a href="projects/{{id}}?userName={{username}}">{{name}}</a></td>
+        <td class="center-align">{{description}}</td>
     </tr>
     {{/projects}}
     </tbody>
