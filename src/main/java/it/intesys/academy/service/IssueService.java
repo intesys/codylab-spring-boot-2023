@@ -67,11 +67,11 @@ public class IssueService {
         return issueRepository.readIssue(issueId);
     }
 
-    /**public IssueDTO updateIssue(IssueDTO issueDTO, Integer projectId, String username, Integer issueId){
+    public IssueDTO updateIssue(IssueDTO issueDTO, Integer projectId, String username, Integer issueId){
         if(!userProjectService.canThisUserReadThisProject(username,projectId)){
             throw new RuntimeException("CreateIssues error");
         }
 
-    }*/
+    }
 
 }
