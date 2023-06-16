@@ -5,6 +5,7 @@ import it.intesys.academy.repository.CommentRepository;
 import it.intesys.academy.repository.IssueRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,11 +19,14 @@ public class IssueService {
 
     private final CommentRepository commentRepository;
 
-    public IssueService(IssueRepository issueRepository, CommentRepository commentRepository) {
+    private final ProjectService projectService;
 
+    public IssueService(IssueRepository issueRepository, CommentRepository commentRepository, ProjectService projectService) {
         this.issueRepository = issueRepository;
         this.commentRepository = commentRepository;
+        this.projectService = projectService;
     }
+
 
     public List<IssueDTO> readIssues(Integer projectId) {
 
@@ -42,4 +46,19 @@ public class IssueService {
 
     }
 
+    /**
+     * 1)creo la issue nella table Issues,
+     * 2)
+     *
+     * @param issueDTO
+     * @param username
+     * @return
+     */
+    public IssueDTO createIssue(IssueDTO issueDTO, String username){
+
+        log.info("creating for user {}", username);
+        Integer createdIssueId= issueRepository.createIssue(issueDTO);
+        return issueRepository.readIssue(createdIssueId);
+
+    }
 }
