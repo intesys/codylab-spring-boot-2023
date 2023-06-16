@@ -80,7 +80,7 @@ public class IssueRepository {
     }
 
     public void deleteIssue(Integer issueId){
-        jdbcTemplate.update("DELETE FROM ISSUES WHERE id =:issueId",
+        jdbcTemplate.update("DELETE FROM ISSUES WHERE id = :IssueId",
                 Map.of("IssueId", issueId));
     }
 }
