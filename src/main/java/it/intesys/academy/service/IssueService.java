@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class IssueService {
@@ -21,12 +22,20 @@ public class IssueService {
 
     private final ProjectService projectService;
 
-    public IssueService(IssueRepository issueRepository, CommentRepository commentRepository, ProjectService projectService) {
+    private final UserProjectService userProjectService;
+    public IssueService(IssueRepository issueRepository, CommentRepository commentRepository, ProjectService projectService, UserProjectService userProjectService) {
         this.issueRepository = issueRepository;
         this.commentRepository = commentRepository;
         this.projectService = projectService;
+        this.userProjectService = userProjectService;
     }
 
+    public IssueDTO readIssue(Integer issueId) {
+
+
+        return issueRepository.readIssue(issueId);
+
+    }
 
     public List<IssueDTO> readIssues(Integer projectId) {
 
@@ -61,4 +70,13 @@ public class IssueService {
         return issueRepository.readIssue(createdIssueId);
 
     }
+
+    public void updateIssue(IssueDTO issueDTO)
+    {
+        issueRepository.updateIssue(issueDTO);
+    }
+    public void deleteIssue(Integer issueId) {
+        issueRepository.deleteIssue(issueId);
+    }
+
 }

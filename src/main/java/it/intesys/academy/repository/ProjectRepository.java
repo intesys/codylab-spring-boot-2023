@@ -57,7 +57,7 @@ public class ProjectRepository {
 
     }
 
-    public int updateProject(ProjectDTO projectDTO) {
+    public Integer updateProject(ProjectDTO projectDTO) {
         return jdbcTemplate.update("update Projects set name = :name, description = :description where id = :id",
 
                 Map.of("name", projectDTO.getName(), "description", projectDTO.getDescription(), "id",

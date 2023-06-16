@@ -58,4 +58,18 @@ public class IssueRepository {
 
 
     }
+
+    public void updateIssue (IssueDTO issueDTO)
+    {
+        jdbcTemplate.update("update Issues set name=:name, description=:description where id=:issueId",
+                Map.of("name",issueDTO.getName(), "description", issueDTO.getDescription(), "issueId", issueDTO.getId()));
+
+
+    }
+
+    public void deleteIssue(Integer issueId) {
+
+        jdbcTemplate.update("delete from Issues where Id = :Id", Map.of("Id", issueId));
+
+    }
 }
