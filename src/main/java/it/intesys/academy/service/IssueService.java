@@ -83,4 +83,14 @@ public class IssueService {
 
     }
 
+    public void deleteIssue(Integer projectId, String username, Integer issueId){
+        if(!userProjectService.canThisUserReadThisProject(username,projectId)){
+            throw new RuntimeException("CreateIssues error");
+        }
+        int projectIssueId = issueRepository.readIssue(issueId).getProjectId();
+        if(!(projectIssueId == projectId)){
+            throw new RuntimeException("CreateIssues error");
+        }
+        issueRepository.deleteIssue(issueId);
+    }
 }

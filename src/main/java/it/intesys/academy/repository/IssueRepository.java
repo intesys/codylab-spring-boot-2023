@@ -78,4 +78,9 @@ public class IssueRepository {
                         "projectId", issueDTO.getProjectId(),
                         "issueId",issueDTO.getId()));
     }
+
+    public void deleteIssue(Integer issueId){
+        jdbcTemplate.update("DELETE FROM ISSUES WHERE id =:issueId",
+                Map.of("IssueId", issueId));
+    }
 }

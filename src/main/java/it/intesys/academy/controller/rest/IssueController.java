@@ -39,4 +39,11 @@ public class IssueController {
         return issueService.updateIssue(issueDTO,projectId, username, issueId);
     }
 
+    @DeleteMapping("/projects/{projectId}/issues/{issueId}")
+    public void deleteIssues(@PathVariable Integer projectId,
+                            @PathVariable Integer issueId,
+                            @RequestParam String username){
+        issueService.deleteIssue(projectId,username,issueId);
+    }
+
 }
