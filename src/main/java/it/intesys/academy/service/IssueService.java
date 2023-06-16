@@ -59,23 +59,23 @@ public class IssueService {
         throw new RuntimeException("Error during reading Issue");
     }
 
-    public IssueDTO createIssue(IssueDTO issueDTO, Integer projectId, String username){
-        if(!userProjectService.canThisUserReadThisProject(username,projectId)){
+    public IssueDTO createIssue(IssueDTO issueDTO, String username){
+        if(!userProjectService.canThisUserReadThisProject(username, issueDTO.getProjectId())){
             throw new RuntimeException("CreateIssues error");
         }
         int issueId = issueRepository.createIssue(issueDTO);
         return issueRepository.readIssue(issueId);
     }
 
-    public IssueDTO updateIssue(IssueDTO issueDTO, Integer projectId, String username, Integer issueId){
-        if(!userProjectService.canThisUserReadThisProject(username,projectId)){
-            throw new RuntimeException("CreateIssues error");
-        }
-        if(!userProjectService.canThisUserReadThisProject(username,issueDTO.getProjectId())){
-            throw new RuntimeException("CreateIssues error");
-        }
+    public IssueDTO updateIssue(IssueDTO issueDTO, String username, Integer issueId){
         int projectIssueId = issueRepository.readIssue(issueId).getProjectId();
-        if(!(projectIssueId == projectId)){
+        if(!userProjectService.canThisUserReadThisProject(username, projectIssueId)){
+            throw new RuntimeException("CreateIssues error");
+        }
+        if(!userProjectService.canThisUserReadThisProject(username, issueDTO.getProjectId())){
+            throw new RuntimeException("CreateIssues error");
+        }
+        if(!(issueDTO.getId() == issueId)){
             throw new RuntimeException("CreateIssues error");
         }
         issueRepository.updateIssue(issueDTO);
@@ -83,12 +83,9 @@ public class IssueService {
 
     }
 
-    public void deleteIssue(Integer projectId, String username, Integer issueId){
-        if(!userProjectService.canThisUserReadThisProject(username,projectId)){
-            throw new RuntimeException("CreateIssues error");
-        }
+    public void deleteIssue(String username, Integer issueId){
         int projectIssueId = issueRepository.readIssue(issueId).getProjectId();
-        if(!(projectIssueId == projectId)){
+        if(!userProjectService.canThisUserReadThisProject(username, projectIssueId)){
             throw new RuntimeException("CreateIssues error");
         }
         issueRepository.deleteIssue(issueId);

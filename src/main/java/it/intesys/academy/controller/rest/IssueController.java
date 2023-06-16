@@ -23,27 +23,25 @@ public class IssueController {
         return issueService.readIssues(projectId,userName);
     }
 
-    @PostMapping("/projects/{projectId}/issues")
+    @PostMapping("/issues")
     public IssueDTO postIssues(@RequestBody IssueDTO issueDTO,
-                               @PathVariable Integer projectId,
                                @RequestParam String username){
-        return issueService.createIssue(issueDTO, projectId,username);
+        return issueService.createIssue(issueDTO, username);
     }
 
-    @PutMapping("/projects/{projectId}/issues/{issueId}")
+    @PutMapping("/issues/{issueId}")
     public IssueDTO putIssues(@RequestBody IssueDTO issueDTO,
-                              @PathVariable Integer projectId,
                               @PathVariable Integer issueId,
                               @RequestParam String username
                               ){
-        return issueService.updateIssue(issueDTO,projectId, username, issueId);
+        return issueService.updateIssue(issueDTO, username, issueId);
     }
 
-    @DeleteMapping("/projects/{projectId}/issues/{issueId}")
-    public void deleteIssues(@PathVariable Integer projectId,
+    @DeleteMapping("/issues/{issueId}")
+    public void deleteIssues(
                             @PathVariable Integer issueId,
                             @RequestParam String username){
-        issueService.deleteIssue(projectId,username,issueId);
+        issueService.deleteIssue(username,issueId);
     }
 
 }
