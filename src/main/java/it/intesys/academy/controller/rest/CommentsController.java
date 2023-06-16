@@ -2,6 +2,8 @@ package it.intesys.academy.controller.rest;
 
 import it.intesys.academy.dto.CommentDTO;
 import it.intesys.academy.service.CommentService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,27 +24,30 @@ public class CommentsController {
     }
 
     @GetMapping("/issues/{issueId}/comments/{commentId}")
-    public CommentDTO getComment(@PathVariable Integer issueId,
-                                 @PathVariable Integer commentId,
-                                 @RequestParam String username){
-        return commentService.getComment(issueId,username,commentId);
+    public ResponseEntity<CommentDTO> getComment(@PathVariable Integer issueId,
+                                                @PathVariable Integer commentId,
+                                                @RequestParam String username){
+        return ResponseEntity.ok(commentService.getComment(issueId,username,commentId));
     }
 
     @PostMapping("/comments")
-    public CommentDTO postComment(@RequestBody CommentDTO commentDTO,
+    public ResponseEntity<CommentDTO> postComment(@RequestBody CommentDTO commentDTO,
                                   @RequestParam String username){
-        return commentService.createComment(commentDTO, username);
+        return ResponseEntity.ok(commentService.createComment(commentDTO, username));
     }
 
-    @PutMapping("/comments")
-    public CommentDTO putComment(@RequestBody CommentDTO commentDTO,
-                                 @RequestParam String username){
-        return commentService.updateComment(commentDTO, username);
+    @PutMapping("/comments/{commentId}")
+    public ResponseEntity<CommentDTO> putComment(@RequestBody CommentDTO commentDTO,
+                                                 @RequestParam String username,
+                                                 @PathVariable Integer commentId){
+        return ResponseEntity.ok(commentService.updateComment(commentDTO, username, commentId));
     }
 
     @DeleteMapping("/comments/{commentId}")
-    public void deleteComment(@PathVariable Integer commentId,
+    public ResponseEntity<Void> deleteComment(@PathVariable Integer commentId,
                               @RequestParam String username){
         commentService.deleteComment(commentId, username);
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

@@ -47,8 +47,11 @@ public class CommentService {
         return commentRepository.readComment(id);
     }
 
-    public CommentDTO updateComment(CommentDTO commentDTO, String username){
+    public CommentDTO updateComment(CommentDTO commentDTO, String username, Integer commentId){
         IssueDTO issue = issueService.getIssue(commentDTO.getIssueId(),username);
+        if(!(commentDTO.getId() == commentId)){
+            throw new RuntimeException("Error id different");
+        }
         commentRepository.updateComment(commentDTO);
         return commentRepository.readComment(issue.getId());
     }

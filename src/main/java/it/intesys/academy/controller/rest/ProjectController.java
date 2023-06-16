@@ -2,6 +2,8 @@ package it.intesys.academy.controller.rest;
 
 import it.intesys.academy.dto.ProjectDTO;
 import it.intesys.academy.service.ProjectService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,27 +25,28 @@ public class ProjectController {
     }
 
     @GetMapping("/project/{projectId}")
-    public ProjectDTO getProject(@PathVariable int projectId, @RequestParam String username) {
+    public ResponseEntity<ProjectDTO> getProject(@PathVariable int projectId, @RequestParam String username) {
 
-        return projectService.readProjectWithIssue(projectId, username);
+        return ResponseEntity.ok(projectService.readProjectWithIssue(projectId, username));
     }
 
     @PostMapping("/projects")
-    public ProjectDTO postProject(@RequestBody ProjectDTO projectDTO
+    public ResponseEntity<ProjectDTO> postProject(@RequestBody ProjectDTO projectDTO
                                  ,@RequestParam String username){
-        return projectService.createProject(projectDTO,username);
+        return ResponseEntity.ok(projectService.createProject(projectDTO,username));
     }
 
     @PutMapping("/projects/{projectId}")
-    public ProjectDTO putProject(@RequestBody ProjectDTO projectDTO,
+    public ResponseEntity<ProjectDTO> putProject(@RequestBody ProjectDTO projectDTO,
                                  @PathVariable Integer projectId,
                                  @RequestParam String username){
-        return projectService.updateProject(projectDTO,username,projectId);
+        return ResponseEntity.ok(projectService.updateProject(projectDTO,username,projectId));
     }
 
     @DeleteMapping("/projects/{projectId}")
-    public void deleteproject(@PathVariable Integer projectId, @RequestParam String username){
+    public ResponseEntity<Void> deleteproject(@PathVariable Integer projectId, @RequestParam String username){
         projectService.deleteProject(projectId,username);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 }

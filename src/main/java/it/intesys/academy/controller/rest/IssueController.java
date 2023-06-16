@@ -2,6 +2,8 @@ package it.intesys.academy.controller.rest;
 
 import it.intesys.academy.dto.IssueDTO;
 import it.intesys.academy.service.IssueService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,24 +26,25 @@ public class IssueController {
     }
 
     @PostMapping("/issues")
-    public IssueDTO postIssues(@RequestBody IssueDTO issueDTO,
-                               @RequestParam String username){
-        return issueService.createIssue(issueDTO, username);
+    public ResponseEntity<IssueDTO> postIssues(@RequestBody IssueDTO issueDTO,
+                                              @RequestParam String username){
+        return ResponseEntity.ok(issueService.createIssue(issueDTO, username));
     }
 
     @PutMapping("/issues/{issueId}")
-    public IssueDTO putIssues(@RequestBody IssueDTO issueDTO,
+    public ResponseEntity<IssueDTO> putIssues(@RequestBody IssueDTO issueDTO,
                               @PathVariable Integer issueId,
                               @RequestParam String username
                               ){
-        return issueService.updateIssue(issueDTO, username, issueId);
+        return ResponseEntity.ok(issueService.updateIssue(issueDTO, username, issueId));
     }
 
     @DeleteMapping("/issues/{issueId}")
-    public void deleteIssues(
+    public ResponseEntity<Void> deleteIssues(
                             @PathVariable Integer issueId,
                             @RequestParam String username){
         issueService.deleteIssue(username,issueId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 }
