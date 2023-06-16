@@ -17,10 +17,18 @@ public class IssueController {
         this.issueService = issueService;
     }
 
-    @GetMapping("/issues/{projectId}")
-    public List<IssueDTO> getProject(@PathVariable int projectId, @RequestParam String userName) {
+    @GetMapping("projects/{projectId}/issues")
+    public List<IssueDTO> getProjectIssues(@PathVariable int projectId, @RequestParam String userName) {
 
         return issueService.readIssues(projectId,userName);
     }
+
+    @PostMapping("/projects/{projectId}/issues")
+    public IssueDTO postIssues(@RequestBody IssueDTO issueDTO,
+                               @PathVariable Integer projectId,
+                               @RequestParam String username){
+        return issueService.createIssues(issueDTO, projectId,username);
+    }
+
 
 }
