@@ -2,6 +2,9 @@ package it.intesys.academy.controller.rest;
 
 import it.intesys.academy.dto.ProjectDTO;
 import it.intesys.academy.service.ProjectService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -10,6 +13,7 @@ import java.util.List;
 @RequestMapping("/api")
 public class ProjectController {
 
+    private final static Logger log= LoggerFactory.getLogger(ProjectController.class);
     private final ProjectService projectService;
 
     public ProjectController(ProjectService projectService) {
@@ -17,33 +21,47 @@ public class ProjectController {
     }
 
     @GetMapping("/projects")
-    public List<ProjectDTO> getProjects(@RequestParam String userName) {
+    public ResponseEntity<List<ProjectDTO>> getProjects(@RequestParam String userName) {
 
-        return projectService.readProjectsWithIssues(userName);
+        return ResponseEntity.ok(projectService.readProjectsWithIssues(userName));
     }
 
     @GetMapping("/projects/{projectId}")
-    public ProjectDTO getProject(@PathVariable int projectId, @RequestParam String username) {
+    public ResponseEntity<ProjectDTO> getProject(@PathVariable int projectId, @RequestParam String username) {
 
-        return projectService.readProjectWithIssue(projectId, username);
+        return ResponseEntity.ok(projectService.readProjectWithIssue(projectId, username));
     }
     @PostMapping("/projects")
-    public ProjectDTO createProject(@RequestBody ProjectDTO projectDTO, @RequestParam String username) {
+    public ResponseEntity<ProjectDTO> createProject(@RequestBody ProjectDTO projectDTO, @RequestParam String username) {
         if (projectDTO.getId() != null) {
-            throw new RuntimeException("Bad request, id must be null when creating a new project");
+            log.error("Bad request, id must be null when creating a new project");
+            ResponseEntity.badRequest().build();
         }
-        return projectService.createProject(projectDTO, username);
+        return ResponseEntity.ok(projectService.createProject(projectDTO, username));
     }
 
+    /**
+     * PUT http://localhost:8081/api/projects/{projectid}?username={username}
+     * Accept: application/json
+     * Content-Type:application/json
+     *
+     * {
+     *   "id": {projectid},
+     *   "name": "",
+     *   "description": ""
+     * }
+     */
     @PutMapping("/projects/{projectId}")
-    public ProjectDTO updateProject(@PathVariable int projectId, @RequestBody ProjectDTO projectDTO, @RequestParam String username) {
+    public ResponseEntity<ProjectDTO> updateProject(@PathVariable int projectId, @RequestBody ProjectDTO projectDTO, @RequestParam String username) {
         if (projectDTO.getId() == null) {
-            throw new RuntimeException("Bad request, id must not be null when updating a project");
+            log.error("Bad request,id can't be null when updating a project");
+            ResponseEntity.badRequest().build();
         }
         if (projectDTO.getId() != projectId) {
-            throw new RuntimeException("Bad request, id in path and in body must be the same");
+            log.error("Bad request,id in path and in body must be equal when updating a project");
+            ResponseEntity.badRequest().build();
         }
-        return projectService.updateProject(projectDTO, username);
+        return ResponseEntity.ok(projectService.updateProject(projectDTO, username));
     }
 
 }
