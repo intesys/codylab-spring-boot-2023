@@ -32,8 +32,19 @@ public class CommentService {
 
     public List<CommentDTO> getComments(Integer issueId,String userName){
         IssueDTO issue = issueService.getIssue(issueId,userName);
-        log.info("Ecco "+issue.getNome());
+        //log.info("Ecco "+issue.getNome());
         return commentRepository.getComments(issueId);
+    }
+
+    public CommentDTO getComment(Integer issueId,String userName, Integer commentId){
+        IssueDTO issue = issueService.getIssue(issueId,userName);
+        return commentRepository.readComment(commentId);
+    }
+
+    public CommentDTO createComment(CommentDTO commentDTO, String username){
+        IssueDTO issue = issueService.getIssue(commentDTO.getIssueId(),username);
+        int id = commentRepository.insertComment(commentDTO);
+        return commentRepository.readComment(id);
     }
 
 

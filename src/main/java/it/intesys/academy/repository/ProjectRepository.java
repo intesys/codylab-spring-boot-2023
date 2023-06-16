@@ -44,7 +44,7 @@ public class ProjectRepository {
     }
 
     public Integer createProject(ProjectDTO projectDTO){
-        Map<String, String> project = Map.of("name",projectDTO.getName(),"description",projectDTO.getDescription());
+        //Map<String, String> project = Map.of("name",projectDTO.getName(),"description",projectDTO.getDescription());
         KeyHolder keyHolder = new GeneratedKeyHolder();
         MapSqlParameterSource parameterSource = new MapSqlParameterSource()
                 .addValue("name", projectDTO.getName())
