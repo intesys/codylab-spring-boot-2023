@@ -53,7 +53,7 @@ public class CommentService {
             throw new RuntimeException("Error id different");
         }
         commentRepository.updateComment(commentDTO);
-        return commentRepository.readComment(issue.getId());
+        return commentRepository.readComment(commentId);
     }
 
     public void deleteComment(Integer commentId, String username){
