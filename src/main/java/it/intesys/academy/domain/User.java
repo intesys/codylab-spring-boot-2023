@@ -5,75 +5,80 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 import java.util.List;
 
 @Entity
-@Table(name="Project")
-public class Project {
+@Table(name="User")
+public class User {
 
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     @Column(name="id")
     private Integer id;
 
+    @Column(name="username")
+    private String username;
+
     @Column(name="name")
     private String name;
 
-    @Column(name="description")
-    private String description;
+    @Column(name="surname")
+    private String surname;
 
-    @OneToMany(mappedBy = "project")
-    private List<Issue> issues;
-
-    @ManyToOne
-    @JoinColumn(name = "authorid")
-    private User user;
+    @OneToMany(mappedBy = "user")
+    private List<Project> projects;
 
     public Integer getId() {
+
         return id;
     }
 
     public void setId(Integer id) {
+
         this.id = id;
     }
 
+    public String getUsername() {
+
+        return username;
+    }
+
+    public void setUsername(String username) {
+
+        this.username = username;
+    }
+
     public String getName() {
+
         return name;
     }
 
     public void setName(String name) {
+
         this.name = name;
     }
 
-    public String getDescription() {
-        return description;
+    public String getSurname() {
+
+        return surname;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setSurname(String surname) {
+
+        this.surname = surname;
     }
 
-    public List<Issue> getIssues() {
-        return issues;
+    public List<Project> getProjects() {
+
+        return projects;
     }
 
-    public void setIssues(List<Issue> issues) {
-        this.issues = issues;
-    }
+    public void setProjects(List<Project> projects) {
 
-    public User getUser() {
-
-        return user;
-    }
-
-    public void setUser(User user) {
-
-        this.user = user;
+        this.projects = projects;
     }
 
 }
