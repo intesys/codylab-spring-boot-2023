@@ -32,7 +32,7 @@ public class Project {
 
     @ManyToOne
     @JoinColumn(name = "authorid")
-    private User user;
+    private Person person;
 
     public Integer getId() {
         return id;
@@ -66,14 +66,14 @@ public class Project {
         this.issues = issues;
     }
 
-    public User getUser() {
+    public Person getUser() {
 
-        return user;
+        return person;
     }
 
-    public void setUser(User user) {
+    public void setUser(Person person) {
 
-        this.user = user;
+        this.person = person;
     }
 
 }

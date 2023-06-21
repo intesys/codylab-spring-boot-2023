@@ -11,8 +11,8 @@ import jakarta.persistence.Table;
 import java.util.List;
 
 @Entity
-@Table(name="User")
-public class User {
+@Table(name="Person")
+public class Person {
 
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
@@ -28,7 +28,7 @@ public class User {
     @Column(name="surname")
     private String surname;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "person")
     private List<Project> projects;
 
     public Integer getId() {
