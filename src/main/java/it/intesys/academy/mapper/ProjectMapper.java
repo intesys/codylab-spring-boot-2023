@@ -7,11 +7,23 @@ import org.springframework.stereotype.Component;
 @Component
 public class ProjectMapper {
 
+    private final IssueMapper issueMapper;
+
+    public ProjectMapper(IssueMapper issueMapper) {
+        this.issueMapper = issueMapper;
+    }
+
     public ProjectDTO toDto(Project project) {
         ProjectDTO projectDTO = new ProjectDTO();
         projectDTO.setId(project.getId());
         projectDTO.setName(project.getName());
         projectDTO.setDescription(project.getDescription());
+        return projectDTO;
+    }
+
+    public ProjectDTO toDtoWithIssues(Project project) {
+        ProjectDTO projectDTO = toDto(project);
+        project.getIssues().forEach(issue -> projectDTO.addIssue(issueMapper.toDto(issue)));
         return projectDTO;
     }
 
