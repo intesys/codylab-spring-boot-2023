@@ -1,6 +1,8 @@
 package it.intesys.academy.repository;
 
 import it.intesys.academy.dto.CommentDTO;
+import it.intesys.academy.entity.Comments;
+import jakarta.persistence.EntityManager;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -15,51 +17,40 @@ import java.util.Map;
 public class CommentRepository {
      private final NamedParameterJdbcTemplate jdbcTemplate;
 
-     public CommentRepository(NamedParameterJdbcTemplate jdbcTemplate){
+     private final EntityManager em;
+
+     public CommentRepository(NamedParameterJdbcTemplate jdbcTemplate, EntityManager em){
          this.jdbcTemplate = jdbcTemplate;
+         this.em = em;
      }
 
-     public List<CommentDTO> getComments(Integer issueId){
-         return jdbcTemplate.query("SELECT id, descrizione, author,issueId FROM Comments where issueId = :issueId",
-                 Map.of("issueId",issueId),
-                 BeanPropertyRowMapper.newInstance(CommentDTO.class));
+     public List<Comments> getComments(Integer issueId){
+         return em.createQuery("from Comments where issueId = :issueId", Comments.class)
+                 .setParameter("issueId",issueId)
+                 .getResultList();
      }
 
-     public CommentDTO getComment(Integer issueId){
-         return jdbcTemplate.queryForObject("SELECT id, descrizione, author, issueId FROM Comments where issueId = :issueId",
-                 Map.of("issueId",issueId),
-                 BeanPropertyRowMapper.newInstance(CommentDTO.class));
+     public Comments getComment(Integer issueId){
+         return em.createQuery("from Comments where issueId = :issueId", Comments.class)
+                 .setParameter("issueId",issueId)
+                 .getSingleResult();
      }
 
-    public CommentDTO readComment(Integer commentId){
-        return jdbcTemplate.queryForObject("SELECT id, descrizione, author, issueId FROM Comments where id = :commentId",
-                Map.of("commentId",commentId),
-                BeanPropertyRowMapper.newInstance(CommentDTO.class));
+    public Comments readComment(Integer commentId){
+        return em.find(Comments.class,commentId);
+    }
+    public Comments insertComment(Comments comment){
+        em.persist(comment);
+        em.flush();
+        return comment;
     }
 
-    public Integer insertComment(CommentDTO commentDTO){
-        KeyHolder key = new GeneratedKeyHolder();
-        MapSqlParameterSource parameterSource = new MapSqlParameterSource()
-                .addValue("author", commentDTO.getAuthor())
-                .addValue("descrizione", commentDTO.getDescription())
-                .addValue("issueId", commentDTO.getIssueId());
-         jdbcTemplate.update("INSERT INTO COMMENTS(author, descrizione, issueId) values (:author, :descrizione, :issueId)",
-                 parameterSource,
-                 key);
-         return key.getKey().intValue();
-    }
-
-    public void updateComment(CommentDTO commentDTO){
-         jdbcTemplate.update("UPDATE COMMENTS SET descrizione = :descrizione, author = :author, issueId = :issueId where id = :commentId",
-                 Map.of("descrizione", commentDTO.getDescription(),
-                         "author", commentDTO.getAuthor(),
-                         "issueId", commentDTO.getIssueId(),
-                         "commentId", commentDTO.getId()));
+    public Comments updateComment(Comments comment){
+         return em.merge(comment);
     }
 
     public void removeComment(Integer commentId){
-         jdbcTemplate.update("DELETE FROM COMMENTS WHERE id = :commentId",
-                 Map.of("commentId", commentId));
+         em.remove(readComment(commentId));
     }
 
 }

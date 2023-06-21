@@ -37,8 +37,7 @@ public class IssueRepository {
     public Issues getIssue(Integer projectIds) {
         return em.createQuery("from Issues where projectid = :projectIds",Issues.class)
                 .setParameter("projectIds",projectIds)
-                .getResultList()
-                .get(0);
+                .getSingleResult();
     }
 
     public Issues readIssue(Integer issueId) {

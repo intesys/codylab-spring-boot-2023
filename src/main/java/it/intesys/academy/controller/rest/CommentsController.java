@@ -23,11 +23,11 @@ public class CommentsController {
         return commentService.getComments(issueId,username);
     }
 
-    @GetMapping("/issues/{issueId}/comments/{commentId}")
-    public ResponseEntity<CommentDTO> getComment(@PathVariable Integer issueId,
+    @GetMapping("/comments/{commentId}")
+    public ResponseEntity<CommentDTO> getComment(
                                                 @PathVariable Integer commentId,
                                                 @RequestParam String username){
-        return ResponseEntity.ok(commentService.getComment(issueId,username,commentId));
+        return ResponseEntity.ok(commentService.getComment(username,commentId));
     }
 
     @PostMapping("/comments")
@@ -36,11 +36,10 @@ public class CommentsController {
         return ResponseEntity.ok(commentService.createComment(commentDTO, username));
     }
 
-    @PutMapping("/comments/{commentId}")
+    @PutMapping("/comments")
     public ResponseEntity<CommentDTO> putComment(@RequestBody CommentDTO commentDTO,
-                                                 @RequestParam String username,
-                                                 @PathVariable Integer commentId){
-        return ResponseEntity.ok(commentService.updateComment(commentDTO, username, commentId));
+                                                 @RequestParam String username){
+        return ResponseEntity.ok(commentService.updateComment(commentDTO, username));
     }
 
     @DeleteMapping("/comments/{commentId}")
