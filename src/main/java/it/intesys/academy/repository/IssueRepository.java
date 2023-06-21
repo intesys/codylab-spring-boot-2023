@@ -1,13 +1,10 @@
 package it.intesys.academy.repository;
 
-import it.intesys.academy.dto.IssueDTO;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import it.intesys.academy.domain.Issue;
+import jakarta.persistence.EntityManager;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -16,59 +13,35 @@ public class IssueRepository {
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
 
-    public IssueRepository(NamedParameterJdbcTemplate jdbcTemplate) {
+    private final EntityManager em;
+
+    public IssueRepository(NamedParameterJdbcTemplate jdbcTemplate, EntityManager em) {
 
         this.jdbcTemplate = jdbcTemplate;
+        this.em = em;
     }
 
-    public List<IssueDTO> readIssues(List<Integer> projectIds) {
+    public List<Issue> readIssues(List<Integer> projectIds) {
 
-        List<IssueDTO> issues =
-            jdbcTemplate.query("SELECT id, name, description, author, projectId FROM Issue WHERE projectId in (:projectIds)",
-
-                               Map.of("projectIds", projectIds),
-
-                               BeanPropertyRowMapper.newInstance(IssueDTO.class));
-
-        return issues;
-    }
-
-    public IssueDTO readIssue(Integer issueId) {
-
-        return jdbcTemplate.queryForObject("SELECT id, name, description, author, projectId FROM Issue WHERE id = :issueId",
-
-                Map.of("issueId", issueId),
-
-                BeanPropertyRowMapper.newInstance(IssueDTO.class));
+        return em.createQuery("from Issue i where i.projectId in (:projectIds)", Issue.class)
+                .setParameter("projectIds", projectIds)
+                .getResultList();
 
     }
 
-    public Integer createIssue(IssueDTO issueDTO) {
-
-        GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-
-        var params = new MapSqlParameterSource()
-                .addValue("name", issueDTO.getName())
-                .addValue("description", issueDTO.getDescription())
-                .addValue("author", issueDTO.getAuthor())
-                .addValue("projectId", issueDTO.getProjectId());
-
-        jdbcTemplate.update("INSERT INTO Issue (name, description, author, projectId) VALUES (:name, :description, :author, :projectId)",
-                params, keyHolder);
-
-            return keyHolder.getKey().intValue();
+    public Issue readIssue(Integer issueId) {
+        return em.find(Issue.class, issueId);
     }
 
-    public void updateIssue(IssueDTO issueDTO) {
+    public Issue createIssue(Issue issue) {
 
-            var params = new MapSqlParameterSource()
-                    .addValue("name", issueDTO.getName())
-                    .addValue("description", issueDTO.getDescription())
-                    .addValue("projectId", issueDTO.getProjectId())
-                    .addValue("issueId", issueDTO.getId());
+        em.persist(issue);
+        em.flush();
+        return issue;
+    }
 
-            jdbcTemplate.update("UPDATE Issue SET name = :name, description = :description,  projectId = :projectId WHERE id = :issueId",
-                    params);
+    public Issue updateIssue(Issue issue) {
+        return em.merge(issue);
     }
 
     public void deleteIssue(Integer issueId) {
@@ -76,8 +49,9 @@ public class IssueRepository {
         jdbcTemplate.update("delete from Comment where issueId = :issueId",
                 Map.of("issueId", issueId));
 
-        jdbcTemplate.update("DELETE FROM Issue WHERE id = :issueId",
-                Map.of("issueId", issueId));
+        em.createQuery("delete from Issue i where i.id = :issueId")
+                .setParameter("issueId", issueId)
+                .executeUpdate();
     }
 
 }
