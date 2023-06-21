@@ -2,6 +2,7 @@ package it.intesys.academy.dto;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class ProjectDTO {
 
@@ -53,6 +54,23 @@ public class ProjectDTO {
 
     public ProjectDTO() {
 
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ProjectDTO that = (ProjectDTO) o;
+        return id.equals(that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    public boolean hasSameFields(ProjectDTO projectDTO) {
+        return this.name.equals(projectDTO.getName()) && this.description.equals(projectDTO.getDescription());
     }
 
 }

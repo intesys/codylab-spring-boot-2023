@@ -5,6 +5,7 @@ import it.intesys.academy.service.ProjectService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -38,8 +39,13 @@ public class ProjectController {
         if (projectDTO.getId() != null) {
             log.error("Bad request, id must be null when creating a new project");
             return ResponseEntity.badRequest().build();
-
         }
+
+        if (!StringUtils.hasText(projectDTO.getDescription())
+                || !StringUtils.hasText(projectDTO.getName())) {
+            throw new RuntimeException("Invalid DTO");
+        }
+
         return ResponseEntity.ok(projectService.createProject(projectDTO, username));
     }
 
@@ -55,6 +61,17 @@ public class ProjectController {
         }
 
         return ResponseEntity.ok(projectService.updateProject(projectDTO, username));
+    }
+
+    @PatchMapping("/projects/{projectId}")
+    public ProjectDTO patchProject(@PathVariable int projectId, @RequestBody ProjectDTO projectDTO, @RequestParam String username) {
+        if (projectDTO.getId() == null) {
+            throw new RuntimeException("Bad request, id must not be null when updating a project");
+        }
+        if (projectDTO.getId() != projectId) {
+            throw new RuntimeException("Bad request, id in path and in body must be the same");
+        }
+        return projectService.patchProject(projectDTO, username);
     }
 
 }
