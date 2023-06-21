@@ -9,3 +9,6 @@ spring:
     url: jdbc:h2:~/issue-tracker
     username: sa
     password: password
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    show-sql: true
