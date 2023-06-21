@@ -4,6 +4,7 @@ import it.intesys.academy.dto.ProjectDTO;
 import it.intesys.academy.service.ProjectService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -64,19 +65,23 @@ public class ProjectController {
     }
 
     @PatchMapping("/projects/{projectId}")
-    public ProjectDTO patchProject(@PathVariable int projectId, @RequestBody ProjectDTO projectDTO, @RequestParam String username) {
+    public ResponseEntity<ProjectDTO> patchProject(@PathVariable int projectId, @RequestBody ProjectDTO projectDTO, @RequestParam String username) {
         if (projectDTO.getId() == null) {
-            throw new RuntimeException("Bad request, id must not be null when updating a project");
+            log.error("Bad request, id must not be null when updating a project");
+            return ResponseEntity.badRequest().build();
         }
         if (projectDTO.getId() != projectId) {
-            throw new RuntimeException("Bad request, id in path and in body must be the same");
+            log.error("Bad request, id in path and in body must be the same");
+            return ResponseEntity.badRequest().build();
         }
-        return projectService.patchProject(projectDTO, username);
+
+        return ResponseEntity.ok(projectService.patchProject(projectDTO, username));
     }
 
     @DeleteMapping("/projects/{projectId}")
-    public void deleteProject(@PathVariable Integer projectId, @RequestParam String username) {
+    public ResponseEntity<Void> deleteProject(@PathVariable Integer projectId, @RequestParam String username) {
         projectService.deleteProject(projectId, username);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 
