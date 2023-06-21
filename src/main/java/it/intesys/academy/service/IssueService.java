@@ -63,14 +63,14 @@ public class IssueService {
 
         log.info("Creating for user {}", username);
 
-        Integer createdIssueId = issueRepository.createIssue(issueDTO);
+        IssueDTO createdIssue = issueMapper.toDto(issueRepository.createIssue(issueMapper.toEntity(issueDTO)));
 
-        return issueMapper.toDto(issueRepository.readIssue(createdIssueId));
+        return issueMapper.toDto(issueRepository.readIssue(createdIssue.getId()));
     }
 
     public IssueDTO updateIssue(IssueDTO issueDTO, String userName) {
 
-        if (!userProjectService.canThisUserReadThisProject(userName, issueDTO.getId())) {
+        if (!userProjectService.canThisUserReadThisProject(userName, issueDTO.getProjectId())) {
             throw new RuntimeException("Security constraints violation");
         }
 
@@ -80,9 +80,9 @@ public class IssueService {
             throw new RuntimeException("Security constraints violation");
         }
 
-        issueRepository.updateIssue(issueDTO);
+        issueRepository.updateIssue(issueMapper.toEntity(issueDTO));
 
-        return dbIssue;
+        return issueMapper.toDto(issueRepository.readIssue(issueDTO.getId()));
     }
 
     public void deleteIssue(Integer issueId, String username) {

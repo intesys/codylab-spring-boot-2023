@@ -2,7 +2,9 @@ package it.intesys.academy.repository;
 
 import it.intesys.academy.dto.IssueDTO;
 import it.intesys.academy.entity.Issue;
+import it.intesys.academy.entity.Project;
 import jakarta.persistence.EntityManager;
+import jakarta.transaction.Transactional;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -13,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 @Repository
+@Transactional
 public class IssueRepository {
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
@@ -40,41 +43,27 @@ public class IssueRepository {
 
     }
 
-    public Integer createIssue(IssueDTO issueDTO) {
+    public Issue createIssue(Issue issue) {
 
-        GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-
-        var params = new MapSqlParameterSource()
-                .addValue("name", issueDTO.getName())
-                .addValue("description", issueDTO.getDescription())
-                .addValue("author", issueDTO.getAuthor())
-                .addValue("projectId", issueDTO.getProjectId());
-
-        jdbcTemplate.update("INSERT INTO Issue (name, description, author, projectId) VALUES (:name, :description, :author, :projectId)",
-                params, keyHolder);
-
-            return keyHolder.getKey().intValue();
+        em.persist(issue);
+        em.flush();
+        return issue;
     }
 
-    public void updateIssue(IssueDTO issueDTO) {
+    public void updateIssue(Issue issue) {
 
-            var params = new MapSqlParameterSource()
-                    .addValue("name", issueDTO.getName())
-                    .addValue("description", issueDTO.getDescription())
-                    .addValue("projectId", issueDTO.getProjectId())
-                    .addValue("issueId", issueDTO.getId());
-
-            jdbcTemplate.update("UPDATE Issue SET name = :name, description = :description,  projectId = :projectId WHERE id = :issueId",
-                    params);
+            em.merge(issue);
     }
 
     public void deleteIssue(Integer issueId) {
+        em.createNativeQuery("DELETE FROM Comment c WHERE issueId =:issueId", Issue.class)
+                .setParameter("issueId", issueId)
+                .executeUpdate();
 
-        jdbcTemplate.update("delete from Comment where issueId = :issueId",
-                Map.of("issueId", issueId));
+        em.createNativeQuery("DELETE FROM Issue WHERE id = :issueId", Issue.class)
+                .setParameter("issueId", issueId)
+                .executeUpdate();
 
-        jdbcTemplate.update("DELETE FROM Issue WHERE id = :issueId",
-                Map.of("issueId", issueId));
     }
 
 }
