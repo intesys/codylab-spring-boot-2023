@@ -53,19 +53,8 @@ public class ProjectRepository {
     }
 
     public Projects createProject(Projects project){
-        /**Map<String, String> projects = Map.of("name",project.getName(),"description",project.getDescription());
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-        MapSqlParameterSource parameterSource = new MapSqlParameterSource()
-                .addValue("name", project.getName())
-                .addValue("description", project.getDescription());
-        jdbcTemplate.update("INSERT INTO PROJECTS (name,description) VALUES (:name,:description)",
-                parameterSource, keyHolder);
-        Integer id = keyHolder.getKey().intValue();
-        project.setId(id);
-        return project;**/
-        em.createQuery("INSERT INTO Projects (name,description) VALUES (:name,:description)",Projects.class)
-                .setParameter("name", project.getName())
-                .setParameter("description", project.getDescription());
+        em.persist(project);
+        em.flush();
         return project;
     }
 
