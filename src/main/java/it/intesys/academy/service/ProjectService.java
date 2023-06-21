@@ -114,6 +114,14 @@ public class ProjectService {
 
     }
 
+    public void deleteProject(Integer projectId, String username) {
+        if (!userProjectService.canThisUserReadThisProject(username, projectId)) {
+            throw new RuntimeException("Security constraints violation");
+        }
+
+        projectRepository.deleteProject(projectId);
+    }
+
     private List<ProjectDTO> readProjectsWithIssues(List<Integer> userProjectIds) {
 
         List<ProjectDTO> userProjects = projectRepository.readProjects(userProjectIds);

@@ -62,4 +62,17 @@ public class ProjectRepository {
         );
     }
 
+    public void deleteProject(Integer projectId) {
+        jdbcTemplate.update("delete from Comment where comment.issueId in (select id from issue where PROJECTID = :projectId)",
+                Map.of("projectId", projectId));
+
+        jdbcTemplate.update("delete from Issue where PROJECTID = :projectId", Map.of("projectId", projectId));
+
+
+        jdbcTemplate.update("delete from UserProject where projectid = :projectId", Map.of("projectId", projectId));
+
+        jdbcTemplate.update("delete from Project where id = :projectId", Map.of("projectId", projectId));
+
+    }
+
 }
