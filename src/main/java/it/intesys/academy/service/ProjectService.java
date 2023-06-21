@@ -2,6 +2,7 @@ package it.intesys.academy.service;
 
 import it.intesys.academy.dto.IssueDTO;
 import it.intesys.academy.dto.ProjectDTO;
+import it.intesys.academy.entity.Project;
 import it.intesys.academy.mapper.IssueMapper;
 import it.intesys.academy.mapper.ProjectMapper;
 import it.intesys.academy.repository.IssueRepository;
@@ -41,9 +42,10 @@ public class ProjectService {
         log.info("Reading project {} with issues, user {}", projectId, username);
 
         if (userProjectService.canThisUserReadThisProject(username, projectId)) {
-            ProjectDTO projectDTO = projectMapper.toDto(projectRepository.readProject(projectId));
-            issueRepository.readIssues(List.of(projectId)).stream().map(issueMapper::toDto).toList().forEach(projectDTO::addIssue);
-            return projectDTO;
+            //ProjectDTO projectDTO = projectMapper.toDto(projectRepository.readProject(projectId));
+            //issueRepository.readIssues(List.of(projectId)).stream().map(issueMapper::toDto).toList().forEach(projectDTO::addIssue);
+
+            return projectMapper.isertIssues(projectRepository.readProject(projectId));
         }
 
         throw new RuntimeException("Security constraints violation");
@@ -121,26 +123,8 @@ public class ProjectService {
     }
 
     private List<ProjectDTO> readProjectsWithIssues(List<Integer> userProjectIds) {
-
-        List<ProjectDTO> userProjects = projectRepository.readProjects(userProjectIds).stream().map(projectMapper::toDto).toList();
-
-        HashMap<Integer, ProjectDTO> mapProjects = new HashMap<>();
-
-        for (ProjectDTO p: userProjects) {
-            mapProjects.put(p.getId(), p);
-        }
-
-        List<Integer> projectIds = userProjects.stream()
-                                           .map(ProjectDTO::getId)
-                                           .toList();
-
-        List<IssueDTO> issues = issueRepository.readIssues(projectIds).stream().map(issueMapper::toDto).toList();
-
-        for (IssueDTO issue : issues) {
-            mapProjects.get(issue.getProjectId()).addIssue(issue);
-        }
-
-        return userProjects;
+    List<Project> userProjectsList = userProjectIds.stream().map(projectRepository::readProject).toList();
+    return userProjectsList.stream().map(projectMapper::isertIssues).toList();
 
     }
 

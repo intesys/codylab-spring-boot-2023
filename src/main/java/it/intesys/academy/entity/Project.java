@@ -2,6 +2,8 @@ package it.intesys.academy.entity;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 @Table(name="Project")
 
@@ -16,6 +18,17 @@ public class Project {
 
     @Column(name="description")
     private String description;
+
+    public List<Issue> getIssues() {
+        return issues;
+    }
+
+    public void setIssues(List<Issue> issues) {
+        this.issues = issues;
+    }
+
+    @OneToMany(mappedBy = "project")
+    private List<Issue> issues;
 
     public Integer getId() {
         return id;
