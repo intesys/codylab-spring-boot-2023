@@ -24,7 +24,7 @@ public class ProjectController {
     }
 
     @GetMapping("/projects")
-    public ResponseEntity<List<ProjectDTO>> getProjects(@RequestHeader(name = "X-User-Name") String userName) {
+    public ResponseEntity<List<ProjectDTO>> getProjects(@RequestParam String userName) {
 
         return ResponseEntity.ok(projectService.readProjectsWithIssues(userName));
     }
