@@ -111,25 +111,11 @@ public class ProjectService {
     }
 
     private List<ProjectDTO> readProjectsWithIssues(List<Integer> userProjectIds) {
-        List<ProjectDTO> userProjects = projectRepository.readProjects(userProjectIds).stream()
-                .map(project -> projectMapper.toDto(project))
-                .toList();
-        HashMap<Integer, ProjectDTO> mapProjects = new HashMap<>();
-        for (ProjectDTO p: userProjects) {
-            mapProjects.put(p.getId(), p);
-        }
-        List<Integer> projectIds = userProjects.stream()
-                .map(ProjectDTO::getId)
+        return projectRepository.readProjects(userProjectIds)
+                .stream()
+                .map(projectMapper::toDtoWithIssues)
                 .toList();
 
-        List<IssueDTO> issues = issueRepository.readIssues(projectIds).stream()
-                .map(issue -> issueMapper.toDto(issue))
-                .toList();
-
-        for (IssueDTO issue : issues) {
-            mapProjects.get(issue.getProjectId()).addIssue(issue);
-        }
-        return userProjects;
     }
 
     public void deleteProject(Integer projectId, String username) {
