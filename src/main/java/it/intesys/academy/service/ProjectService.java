@@ -1,10 +1,7 @@
 package it.intesys.academy.service;
 
 import it.intesys.academy.domain.Project;
-import it.intesys.academy.dto.IssueDTO;
 import it.intesys.academy.dto.ProjectDTO;
-import it.intesys.academy.domain.Issue;
-import it.intesys.academy.domain.Project;
 import it.intesys.academy.mapper.IssueMapper;
 import it.intesys.academy.mapper.ProjectMapper;
 import it.intesys.academy.repository.IssueRepository;
@@ -13,8 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -47,7 +42,7 @@ public class ProjectService {
         log.info("Reading project {} with issues, user {}", projectId, username);
 
         if (userProjectService.canThisUserReadThisProject(username, projectId)) {
-            ProjectDTO projectDTO = projectMapper.toDto(projectRepository.readProject(projectId));
+            ProjectDTO projectDTO = projectMapper.toDto(projectRepository.findById(projectId).get());
             issueRepository.readIssues(List.of(projectId))
                     .forEach(issue -> projectDTO.addIssue(issueMapper.toDto(issue)));
             return projectDTO;
@@ -62,7 +57,7 @@ public class ProjectService {
         log.info("Reading project {} , user {}", projectId, username);
 
         if (userProjectService.canThisUserReadThisProject(username, projectId)) {
-            return projectMapper.toDto(projectRepository.readProject(projectId));
+            return projectMapper.toDto(projectRepository.findById(projectId).get());
         }
 
         throw new RuntimeException("Security constraints violation");
@@ -80,7 +75,7 @@ public class ProjectService {
         log.info("Creating for user {}", username);
 
 
-        Project project = projectRepository.createProject(projectMapper.toEntity(projectDTO));
+        Project project = projectRepository.save(projectMapper.toEntity(projectDTO));
         userProjectService.associateUserToProject(username, project.getId());
 
         return projectMapper.toDto(project);
@@ -91,7 +86,7 @@ public class ProjectService {
             throw new RuntimeException("Security constraints violation");
         }
 
-        Project updatedProject = projectRepository.updateProject(projectMapper.toEntity(projectDTO));
+        Project updatedProject = projectRepository.save(projectMapper.toEntity(projectDTO));
 
         return projectMapper.toDto(updatedProject);
     }
@@ -101,7 +96,7 @@ public class ProjectService {
             throw new RuntimeException("Security constraints violation");
         }
 
-        Project dbProject = projectRepository.readProject(projectDTO.getId());
+        Project dbProject = projectRepository.findById(projectDTO.getId()).get();
 
         if (projectDTO.getName() != null) {
             projectDTO.setName(dbProject.getName());
@@ -111,12 +106,12 @@ public class ProjectService {
             projectDTO.setDescription(dbProject.getDescription());
         }
 
-        return projectMapper.toDto(projectRepository.updateProject(dbProject));
+        return projectMapper.toDto(projectRepository.save(dbProject));
     }
 
     private List<ProjectDTO> readProjectsWithIssues(List<Integer> userProjectIds) {
 
-        return projectRepository.readProjects(userProjectIds)
+        return projectRepository.findByIdIn(userProjectIds)
                 .stream()
                 .map(projectMapper::toDtoWithIssues)
                 .toList();
@@ -128,7 +123,7 @@ public class ProjectService {
             throw new RuntimeException("Security constraints violation");
         }
 
-        projectRepository.deleteProject(projectId);
+        projectRepository.deleteById(projectId);
     }
 
 }
