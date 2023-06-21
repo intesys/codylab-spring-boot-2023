@@ -3,6 +3,8 @@ package it.intesys.academy.service;
 import it.intesys.academy.domain.Project;
 import it.intesys.academy.dto.IssueDTO;
 import it.intesys.academy.dto.ProjectDTO;
+import it.intesys.academy.domain.Issue;
+import it.intesys.academy.domain.Project;
 import it.intesys.academy.mapper.IssueMapper;
 import it.intesys.academy.mapper.ProjectMapper;
 import it.intesys.academy.repository.IssueRepository;
@@ -11,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -113,31 +116,10 @@ public class ProjectService {
 
     private List<ProjectDTO> readProjectsWithIssues(List<Integer> userProjectIds) {
 
-        List<ProjectDTO> userProjects = projectRepository.readProjects(userProjectIds)
+        return projectRepository.readProjects(userProjectIds)
                 .stream()
-                .map(projectMapper::toDto)
+                .map(projectMapper::toDtoWithIssues)
                 .toList();
-
-        HashMap<Integer, ProjectDTO> mapProjects = new HashMap<>();
-
-        for (ProjectDTO p: userProjects) {
-            mapProjects.put(p.getId(), p);
-        }
-
-        List<Integer> projectIds = userProjects.stream()
-                                           .map(ProjectDTO::getId)
-                                           .toList();
-
-        List<IssueDTO> issues = issueRepository.readIssues(projectIds)
-                .stream()
-                .map(issueMapper::toDto)
-                .toList();
-
-        for (IssueDTO issue : issues) {
-            mapProjects.get(issue.getProjectId()).addIssue(issue);
-        }
-
-        return userProjects;
 
     }
 
