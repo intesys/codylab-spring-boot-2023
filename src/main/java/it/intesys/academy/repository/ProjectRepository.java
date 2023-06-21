@@ -1,6 +1,8 @@
 package it.intesys.academy.repository;
 
 import it.intesys.academy.dto.ProjectDTO;
+import it.intesys.academy.entity.Project;
+import jakarta.persistence.EntityManager;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -15,63 +17,46 @@ public class ProjectRepository {
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
 
-    public ProjectRepository(NamedParameterJdbcTemplate jdbcTemplate) {
+    private final EntityManager em;
 
+    public ProjectRepository(NamedParameterJdbcTemplate jdbcTemplate, EntityManager em) {
+        this.em = em;
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public List<ProjectDTO> readProjects(List<Integer> userProjectIds) {
+    public List<Project> readProjects(List<Integer> userProjectIds) {
 
-        List<ProjectDTO> projects = jdbcTemplate.query("SELECT id, name, description FROM Project where id in (:projectIds)",
-
-                                                       Map.of("projectIds", userProjectIds),
-
-                                                       BeanPropertyRowMapper.newInstance(ProjectDTO.class));
+        List<Project> projects = em.createQuery("from Project where id in (:projectIds)", Project.class)
+                .setParameter("projectIds", userProjectIds)
+                .getResultList();
 
         return projects;
     }
 
-    public ProjectDTO readProject(int projectId) {
-
-        return jdbcTemplate.queryForObject("SELECT id, name, description FROM Project where id = (:projectId)",
-
-                                               Map.of("projectId", projectId),
-
-                                               BeanPropertyRowMapper.newInstance(ProjectDTO.class));
-
+    public Project readProject(int projectId) {
+        Project project = em.find(Project.class, projectId);
+        return project;
     }
 
-    public Integer createProject(ProjectDTO projectDTO) {
-        GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-
-        MapSqlParameterSource parameterSource = new MapSqlParameterSource(Map.of(
-                "name", projectDTO.getName(), "description", projectDTO.getDescription())
-        );
-
-        jdbcTemplate.update("insert into Project (name, description) values (:name, :description)",
-                parameterSource, keyHolder);
-
-        return keyHolder.getKey().intValue();
+    public Project createProject(Project project) {
+        em.persist(project);
+        em.flush(); // serve per popolare il campo "id" di project
+        return project;
     }
-
-    public int updateProject(ProjectDTO projectDTO) {
-        return jdbcTemplate.update("update Project set name = :name, description = :description where id = :id",
-
-                Map.of("name", projectDTO.getName(), "description", projectDTO.getDescription(), "id",
-                        projectDTO.getId())
-        );
+    public Project updateProject(Project project) {
+        return em.merge(project);
     }
 
     public void deleteProject(Integer projectId) {
         jdbcTemplate.update("delete from Comment where comment.issueId in (select id from issue where PROJECTID = :projectId)",
                 Map.of("projectId", projectId));
-
         jdbcTemplate.update("delete from Issue where PROJECTID = :projectId", Map.of("projectId", projectId));
-
 
         jdbcTemplate.update("delete from UserProject where projectid = :projectId", Map.of("projectId", projectId));
 
-        jdbcTemplate.update("delete from Project where id = :projectId", Map.of("projectId", projectId));
+        em.createQuery("delete from Project p where id = :projectId")
+                .setParameter("projectId", projectId)
+                .executeUpdate();
 
     }
 
