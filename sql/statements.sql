@@ -52,7 +52,7 @@ insert into Comment (text, author, issueId) VALUES ('This is another comment', '
 
 --------------------------------------------------------------------------------
 
-CREATE TABLE Author (
+CREATE TABLE User (
                       id int not null auto_increment,
                       username varchar(32) not null,
                       name varchar(64) not null,
@@ -60,18 +60,18 @@ CREATE TABLE Author (
                       PRIMARY KEY (id)
 );
 
-INSERT INTO Author (username, name, surname) VALUES ('mrossi', 'Mario', 'Rossi');
-INSERT INTO Author (username, name, surname) VALUES ('gverdi', 'Giuseppe', 'Verdi');
+INSERT INTO User (username, name, surname) VALUES ('mrossi', 'Mario', 'Rossi');
+INSERT INTO User (username, name, surname) VALUES ('gverdi', 'Giuseppe', 'Verdi');
 
 ALTER TABLE Project ADD COLUMN (authorId int);
 
-ALTER TABLE Project ADD FOREIGN KEY (authorId) REFERENCES Author(id);
+ALTER TABLE Project ADD FOREIGN KEY (authorId) REFERENCES User(id);
 
 UPDATE Project
-SET authorId = (SELECT ID from Author WHERE username = 'mrossi')
+SET authorId = (SELECT ID from User WHERE username = 'mrossi')
 WHERE ID = 1;
 
 UPDATE Project
-SET authorId = (SELECT ID from Author WHERE username = 'gverdi')
+SET authorId = (SELECT ID from User WHERE username = 'gverdi')
 WHERE ID = 2;
 
