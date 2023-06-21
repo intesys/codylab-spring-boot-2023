@@ -3,6 +3,7 @@ package it.intesys.academy.service;
 import it.intesys.academy.dto.IssueDTO;
 import it.intesys.academy.dto.ProjectDTO;
 import it.intesys.academy.entity.Project;
+import it.intesys.academy.mapper.IssueMapper;
 import it.intesys.academy.mapper.ProjectMapper;
 import it.intesys.academy.repository.IssueRepository;
 import it.intesys.academy.repository.ProjectRepository;
@@ -10,10 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.function.Function;
 
 @Service
 public class ProjectService {
@@ -28,13 +27,16 @@ public class ProjectService {
 
     private final ProjectMapper projectMapper;
 
+    private final IssueMapper issueMapper;
+
     public ProjectService(ProjectRepository projectRepository, IssueRepository issueRepository,
-                          UserProjectService userProjectService, ProjectMapper projectMapper) {
+                          UserProjectService userProjectService, ProjectMapper projectMapper, IssueMapper issueMapper) {
 
         this.projectRepository = projectRepository;
         this.issueRepository = issueRepository;
         this.userProjectService = userProjectService;
         this.projectMapper = projectMapper;
+        this.issueMapper = issueMapper;
     }
 
     public ProjectDTO readProjectWithIssue(int projectId, String username) {
@@ -44,7 +46,8 @@ public class ProjectService {
         if (userProjectService.canThisUserReadThisProject(username, projectId)) {
             Project project = projectRepository.readProject(projectId);
             ProjectDTO projectDTO = projectMapper.toDto(project);
-            issueRepository.readIssues(List.of(projectId)).forEach(projectDTO::addIssue);
+            issueRepository.readIssues(List.of(projectId))
+                    .forEach(issue -> projectDTO.addIssue(issueMapper.toDto(issue)));
             return projectDTO;
         }
 
@@ -131,7 +134,9 @@ public class ProjectService {
                                            .map(ProjectDTO::getId)
                                            .toList();
 
-        List<IssueDTO> issues = issueRepository.readIssues(projectIds);
+        List<IssueDTO> issues = issueRepository.readIssues(projectIds).stream()
+                .map(issue -> issueMapper.toDto(issue))
+                .toList();
 
         for (IssueDTO issue : issues) {
             mapProjects.get(issue.getProjectId()).addIssue(issue);
