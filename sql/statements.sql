@@ -49,3 +49,29 @@ CREATE TABLE Comment (
 
 insert into Comment (text, author, issueId) VALUES ('This is a comment', 'ecostanzi', 1);
 insert into Comment (text, author, issueId) VALUES ('This is another comment', 'ecostanzi', 1);
+
+--------------------------------------------------------------------------------
+
+CREATE TABLE Author (
+                      id int not null auto_increment,
+                      username varchar(32) not null,
+                      name varchar(64) not null,
+                      surname varchar(64) not null,
+                      PRIMARY KEY (id)
+);
+
+INSERT INTO Author (username, name, surname) VALUES ('mrossi', 'Mario', 'Rossi');
+INSERT INTO Author (username, name, surname) VALUES ('gverdi', 'Giuseppe', 'Verdi');
+
+ALTER TABLE Project ADD COLUMN (authorId int);
+
+ALTER TABLE Project ADD FOREIGN KEY (authorId) REFERENCES Author(id);
+
+UPDATE Project
+SET authorId = (SELECT ID from Author WHERE username = 'mrossi')
+WHERE ID = 1;
+
+UPDATE Project
+SET authorId = (SELECT ID from Author WHERE username = 'gverdi')
+WHERE ID = 2;
+
