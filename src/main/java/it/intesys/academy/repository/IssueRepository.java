@@ -23,14 +23,18 @@ public class IssueRepository {
 
     public List<Issue> readIssues(List<Integer> projectIds) {
 
-        return em.createQuery("from Issue i where i.projectId in (:projectIds)", Issue.class)
+        return em.createQuery("from Issue i join fetch i.project p where p.id in (:projectIds)", Issue.class)
                 .setParameter("projectIds", projectIds)
                 .getResultList();
 
     }
 
     public Issue readIssue(Integer issueId) {
-        return em.find(Issue.class, issueId);
+       return em.find(Issue.class, issueId);
+       /* return em.createQuery("from Issue where id = :issueId", Issue.class)
+                .setParameter("issueId", issueId)
+                .getSingleResult();*/
+
     }
 
     public Issue createIssue(Issue issue) {

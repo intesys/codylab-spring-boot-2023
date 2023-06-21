@@ -80,8 +80,8 @@ public class IssueService {
         }
 
         Issue dbIssue = issueRepository.readIssue(issueDTO.getId());
-        if ( dbIssue.getProjectId() != issueDTO.getProjectId() && 
-                !userProjectService.canThisUserReadThisProject(userName, dbIssue.getProjectId())) {
+        if ( dbIssue.getProject().getId() != issueDTO.getProjectId() &&
+                !userProjectService.canThisUserReadThisProject(userName, dbIssue.getProject().getId())) {
             throw new RuntimeException("Security constraints violation");
         }
 
@@ -92,7 +92,7 @@ public class IssueService {
 
     public void deleteIssue(Integer issueId, String username) {
         Issue dbIssue = issueRepository.readIssue(issueId);
-        if (!userProjectService.canThisUserReadThisProject(username, dbIssue.getProjectId())) {
+        if (!userProjectService.canThisUserReadThisProject(username, dbIssue.getProject().getId())) {
             throw new RuntimeException("Security constraints violation");
         }
 

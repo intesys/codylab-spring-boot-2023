@@ -22,8 +22,9 @@ public class Issue {
     @Column(name="author")
     private String author;
 
-    @Column(name="projectid")
-    private Integer projectId;
+    @ManyToOne
+    @JoinColumn(name="projectid")
+    private Project project;
 
     public Integer getId() {
         return id;
@@ -57,11 +58,11 @@ public class Issue {
         this.author = author;
     }
 
-    public Integer getProjectId() {
-        return projectId;
+    public Project getProject() {
+        return project;
     }
 
-    public void setProjectId(Integer projectId) {
-        this.projectId = projectId;
+    public void setProject(Project project) {
+        this.project = project;
     }
 }

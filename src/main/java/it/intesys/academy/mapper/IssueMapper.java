@@ -2,6 +2,8 @@ package it.intesys.academy.mapper;
 
 import it.intesys.academy.domain.Issue;
 import it.intesys.academy.dto.IssueDTO;
+import it.intesys.academy.domain.Issue;
+import it.intesys.academy.domain.Project;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -13,7 +15,9 @@ public class IssueMapper {
         issue.setName(issueDTO.getName());
         issue.setDescription(issueDTO.getDescription());
         issue.setAuthor(issueDTO.getAuthor());
-        issue.setProjectId(issueDTO.getProjectId());
+        Project project = new Project();
+        project.setId(issueDTO.getProjectId());
+        issue.setProject(project);
         return issue;
     }
 
@@ -23,7 +27,7 @@ public class IssueMapper {
         issueDTO.setName(issue.getName());
         issueDTO.setDescription(issue.getDescription());
         issueDTO.setAuthor(issue.getAuthor());
-        issueDTO.setProjectId(issue.getProjectId());
+        issueDTO.setProjectId(issue.getProject().getId());
         return issueDTO;
     }
 }
