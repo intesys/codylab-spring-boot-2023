@@ -36,11 +36,16 @@ public class ProjectController {
         return ResponseEntity.ok(projectService.createProject(projectDTO,username));
     }
 
-    @PutMapping("/projects/{projectId}")
+    @PutMapping("/projects/")
     public ResponseEntity<ProjectDTO> putProject(@RequestBody ProjectDTO projectDTO,
-                                 @PathVariable Integer projectId,
                                  @RequestParam String username){
-        return ResponseEntity.ok(projectService.updateProject(projectDTO,username,projectId));
+        return ResponseEntity.ok(projectService.updateProject(projectDTO,username));
+    }
+
+    @PatchMapping("/projects/")
+    public ResponseEntity<ProjectDTO> patchProject(@RequestBody ProjectDTO projectDTO,
+                                                   @RequestParam String username){
+        return ResponseEntity.ok(projectService.patchProject(projectDTO, username));
     }
 
     @DeleteMapping("/projects/{projectId}")

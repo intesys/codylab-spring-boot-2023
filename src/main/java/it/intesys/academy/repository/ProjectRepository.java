@@ -66,7 +66,7 @@ public class ProjectRepository {
         return project;
     }
 
-    public Project updateRepository(Project project){
+    public Project updateProject(Project project){
         /**jdbcTemplate.update("UPDATE PROJECTS SET name = :name, description = :description where id = :projectId",
                 Map.of("name",projectDTO.getName(),
                         "description",projectDTO.getDescription(),

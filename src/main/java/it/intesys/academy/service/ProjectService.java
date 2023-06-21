@@ -94,12 +94,28 @@ public class ProjectService {
         return projectMapper.toDTO(project);
     }
 
-    public ProjectDTO updateProject(ProjectDTO projectDTO, String username, Integer projectId){
-        Project project = projectMapper.toEntity(projectDTO);
-        if(!userProjectService.canThisUserReadThisProject(username,project.getId())){
+    public ProjectDTO patchProject(ProjectDTO projectDTO, String username){
+        if(!userProjectService.canThisUserReadThisProject(username,projectDTO.getId())){
             throw new RuntimeException("errore");
         }
-        return projectMapper.toDTO(projectRepository.updateRepository(project));
+        Project project = projectRepository.readProject(projectDTO.getId());
+        if(projectDTO.getName() != null){
+            project.setName(projectDTO.getName());
+        }
+        if(projectDTO.getDescription() != null){
+            project.setDescription(projectDTO.getDescription());
+        }
+        project = projectRepository.updateProject(project);
+        return projectMapper.toDTO(project);
+    }
+
+
+    public ProjectDTO updateProject(ProjectDTO projectDTO, String username){
+        if(!userProjectService.canThisUserReadThisProject(username,projectDTO.getId())){
+            throw new RuntimeException("errore");
+        }
+        Project project = projectMapper.toEntity(projectDTO);
+        return projectMapper.toDTO(projectRepository.updateProject(project));
     }
 
     public void deleteProject(Integer projectId, String username){
