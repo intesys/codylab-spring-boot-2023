@@ -2,6 +2,7 @@ package it.intesys.academy.service;
 
 import it.intesys.academy.dto.IssueDTO;
 import it.intesys.academy.dto.ProjectDTO;
+import it.intesys.academy.mapper.IssueMapper;
 import it.intesys.academy.mapper.ProjectMapper;
 import it.intesys.academy.repository.IssueRepository;
 import it.intesys.academy.repository.ProjectRepository;
@@ -23,14 +24,16 @@ public class ProjectService {
 
     private final UserProjectService userProjectService;
     private final ProjectMapper projectMapper;
+    private final IssueMapper issueMapper;
 
     public ProjectService(ProjectRepository projectRepository, IssueRepository issueRepository,
-                          UserProjectService userProjectService, ProjectMapper projectMapper) {
+                          UserProjectService userProjectService, ProjectMapper projectMapper, IssueMapper issueMapper) {
 
         this.projectRepository = projectRepository;
         this.issueRepository = issueRepository;
         this.userProjectService = userProjectService;
         this.projectMapper = projectMapper;
+        this.issueMapper = issueMapper;
     }
 
     public ProjectDTO readProjectWithIssue(int projectId, String username) {
@@ -39,7 +42,7 @@ public class ProjectService {
 
         if (userProjectService.canThisUserReadThisProject(username, projectId)) {
             ProjectDTO projectDTO = projectMapper.toDto(projectRepository.readProject(projectId));
-            issueRepository.readIssues(List.of(projectId)).forEach(projectDTO::addIssue);
+            issueRepository.readIssues(List.of(projectId)).stream().map(issueMapper::toDto).toList().forEach(projectDTO::addIssue);
             return projectDTO;
         }
 
@@ -131,7 +134,7 @@ public class ProjectService {
                                            .map(ProjectDTO::getId)
                                            .toList();
 
-        List<IssueDTO> issues = issueRepository.readIssues(projectIds);
+        List<IssueDTO> issues = issueRepository.readIssues(projectIds).stream().map(issueMapper::toDto).toList();
 
         for (IssueDTO issue : issues) {
             mapProjects.get(issue.getProjectId()).addIssue(issue);

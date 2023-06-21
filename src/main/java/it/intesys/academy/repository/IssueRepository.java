@@ -1,13 +1,14 @@
 package it.intesys.academy.repository;
 
 import it.intesys.academy.dto.IssueDTO;
+import it.intesys.academy.entity.Issue;
+import jakarta.persistence.EntityManager;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -15,31 +16,27 @@ import java.util.Map;
 public class IssueRepository {
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
+    private final EntityManager em;
 
-    public IssueRepository(NamedParameterJdbcTemplate jdbcTemplate) {
+    public IssueRepository(NamedParameterJdbcTemplate jdbcTemplate, EntityManager em) {
 
         this.jdbcTemplate = jdbcTemplate;
+        this.em = em;
     }
 
-    public List<IssueDTO> readIssues(List<Integer> projectIds) {
+    public List<Issue> readIssues(List<Integer> projectIds) {
 
-        List<IssueDTO> issues =
-            jdbcTemplate.query("SELECT id, name, description, author, projectId FROM Issue WHERE projectId in (:projectIds)",
 
-                               Map.of("projectIds", projectIds),
+        return em.createQuery("from Issue where projectId in (:projectIds)", Issue.class)
+                .setParameter("projectIds", projectIds)
+                .getResultList();
 
-                               BeanPropertyRowMapper.newInstance(IssueDTO.class));
 
-        return issues;
     }
 
-    public IssueDTO readIssue(Integer issueId) {
+    public Issue readIssue(Integer issueId) {
 
-        return jdbcTemplate.queryForObject("SELECT id, name, description, author, projectId FROM Issue WHERE id = :issueId",
-
-                Map.of("issueId", issueId),
-
-                BeanPropertyRowMapper.newInstance(IssueDTO.class));
+    return em.createQuery("from Issue where id = :issueId", Issue.class).setParameter("issueId", issueId).getSingleResult();
 
     }
 
