@@ -3,8 +3,8 @@ package it.intesys.academy.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name ="Projects")
-public class Project {
+@Table(name ="projects")
+public class Projects {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

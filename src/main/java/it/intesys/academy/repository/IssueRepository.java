@@ -61,8 +61,8 @@ public class IssueRepository {
     public Integer createIssue(IssueDTO issueDTO){
         KeyHolder keyHolder = new GeneratedKeyHolder();
         MapSqlParameterSource parameterSource = new MapSqlParameterSource()
-                .addValue("nome", issueDTO.getNome())
-                .addValue("descrizione", issueDTO.getDescrizione())
+                .addValue("nome", issueDTO.getName())
+                .addValue("descrizione", issueDTO.getDescription())
                 .addValue("author", issueDTO.getAuthor())
                 .addValue("projectId", issueDTO.getProjectId());
         jdbcTemplate.update("INSERT INTO ISSUES (nome,descrizione,author,projectId) VALUES (:nome,:descrizione, :author, :projectId)",
@@ -72,8 +72,8 @@ public class IssueRepository {
 
     public void updateIssue(IssueDTO issueDTO){
         jdbcTemplate.update("UPDATE ISSUES SET nome=:nome, descrizione=:descrizione, author=:author, projectId=:projectId WHERE id = :issueId",
-                Map.of("nome", issueDTO.getNome(),
-                        "descrizione", issueDTO.getDescrizione(),
+                Map.of("nome", issueDTO.getName(),
+                        "descrizione", issueDTO.getDescription(),
                         "author", issueDTO.getAuthor(),
                         "projectId", issueDTO.getProjectId(),
                         "issueId",issueDTO.getId()));

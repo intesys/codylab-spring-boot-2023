@@ -2,10 +2,11 @@ package it.intesys.academy.service;
 
 import it.intesys.academy.dto.IssueDTO;
 import it.intesys.academy.dto.ProjectDTO;
-import it.intesys.academy.entity.Project;
+import it.intesys.academy.entity.Projects;
 import it.intesys.academy.mapper.ProjectMapper;
 import it.intesys.academy.repository.IssueRepository;
 import it.intesys.academy.repository.ProjectRepository;
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 
 @Service
+@Transactional
 public class ProjectService {
 
     private static final Logger log = LoggerFactory.getLogger(ProjectService.class);
@@ -80,7 +82,7 @@ public class ProjectService {
 
         return userProjects;
          */
-        List<Project> userProjectEntity = projectRepository.readProjects(userProjectIds);
+        List<Projects> userProjectEntity = projectRepository.readProjects(userProjectIds);
         List<ProjectDTO> userProjectDTO = userProjectEntity.stream()
                                             .map(projectMapper::toDTO)
                                             .toList();
@@ -88,7 +90,7 @@ public class ProjectService {
     }
 
     public ProjectDTO createProject(ProjectDTO projectDTO, String username){
-        Project project = projectMapper.toEntity(projectDTO);
+        Projects project = projectMapper.toEntity(projectDTO);
         project = projectRepository.createProject(project);
         userProjectService.createUserProject(project.getId(),username);
         return projectMapper.toDTO(project);
@@ -98,7 +100,7 @@ public class ProjectService {
         if(!userProjectService.canThisUserReadThisProject(username,projectDTO.getId())){
             throw new RuntimeException("errore");
         }
-        Project project = projectRepository.readProject(projectDTO.getId());
+        Projects project = projectRepository.readProject(projectDTO.getId());
         if(projectDTO.getName() != null){
             project.setName(projectDTO.getName());
         }
@@ -114,7 +116,7 @@ public class ProjectService {
         if(!userProjectService.canThisUserReadThisProject(username,projectDTO.getId())){
             throw new RuntimeException("errore");
         }
-        Project project = projectMapper.toEntity(projectDTO);
+        Projects project = projectMapper.toEntity(projectDTO);
         return projectMapper.toDTO(projectRepository.updateProject(project));
     }
 

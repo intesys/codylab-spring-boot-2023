@@ -9,9 +9,9 @@ public class IssueDTO {
 
     private Integer projectId;
 
-    private String nome;
+    private String name;
 
-    private String descrizione;
+    private String description;
 
     private String author;
 
@@ -29,7 +29,7 @@ public class IssueDTO {
         this.comments.add(comment);
     }
 
-    public int getProjectId() {
+    public Integer getProjectId() {
 
         return projectId;
     }
@@ -39,7 +39,7 @@ public class IssueDTO {
         this.projectId = projectId;
     }
 
-    public int getId() {
+    public Integer getId() {
 
         return id;
     }
@@ -49,24 +49,24 @@ public class IssueDTO {
         this.id = id;
     }
 
-    public String getNome() {
+    public String getName() {
 
-        return nome;
+        return name;
     }
 
-    public void setNome(String nome) {
+    public void setName(String name) {
 
-        this.nome = nome;
+        this.name = name;
     }
 
-    public String getDescrizione() {
+    public String getDescription() {
 
-        return descrizione;
+        return description;
     }
 
-    public void setDescrizione(String descrizione) {
+    public void setDescription(String description) {
 
-        this.descrizione = descrizione;
+        this.description = description;
     }
 
     public String getAuthor() {

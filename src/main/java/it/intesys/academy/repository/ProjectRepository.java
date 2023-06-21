@@ -1,7 +1,7 @@
 package it.intesys.academy.repository;
 
 import it.intesys.academy.dto.ProjectDTO;
-import it.intesys.academy.entity.Project;
+import it.intesys.academy.entity.Projects;
 import jakarta.persistence.EntityManager;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -26,7 +26,7 @@ public class ProjectRepository {
         this.em = em;
     }
 
-    public List<Project> readProjects(List<Integer> userProjectIds) {
+    public List<Projects> readProjects(List<Integer> userProjectIds) {
 
         /**List<ProjectDTO> projects = jdbcTemplate.query("SELECT id, name, description FROM Projects where id in (:projectIds)",
 
@@ -35,12 +35,12 @@ public class ProjectRepository {
                                                        BeanPropertyRowMapper.newInstance(ProjectDTO.class));
 
         return projects;*/
-        return em.createQuery("from Projects Where id in (:ProjectIds)",Project.class)
+        return em.createQuery("from Projects Where id in (:ProjectIds)",Projects.class)
                 .setParameter("ProjectIds", userProjectIds)
                 .getResultList();
     }
 
-    public Project readProject(int projectId) {
+    public Projects readProject(int projectId) {
 
         /**return jdbcTemplate.queryForObject("SELECT id, name, description FROM Projects where id = (:projectId)",
 
@@ -48,25 +48,28 @@ public class ProjectRepository {
 
                                                BeanPropertyRowMapper.newInstance(ProjectDTO.class));*/
 
-        return em.find(Project.class,projectId);
+        return em.find(Projects.class,projectId);
 
     }
 
-    public Project createProject(Project project){
-        /**Map<String, String> project = Map.of("name",projectDTO.getName(),"description",projectDTO.getDescription());
+    public Projects createProject(Projects project){
+        /**Map<String, String> projects = Map.of("name",project.getName(),"description",project.getDescription());
         KeyHolder keyHolder = new GeneratedKeyHolder();
         MapSqlParameterSource parameterSource = new MapSqlParameterSource()
-                .addValue("name", projectDTO.getName())
-                .addValue("description", projectDTO.getDescription());
+                .addValue("name", project.getName())
+                .addValue("description", project.getDescription());
         jdbcTemplate.update("INSERT INTO PROJECTS (name,description) VALUES (:name,:description)",
                 parameterSource, keyHolder);
-        return keyHolder.getKey().intValue();*/
-        em.persist(project);
-        em.flush();
+        Integer id = keyHolder.getKey().intValue();
+        project.setId(id);
+        return project;**/
+        em.createQuery("INSERT INTO Projects (name,description) VALUES (:name,:description)",Projects.class)
+                .setParameter("name", project.getName())
+                .setParameter("description", project.getDescription());
         return project;
     }
 
-    public Project updateProject(Project project){
+    public Projects updateProject(Projects project){
         /**jdbcTemplate.update("UPDATE PROJECTS SET name = :name, description = :description where id = :projectId",
                 Map.of("name",projectDTO.getName(),
                         "description",projectDTO.getDescription(),
@@ -75,11 +78,7 @@ public class ProjectRepository {
     }
 
     public void deleteProject(Integer projectId){
-        /**jdbcTemplate.update("Delete FROM Projects where id = :projectId",
-                Map.of("projectId",projectId));*/
-        em.createQuery("DELETE from Projects where id = :projectid", Project.class)
-                .setParameter("projectid",projectId)
-                .getResultList();
+        em.remove(readProject(projectId));
     }
 
 }

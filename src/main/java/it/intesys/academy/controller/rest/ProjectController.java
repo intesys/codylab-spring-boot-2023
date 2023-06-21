@@ -4,6 +4,7 @@ import it.intesys.academy.dto.ProjectDTO;
 import it.intesys.academy.service.ProjectService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,16 +34,22 @@ public class ProjectController {
     @PostMapping("/projects")
     public ResponseEntity<ProjectDTO> postProject(@RequestBody ProjectDTO projectDTO
                                  ,@RequestParam String username){
+        if(projectDTO.getId()!=null){
+            return ResponseEntity.badRequest().build();
+        }
+        if(!StringUtils.hasText(projectDTO.getDescription()) || !StringUtils.hasText(projectDTO.getName())){
+            return ResponseEntity.badRequest().build();
+        }
         return ResponseEntity.ok(projectService.createProject(projectDTO,username));
     }
 
-    @PutMapping("/projects/")
+    @PutMapping("/projects")
     public ResponseEntity<ProjectDTO> putProject(@RequestBody ProjectDTO projectDTO,
                                  @RequestParam String username){
         return ResponseEntity.ok(projectService.updateProject(projectDTO,username));
     }
 
-    @PatchMapping("/projects/")
+    @PatchMapping("/projects")
     public ResponseEntity<ProjectDTO> patchProject(@RequestBody ProjectDTO projectDTO,
                                                    @RequestParam String username){
         return ResponseEntity.ok(projectService.patchProject(projectDTO, username));

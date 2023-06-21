@@ -41,7 +41,7 @@ public class ProjectDTO {
         this.description = description;
     }
 
-    public int getId() {
+    public Integer getId() {
 
         return id;
     }

@@ -41,7 +41,7 @@ public class CommentRepository {
         KeyHolder key = new GeneratedKeyHolder();
         MapSqlParameterSource parameterSource = new MapSqlParameterSource()
                 .addValue("author", commentDTO.getAuthor())
-                .addValue("descrizione", commentDTO.getDescrizione())
+                .addValue("descrizione", commentDTO.getDescription())
                 .addValue("issueId", commentDTO.getIssueId());
          jdbcTemplate.update("INSERT INTO COMMENTS(author, descrizione, issueId) values (:author, :descrizione, :issueId)",
                  parameterSource,
@@ -51,7 +51,7 @@ public class CommentRepository {
 
     public void updateComment(CommentDTO commentDTO){
          jdbcTemplate.update("UPDATE COMMENTS SET descrizione = :descrizione, author = :author, issueId = :issueId where id = :commentId",
-                 Map.of("descrizione", commentDTO.getDescrizione(),
+                 Map.of("descrizione", commentDTO.getDescription(),
                          "author", commentDTO.getAuthor(),
                          "issueId", commentDTO.getIssueId(),
                          "commentId", commentDTO.getId()));

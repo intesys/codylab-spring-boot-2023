@@ -6,7 +6,7 @@ public class UserProjectDTO {
     private Integer projectId;
     private String username;
 
-    public int getId() {
+    public Integer getId() {
 
         return id;
     }
@@ -16,7 +16,7 @@ public class UserProjectDTO {
         this.id = id;
     }
 
-    public int getProjectId() {
+    public Integer getProjectId() {
 
         return projectId;
     }
