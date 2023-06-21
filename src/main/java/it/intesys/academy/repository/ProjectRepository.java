@@ -1,6 +1,8 @@
 package it.intesys.academy.repository;
 
 import it.intesys.academy.dto.ProjectDTO;
+import it.intesys.academy.entity.Project;
+import jakarta.persistence.EntityManager;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -10,60 +12,74 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 @Repository
 public class ProjectRepository {
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
 
-    public ProjectRepository(NamedParameterJdbcTemplate jdbcTemplate) {
+    private final EntityManager em;
+
+    public ProjectRepository(NamedParameterJdbcTemplate jdbcTemplate, EntityManager em) {
 
         this.jdbcTemplate = jdbcTemplate;
+        this.em = em;
     }
 
-    public List<ProjectDTO> readProjects(List<Integer> userProjectIds) {
+    public List<Project> readProjects(List<Integer> userProjectIds) {
 
-        List<ProjectDTO> projects = jdbcTemplate.query("SELECT id, name, description FROM Projects where id in (:projectIds)",
+        /**List<ProjectDTO> projects = jdbcTemplate.query("SELECT id, name, description FROM Projects where id in (:projectIds)",
 
                                                        Map.of("projectIds", userProjectIds),
 
                                                        BeanPropertyRowMapper.newInstance(ProjectDTO.class));
 
-        return projects;
+        return projects;*/
+        return em.createQuery("from Projects Where id in (:ProjectIds)",Project.class)
+                .setParameter("ProjectIds", userProjectIds)
+                .getResultList();
     }
 
-    public ProjectDTO readProject(int projectId) {
+    public Project readProject(int projectId) {
 
-        return jdbcTemplate.queryForObject("SELECT id, name, description FROM Projects where id = (:projectId)",
+        /**return jdbcTemplate.queryForObject("SELECT id, name, description FROM Projects where id = (:projectId)",
 
                                                Map.of("projectId", projectId),
 
-                                               BeanPropertyRowMapper.newInstance(ProjectDTO.class));
+                                               BeanPropertyRowMapper.newInstance(ProjectDTO.class));*/
+
+        return em.find(Project.class,projectId);
 
     }
 
-    public Integer createProject(ProjectDTO projectDTO){
-        //Map<String, String> project = Map.of("name",projectDTO.getName(),"description",projectDTO.getDescription());
+    public Project createProject(Project project){
+        /**Map<String, String> project = Map.of("name",projectDTO.getName(),"description",projectDTO.getDescription());
         KeyHolder keyHolder = new GeneratedKeyHolder();
         MapSqlParameterSource parameterSource = new MapSqlParameterSource()
                 .addValue("name", projectDTO.getName())
                 .addValue("description", projectDTO.getDescription());
         jdbcTemplate.update("INSERT INTO PROJECTS (name,description) VALUES (:name,:description)",
                 parameterSource, keyHolder);
-        return keyHolder.getKey().intValue();
+        return keyHolder.getKey().intValue();*/
+        em.persist(project);
+        em.flush();
+        return project;
     }
 
-    public void updateRepository(ProjectDTO projectDTO){
-        jdbcTemplate.update("UPDATE PROJECTS SET name = :name, description = :description where id = :projectId",
+    public Project updateRepository(Project project){
+        /**jdbcTemplate.update("UPDATE PROJECTS SET name = :name, description = :description where id = :projectId",
                 Map.of("name",projectDTO.getName(),
                         "description",projectDTO.getDescription(),
-                        "projectId", projectDTO.getId()));
+                        "projectId", projectDTO.getId()));*/
+        return em.merge(project);
     }
 
     public void deleteProject(Integer projectId){
-        jdbcTemplate.update("Delete FROM Projects where id = :projectId",
-                Map.of("projectId",projectId));
+        /**jdbcTemplate.update("Delete FROM Projects where id = :projectId",
+                Map.of("projectId",projectId));*/
+        em.createQuery("DELETE from Projects where id = :projectid", Project.class)
+                .setParameter("projectid",projectId)
+                .getResultList();
     }
 
 }

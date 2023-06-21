@@ -2,6 +2,8 @@ package it.intesys.academy.service;
 
 import it.intesys.academy.dto.IssueDTO;
 import it.intesys.academy.dto.ProjectDTO;
+import it.intesys.academy.entity.Project;
+import it.intesys.academy.mapper.ProjectMapper;
 import it.intesys.academy.repository.IssueRepository;
 import it.intesys.academy.repository.ProjectRepository;
 import org.slf4j.Logger;
@@ -9,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -24,20 +27,23 @@ public class ProjectService {
 
     private final UserProjectService userProjectService;
 
+    private final ProjectMapper projectMapper;
+
     public ProjectService(ProjectRepository projectRepository, IssueRepository issueRepository, SettingsService settingsService,
-        UserProjectService userProjectService) {
+        UserProjectService userProjectService, ProjectMapper projectMapper) {
 
         this.projectRepository = projectRepository;
         this.issueRepository = issueRepository;
         this.settingsService = settingsService;
         this.userProjectService = userProjectService;
+        this.projectMapper = projectMapper;
     }
 
     public ProjectDTO readProjectWithIssue(int projectId, String username) {
 
         if (userProjectService.canThisUserReadThisProject(username, projectId))
 
-            return projectRepository.readProject(projectId);
+            return projectMapper.toDTO(projectRepository.readProject(projectId));
 
         throw new RuntimeException("Security constraints violation");
 
@@ -50,7 +56,7 @@ public class ProjectService {
     }
 
     private List<ProjectDTO> readProjectsWithIssues(List<Integer> userProjectIds) {
-
+        /**
         List<ProjectDTO> userProjects = projectRepository.readProjects(userProjectIds);
 
         HashMap<Integer, ProjectDTO> mapProjects = new HashMap<>();
@@ -73,21 +79,27 @@ public class ProjectService {
         }
 
         return userProjects;
-
+         */
+        List<Project> userProjectEntity = projectRepository.readProjects(userProjectIds);
+        List<ProjectDTO> userProjectDTO = userProjectEntity.stream()
+                                            .map(projectMapper::toDTO)
+                                            .toList();
+        return userProjectDTO;
     }
 
     public ProjectDTO createProject(ProjectDTO projectDTO, String username){
-        int projectId = projectRepository.createProject(projectDTO);
-        userProjectService.createUserProject(projectId,username);
-        return projectRepository.readProject(projectId);
+        Project project = projectMapper.toEntity(projectDTO);
+        project = projectRepository.createProject(project);
+        userProjectService.createUserProject(project.getId(),username);
+        return projectMapper.toDTO(project);
     }
 
     public ProjectDTO updateProject(ProjectDTO projectDTO, String username, Integer projectId){
-        if(!userProjectService.canThisUserReadThisProject(username,projectId)){
+        Project project = projectMapper.toEntity(projectDTO);
+        if(!userProjectService.canThisUserReadThisProject(username,project.getId())){
             throw new RuntimeException("errore");
         }
-        projectRepository.updateRepository(projectDTO);
-        return projectRepository.readProject(projectId);
+        return projectMapper.toDTO(projectRepository.updateRepository(project));
     }
 
     public void deleteProject(Integer projectId, String username){
