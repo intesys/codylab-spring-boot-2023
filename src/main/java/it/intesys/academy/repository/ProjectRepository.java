@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 @Repository
+@Transactional
 public class ProjectRepository {
 
 private final EntityManager em;
@@ -47,7 +48,6 @@ private final EntityManager em;
     public Project updateProject(Project project) {
         return em.merge(project);
     }
-    @Transactional
     public void deleteProject(Integer projectId) {
         em.createNativeQuery("DELETE FROM Comment c WHERE issueId IN (SELECT i.id FROM Issue i WHERE i.projectId = :projectId)", Project.class)
                 .setParameter("projectId", projectId)
