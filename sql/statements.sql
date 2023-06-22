@@ -5,9 +5,9 @@ CREATE TABLE Project (
                          PRIMARY KEY (id)
 );
 
-INSERT INTO Project (name, description) VALUES ('First Project', 'This is a description of a the 1st project');
-INSERT INTO Project (name, description) VALUES ('Second Project', 'Description of a the 2nd project');
-
+INSERT INTO Project (name, description) VALUES ('First Project', 'This is a description of the 1st project');
+INSERT INTO Project (name, description) VALUES ('Second Project', 'This is a description is a of the 2nd project');
+INSERT INTO Project (name, description) VALUES ('Third Project', 'This is a description of the 3rd project');
 -----------------------------------------------------------------------
 
 CREATE TABLE Issue (
@@ -20,8 +20,12 @@ CREATE TABLE Issue (
                        FOREIGN KEY (projectId) REFERENCES Project(id)
 );
 
-INSERT INTO Issue (name, description, author, projectId) VALUES ('Form validation problem', 'Email is not validated', 'Enrico Oliosi', 1);
-
+INSERT INTO Issue (name, description, author, projectId) VALUES ('Issue1', 'description of issue1', 'Gino', 1);
+INSERT INTO Issue (name, description, author, projectId) VALUES ('Issue2', 'description of issue2', 'Mino', 1);
+INSERT INTO Issue (name, description, author, projectId) VALUES ('Issue3', 'description of issue3', 'Pino', 2);
+INSERT INTO Issue (name, description, author, projectId) VALUES ('Issue4', 'description of issue4', 'Dino', 2);
+INSERT INTO Issue (name, description, author, projectId) VALUES ('Issue5', 'description of issue5', 'Gino', 3);
+INSERT INTO Issue (name, description, author, projectId) VALUES ('Issue6', 'description of issue6', 'Dino', 3);
 
 
 -----------------------------------------------------------------------
@@ -34,8 +38,9 @@ CREATE TABLE UserProject (
                              FOREIGN KEY (projectId) REFERENCES Project(id)
 );
 
-INSERT INTO UserProject (username, projectId) VALUES ('eoliosi', 1);
-INSERT INTO UserProject (username, projectId) VALUES ('ecostanzi', 2);
+INSERT INTO UserProject (username, projectId) VALUES ('mattia', 1);
+INSERT INTO UserProject (username, projectId) VALUES ('zeno', 2);
+INSERT INTO UserProject (username, projectId) VALUES ('alessia', 3);
 
 CREATE TABLE Comment (
                          id int not null auto_increment,
@@ -47,5 +52,8 @@ CREATE TABLE Comment (
 );
 
 
-insert into Comment (text, author, issueId) VALUES ('This is a comment', 'ecostanzi', 1);
-insert into Comment (text, author, issueId) VALUES ('This is another comment', 'ecostanzi', 1);
+insert into Comment (text, author, issueId) VALUES ('This is the first comment', 'alessia', 1);
+insert into Comment (text, author, issueId) VALUES ('This is the second comment', 'alessia', 1);
+insert into Comment (text, author, issueId) VALUES ('This is the first comment', 'zeno', 2);
+insert into Comment (text, author, issueId) VALUES ('This is the second comment', 'zeno', 2);
+insert into Comment (text, author, issueId) VALUES ('This is the first comment', 'mattia', 3);

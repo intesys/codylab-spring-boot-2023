@@ -1,6 +1,7 @@
 package it.intesys.academy.repository;
 
 import it.intesys.academy.dto.UserProjectDTO;
+import jakarta.persistence.EntityManager;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -15,9 +16,11 @@ public class UserProjectRepository {
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
 
-    public UserProjectRepository(NamedParameterJdbcTemplate jdbcTemplate) {
+    private final EntityManager em;
 
+    public UserProjectRepository(NamedParameterJdbcTemplate jdbcTemplate, EntityManager em) {
         this.jdbcTemplate = jdbcTemplate;
+        this.em = em;
     }
 
     public Optional<UserProjectDTO> usernameProjectVisibility(String username, Integer projectId) {

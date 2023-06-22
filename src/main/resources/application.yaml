@@ -6,6 +6,9 @@ server:
 spring:
   datasource:
     driver-class-name: org.h2.Driver
-    url: jdbc:h2:~/issue-tracker
+    url: jdbc:h2:C:\Users\biond\OneDrive\Desktop\database\maindb
     username: sa
     password: password
+  jpa:
+    show-sql: true
+    dialect: org.hibernate.dialect.H2Dialect
