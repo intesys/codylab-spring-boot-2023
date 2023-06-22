@@ -46,25 +46,25 @@ public class CommentService {
 
     public CommentDTO getComment(String userName, Integer commentId){
         Comments comments = commentRepository.readComment(commentId);
-        IssueDTO issue = issueService.getIssue(comments.getIssueId(),userName);
+        IssueDTO issue = issueService.getIssue(comments.getIssue().getId(),userName);
         return commentMapper.toDTO(comments);
     }
 
     public CommentDTO createComment(CommentDTO commentDTO, String username){
         Comments comment = commentMapper.toEntity(commentDTO);
-        IssueDTO issue = issueService.getIssue(comment.getIssueId(),username);
+        IssueDTO issue = issueService.getIssue(comment.getIssue().getId(),username);
         return commentMapper.toDTO(commentRepository.insertComment(comment));
     }
 
     public CommentDTO updateComment(CommentDTO commentDTO, String username){
         Comments comment = commentMapper.toEntity(commentDTO);
-        IssueDTO issue = issueService.getIssue(comment.getIssueId(),username);
+        IssueDTO issue = issueService.getIssue(comment.getIssue().getId(),username);
         return commentMapper.toDTO(commentRepository.updateComment(comment));
     }
 
     public void deleteComment(Integer commentId, String username){
         Comments comment = commentRepository.readComment(commentId);
-        IssueDTO issue = issueService.getIssue(comment.getIssueId(),username);
+        IssueDTO issue = issueService.getIssue(comment.getIssue().getId(),username);
         commentRepository.removeComment(commentId);
     }
 

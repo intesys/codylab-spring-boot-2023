@@ -1,6 +1,8 @@
 package it.intesys.academy.repository;
 
 import it.intesys.academy.dto.UserProjectDTO;
+import it.intesys.academy.entity.User_Projects;
+import jakarta.persistence.EntityManager;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -14,34 +16,47 @@ public class UserProjectRepository {
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
 
-    public UserProjectRepository(NamedParameterJdbcTemplate jdbcTemplate) {
+    private final EntityManager em;
+
+    public UserProjectRepository(NamedParameterJdbcTemplate jdbcTemplate, EntityManager em) {
 
         this.jdbcTemplate = jdbcTemplate;
+        this.em = em;
     }
 
-    public Optional<UserProjectDTO> usernameProjectVisibility(String username, Integer projectId) {
+    public Optional<User_Projects> usernameProjectVisibility(String username, Integer projectId) {
 
-        UserProjectDTO project = jdbcTemplate.queryForObject("SELECT id FROM User_Projects where projectId = (:projectId) and username = (:username)",
+        User_Projects userProjects = em.createQuery("FROM User_Projects where projectId = (:projectId) and username = (:username)",User_Projects.class)
+                .setParameter("projectId", projectId)
+                .setParameter("username", username)
+                .getSingleResult();
 
-                                                                Map.of("projectId", projectId, "username", username),
-
-                                                                BeanPropertyRowMapper.newInstance(UserProjectDTO.class));
-
-        return Optional.ofNullable(project);
+        return Optional.ofNullable(userProjects);
     }
 
-    public List<UserProjectDTO> getUserProjects(String username) {
+    public List<User_Projects> getUserProjects(String username) {
 
-        List<UserProjectDTO> projects = jdbcTemplate.query("SELECT id, username, projectId FROM User_Projects where username = (:username)",
-                Map.of("username", username),
-                BeanPropertyRowMapper.newInstance(UserProjectDTO.class));
-
-        return projects;
+        return em.createQuery("from User_Projects where username=:username",User_Projects.class)
+                .setParameter("username",username)
+                .getResultList();
     }
 
-    public void insertUserProject(Integer projectId, String userName){
-        jdbcTemplate.update("INSERT INTO User_Projects (username, projectId) Values (:username,:projectId)",
-                Map.of("username",userName, "projectId", projectId));
+    public User_Projects getUserProjectsById(Integer userProjectId){
+        return em.find(User_Projects.class,userProjectId);
+    }
+
+    public User_Projects insertUserProject(User_Projects userProjects){
+        em.persist(userProjects);
+        em.flush();
+        return userProjects;
+    }
+
+    public User_Projects updateUserProject(User_Projects userProjects){
+        return em.merge(userProjects);
+    }
+
+    public void deleteUserProject(Integer userProjectId){
+        em.remove(getUserProjectsById(userProjectId));
     }
 
 }

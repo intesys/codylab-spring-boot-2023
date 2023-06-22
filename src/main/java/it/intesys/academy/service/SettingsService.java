@@ -2,6 +2,7 @@ package it.intesys.academy.service;
 
 import it.intesys.academy.dto.ProjectDTO;
 import it.intesys.academy.dto.UserProjectDTO;
+import it.intesys.academy.entity.User_Projects;
 import it.intesys.academy.repository.UserProjectRepository;
 import org.springframework.stereotype.Service;
 
@@ -20,9 +21,9 @@ public class SettingsService {
     }
 
     public List<Integer> getUserProjects(String username) {
-        List<UserProjectDTO> projects = userProjectRepository.getUserProjects(username);
+        List<User_Projects> projects = userProjectRepository.getUserProjects(username);
         List<Integer> projectsIds = projects.stream()
-                .map(UserProjectDTO::getProjectId)
+                .map(User_Projects::getProjectId)
                 .toList();
         return projectsIds;
     }

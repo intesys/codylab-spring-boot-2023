@@ -29,13 +29,13 @@ public class IssueRepository {
     }
 
     public List<Issues> readIssues(List<Integer> projectIds) {
-        return em.createQuery("from Issues where projectid in :projectIds",Issues.class)
+        return em.createQuery("from Issues where project.id in :projectIds",Issues.class)
                 .setParameter("projectIds",projectIds)
                 .getResultList();
     }
 
     public Issues getIssue(Integer projectIds) {
-        return em.createQuery("from Issues where projectid = :projectIds",Issues.class)
+        return em.createQuery("from Issues where project.id = :projectIds",Issues.class)
                 .setParameter("projectIds",projectIds)
                 .getSingleResult();
     }

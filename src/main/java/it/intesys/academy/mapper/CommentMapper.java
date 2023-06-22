@@ -2,6 +2,7 @@ package it.intesys.academy.mapper;
 
 import it.intesys.academy.dto.CommentDTO;
 import it.intesys.academy.entity.Comments;
+import it.intesys.academy.entity.Issues;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -11,7 +12,9 @@ public class CommentMapper {
         comment.setId(commentDTO.getId());
         comment.setDescription(commentDTO.getDescription());
         comment.setAuthor(commentDTO.getAuthor());
-        comment.setIssueId(commentDTO.getIssueId());
+        Issues issues = new Issues();
+        issues.setId(commentDTO.getIssueId());
+        comment.setIssue(issues);
         return comment;
     }
 
@@ -20,7 +23,7 @@ public class CommentMapper {
         commentDTO.setId(comment.getId());
         commentDTO.setDescription(comment.getDescription());
         commentDTO.setAuthor(comment.getAuthor());
-        commentDTO.setIssueId(comment.getIssueId());
+        commentDTO.setIssueId(comment.getIssue().getId());
         return commentDTO;
     }
 }

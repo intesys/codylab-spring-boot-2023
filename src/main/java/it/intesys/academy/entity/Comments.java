@@ -16,8 +16,8 @@ public class Comments {
     @Column(name="author")
     private String author;
 
-    @Column(name="issueid")
-    private Integer issueId;
+    @ManyToOne
+    private Issues issue;
 
     public void setId(Integer id) {
         this.id = id;
@@ -29,10 +29,6 @@ public class Comments {
 
     public void setAuthor(String author) {
         this.author = author;
-    }
-
-    public void setIssueId(Integer issueId) {
-        this.issueId = issueId;
     }
 
     public Integer getId() {
@@ -47,7 +43,11 @@ public class Comments {
         return author;
     }
 
-    public Integer getIssueId() {
-        return issueId;
+    public Issues getIssue() {
+        return issue;
+    }
+
+    public void setIssue(Issues issue) {
+        this.issue = issue;
     }
 }

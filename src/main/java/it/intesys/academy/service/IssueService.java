@@ -62,7 +62,7 @@ public class IssueService {
         Issues issue = issueRepository.readIssue(issueId);
         //log.info(issue.getNome());
 
-        if(projectsId.contains(issue.getProjectid())){
+        if(projectsId.contains(issue.getProject().getId())){
             Issues result =  issueRepository.readIssue(issueId);
             return issueMapper.toDTO(result);
         }
@@ -77,11 +77,8 @@ public class IssueService {
     }
 
     public IssueDTO updateIssue(IssueDTO issueDTO, String username, Integer issueId){
-        int projectIssueId = issueRepository.readIssue(issueId).getProjectid();
+        int projectIssueId = issueRepository.readIssue(issueId).getProject().getId();
         if(!userProjectService.canThisUserReadThisProject(username, projectIssueId)){
-            throw new RuntimeException("CreateIssues error");
-        }
-        if(!userProjectService.canThisUserReadThisProject(username, issueDTO.getProjectId())){
             throw new RuntimeException("CreateIssues error");
         }
         if(!(issueDTO.getId() == issueId)){
@@ -93,7 +90,7 @@ public class IssueService {
     }
 
     public void deleteIssue(String username, Integer issueId){
-        int projectIssueId = issueRepository.readIssue(issueId).getProjectid();
+        int projectIssueId = issueRepository.readIssue(issueId).getProject().getId();
         if(!userProjectService.canThisUserReadThisProject(username, projectIssueId)){
             throw new RuntimeException("CreateIssues error");
         }

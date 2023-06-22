@@ -25,13 +25,13 @@ public class CommentRepository {
      }
 
      public List<Comments> getComments(Integer issueId){
-         return em.createQuery("from Comments where issueId = :issueId", Comments.class)
+         return em.createQuery("from Comments where issue.id = :issueId", Comments.class)
                  .setParameter("issueId",issueId)
                  .getResultList();
      }
 
      public Comments getComment(Integer issueId){
-         return em.createQuery("from Comments where issueId = :issueId", Comments.class)
+         return em.createQuery("from Comments where issue.id = :issueId", Comments.class)
                  .setParameter("issueId",issueId)
                  .getSingleResult();
      }

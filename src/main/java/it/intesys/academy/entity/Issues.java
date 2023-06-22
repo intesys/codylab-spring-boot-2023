@@ -20,8 +20,8 @@ public class Issues {
     @Column(name = "author")
     private String author;
 
-    @Column(name = "projectid")
-    private Integer projectid;
+    @ManyToOne
+    private Projects project;
 
     public void setId(Integer id) {
         this.id = id;
@@ -37,10 +37,6 @@ public class Issues {
 
     public void setAuthor(String author) {
         this.author = author;
-    }
-
-    public void setProjectid(Integer projectid) {
-        this.projectid = projectid;
     }
 
     public Integer getId() {
@@ -59,7 +55,11 @@ public class Issues {
         return author;
     }
 
-    public Integer getProjectid() {
-        return projectid;
+    public Projects getProject() {
+        return project;
+    }
+
+    public void setProject(Projects project) {
+        this.project = project;
     }
 }
