@@ -1,12 +1,27 @@
+CREATE TABLE Person (
+                        id int not null auto_increment,
+                        username varchar(32) not null,
+                        name varchar(64) not null,
+                        surname varchar(64) not null,
+                        PRIMARY KEY (id)
+);
+
+INSERT INTO Person (username, name, surname) VALUES ('mrossi', 'Mario', 'Rossi');
+INSERT INTO Person (username, name, surname) VALUES ('gverdi', 'Giuseppe', 'Verdi');
+
+
+-----------------------------------------------------------------------
 CREATE TABLE Project (
                          id int not null auto_increment,
                          name varchar(64) not null,
                          description varchar(255),
-                         PRIMARY KEY (id)
+                         authorId int not null,
+                         PRIMARY KEY (id),
+                         FOREIGN KEY (authorId) references Person(id)
 );
 
-INSERT INTO Project (name, description) VALUES ('First Project', 'This is a description of a the 1st project');
-INSERT INTO Project (name, description) VALUES ('Second Project', 'Description of a the 2nd project');
+INSERT INTO Project (name, description, authorId) VALUES ('First Project', 'This is a description of a the 1st project', 1);
+INSERT INTO Project (name, description, authorId) VALUES ('Second Project', 'Description of a the 2nd project', 2);
 
 -----------------------------------------------------------------------
 
@@ -28,14 +43,17 @@ INSERT INTO Issue (name, description, author, projectId) VALUES ('Form validatio
 
 CREATE TABLE UserProject (
                              id int not null auto_increment,
-                             username varchar(128) not null,
+                             personId int not null,
                              projectId int not null,
                              PRIMARY KEY (id),
-                             FOREIGN KEY (projectId) REFERENCES Project(id)
+                             FOREIGN KEY (projectId) REFERENCES Project(id),
+                             FOREIGN KEY (personId) REFERENCES Person(id)
 );
 
-INSERT INTO UserProject (username, projectId) VALUES ('eoliosi', 1);
-INSERT INTO UserProject (username, projectId) VALUES ('ecostanzi', 2);
+INSERT INTO UserProject (personId, projectId) VALUES (1, 1);
+INSERT INTO UserProject (personId, projectId) VALUES (2, 2);
+
+----------------------------------------------------------------------------
 
 CREATE TABLE Comment (
                          id int not null auto_increment,
@@ -52,26 +70,6 @@ insert into Comment (text, author, issueId) VALUES ('This is another comment', '
 
 --------------------------------------------------------------------------------
 
-CREATE TABLE Person (
-                      id int not null auto_increment,
-                      username varchar(32) not null,
-                      name varchar(64) not null,
-                      surname varchar(64) not null,
-                      PRIMARY KEY (id)
-);
 
-INSERT INTO Person (username, name, surname) VALUES ('mrossi', 'Mario', 'Rossi');
-INSERT INTO Person (username, name, surname) VALUES ('gverdi', 'Giuseppe', 'Verdi');
 
-ALTER TABLE Project ADD COLUMN (authorId int);
-
-ALTER TABLE Project ADD FOREIGN KEY (authorId) REFERENCES Person(id);
-
-UPDATE Project
-SET authorId = (SELECT ID from Person WHERE username = 'mrossi')
-WHERE ID = 1;
-
-UPDATE Project
-SET authorId = (SELECT ID from Person WHERE username = 'gverdi')
-WHERE ID = 2;
 
