@@ -3,7 +3,7 @@ package it.intesys.academy.domain;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name="UserProject")
+@Table(name="USERPROJECT")
 public class UserProject {
     public Integer getId() {
         return id;
@@ -35,10 +35,10 @@ public class UserProject {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "projectId")
+    @JoinColumn(name = "projectid")
     private Project project;
 
     @ManyToOne
-    @JoinColumn(name = "personId")
+    @JoinColumn(name = "personid")
     private Person person;
 }
