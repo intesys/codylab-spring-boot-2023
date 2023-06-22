@@ -22,20 +22,7 @@ CREATE TABLE Issue (
 
 INSERT INTO Issue (name, description, author, projectId) VALUES ('Form validation problem', 'Email is not validated', 'Enrico Oliosi', 1);
 
-
-
 -----------------------------------------------------------------------
-
-CREATE TABLE UserProject (
-                             id int not null auto_increment,
-                             username varchar(128) not null,
-                             projectId int not null,
-                             PRIMARY KEY (id),
-                             FOREIGN KEY (projectId) REFERENCES Project(id)
-);
-
-INSERT INTO UserProject (username, projectId) VALUES ('eoliosi', 1);
-INSERT INTO UserProject (username, projectId) VALUES ('ecostanzi', 2);
 
 CREATE TABLE Comment (
                          id int not null auto_increment,
@@ -60,6 +47,19 @@ CREATE TABLE Author (
                       PRIMARY KEY (id)
 );
 
+CREATE TABLE UserProject (
+                             id int not null auto_increment,
+                             username varchar(128) not null,
+                             projectId int not null,
+                             PRIMARY KEY (id),
+                             FOREIGN KEY (projectId) REFERENCES Project(id)
+);
+
+INSERT INTO UserProject (username, projectId) VALUES ('eoliosi', 1);
+INSERT INTO UserProject (username, projectId) VALUES ('ecostanzi', 2);
+
+
+
 INSERT INTO Author (username, name, surname) VALUES ('mrossi', 'Mario', 'Rossi');
 INSERT INTO Author (username, name, surname) VALUES ('gverdi', 'Giuseppe', 'Verdi');
 
@@ -74,4 +74,5 @@ WHERE ID = 1;
 UPDATE Project
 SET authorId = (SELECT ID from Author WHERE username = 'gverdi')
 WHERE ID = 2;
+
 

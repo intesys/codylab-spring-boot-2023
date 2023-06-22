@@ -1,6 +1,15 @@
 package it.intesys.academy.domain;
 
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 
 import java.util.List;
 
@@ -19,8 +28,12 @@ public class Project {
     @Column(name="description")
     private String description;
 
-    @OneToMany(mappedBy = "project")
+    @OneToMany(mappedBy = "project", cascade = CascadeType.REMOVE)
     private List<Issue> issues;
+
+    @ManyToOne
+    @JoinColumn(name="authorid")
+    private Person author;
 
     public Integer getId() {
         return id;
@@ -53,4 +66,15 @@ public class Project {
     public void setIssues(List<Issue> issues) {
         this.issues = issues;
     }
+
+    public Person getAuthor() {
+
+        return author;
+    }
+
+    public void setAuthor(Person author) {
+
+        this.author = author;
+    }
+
 }

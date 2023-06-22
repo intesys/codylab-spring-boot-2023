@@ -8,6 +8,8 @@ public class ProjectDTO {
 
     private Integer id;
 
+    private Integer author;
+
     private String name;
 
     private String description;
@@ -71,6 +73,16 @@ public class ProjectDTO {
 
     public boolean hasSameFields(ProjectDTO projectDTO) {
         return this.name.equals(projectDTO.getName()) && this.description.equals(projectDTO.getDescription());
+    }
+
+    public Integer getAuthor() {
+
+        return author;
+    }
+
+    public void setAuthor(Integer author) {
+
+        this.author = author;
     }
 
 }
