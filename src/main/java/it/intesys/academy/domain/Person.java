@@ -11,7 +11,7 @@ import jakarta.persistence.Table;
 import java.util.List;
 
 @Entity
-@Table(name="Person")
+@Table(name="person")
 public class Person {
 
     @Id

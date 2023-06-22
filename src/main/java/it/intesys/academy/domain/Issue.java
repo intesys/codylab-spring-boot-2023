@@ -3,7 +3,7 @@ package it.intesys.academy.domain;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name="Issue")
+@Table(name="issue")
 public class Issue {
 
 

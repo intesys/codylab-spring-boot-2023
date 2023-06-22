@@ -15,9 +15,6 @@ import java.util.Map;
 import java.util.Optional;
 
 @Repository
-public interface UserProjectRepository extends ListCrudRepository<UserProject, Integer>, ListPagingAndSortingRepository<UserProject, Integer> {
-    public List<UserProject> findUserProjectsByPersonUsernameAndProjectId(String username,Integer projectId);
-
-    public List<UserProject> findUserProjectByPersonUsername(String username);
-
+public interface PersonRepository extends ListCrudRepository<Person, Integer>, ListPagingAndSortingRepository<Person, Integer> {
+    public Person findPersonByUsername(String username);
 }
