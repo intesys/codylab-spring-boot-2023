@@ -16,5 +16,5 @@ import java.util.Map;
 public interface CommentRepository extends ListCrudRepository<Comment, Integer>, ListPagingAndSortingRepository<Comment, Integer> {
 
     public List<Comment> findByIssue_Id(Integer issueId);
-    Issue findCommentById(Integer commentId);
+    Comment findCommentById(Integer commentId);
 }

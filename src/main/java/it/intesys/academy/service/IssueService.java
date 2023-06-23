@@ -21,17 +21,16 @@ public class IssueService {
 
     private final IssueRepository issueRepository;
 
-    private final CommentRepository commentRepository;
-
+    private final CommentService commentService;
     private final UserProjectService userProjectService;
 
     private final IssueMapper issueMapper;
     private final CommentMapper commentMapper;
 
-    public IssueService(IssueRepository issueRepository, CommentRepository commentRepository, UserProjectService userProjectService, IssueMapper issueMapper, CommentMapper commentMapper) {
+    public IssueService(IssueRepository issueRepository, CommentRepository commentRepository, CommentService commentService, UserProjectService userProjectService, IssueMapper issueMapper, CommentMapper commentMapper) {
 
         this.issueRepository = issueRepository;
-        this.commentRepository = commentRepository;
+        this.commentService = commentService;
         this.userProjectService = userProjectService;
         this.issueMapper = issueMapper;
         this.commentMapper = commentMapper;
@@ -63,7 +62,7 @@ public class IssueService {
             throw new RuntimeException("Security constraints violation");
         }
 
-        issueDTO.setComments(commentRepository.findByIssue_Id(issueId).stream().map(commentMapper::toDto).toList());
+        issueDTO.setComments(commentService.readCommentsByIssueId(issueId));
         return issueDTO;
 
     }
@@ -102,10 +101,10 @@ public class IssueService {
         if (!userProjectService.canThisUserReadThisProject(username, dbIssue.getProject().getId())) {
             throw new RuntimeException("Security constraints violation");
         }
-        for (Comment comment : commentRepository.findByIssue_Id(issueId)) {
-            commentRepository.deleteById(comment.getId());
+
+        for (Comment comment : commentService.readCommentsByIssueId(issueId).stream().map(commentMapper::toEntity).toList()) {
+            commentService.deleteComment(comment.getId(), username);
         }
-        issueRepository.deleteById(issueId);
     }
 
 }

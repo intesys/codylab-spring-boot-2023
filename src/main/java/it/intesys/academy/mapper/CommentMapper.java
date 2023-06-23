@@ -13,7 +13,7 @@ public class CommentMapper {
     public Comment toEntity(CommentDTO commentDTO) {
         Comment comment = new Comment();
         comment.setId(commentDTO.getId());
-        comment.setText(comment.getText());
+        comment.setText(commentDTO.getText());
         comment.setAuthor(commentDTO.getAuthor());
         Issue issue = new Issue();
         issue.setId(commentDTO.getIssueId());

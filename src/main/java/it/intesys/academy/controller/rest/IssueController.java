@@ -32,7 +32,7 @@ public class IssueController {
 
     @GetMapping("/issues/{issueId}")
     public ResponseEntity<IssueDTO> getIssue(@PathVariable int issueId,
-                                                 @RequestHeader(name = "X-User-Name") String username) {
+                                             @RequestHeader(name = "X-User-Name") String username) {
 
         return ResponseEntity.ok(issueService.readIssueWithComments(issueId, username));
     }
@@ -40,7 +40,7 @@ public class IssueController {
 
     @PostMapping("/issues")
     public ResponseEntity<IssueDTO> createIssue(@RequestBody IssueDTO issueDTO,
-                                                    @RequestHeader(name = "X-User-Name") String username) {
+                                                @RequestHeader(name = "X-User-Name") String username) {
         if (issueDTO.getId() != null) {
             log.error("Bad request, id must be null when creating a new issue");
             return ResponseEntity.badRequest().build();
@@ -56,7 +56,7 @@ public class IssueController {
 
     @PutMapping("/issues/{issueId}")
     public ResponseEntity<IssueDTO> updateIssue(@PathVariable int issueId, @RequestBody IssueDTO issueDTO,
-                                                    @RequestHeader(name = "X-User-Name") String username) {
+                                                @RequestHeader(name = "X-User-Name") String username) {
         if (issueDTO.getId() == null) {
             log.error("Bad request, id must not be null when updating a issue");
             return ResponseEntity.badRequest().build();
@@ -70,7 +70,7 @@ public class IssueController {
     }
     @DeleteMapping("/issues/{issueId}")
     public ResponseEntity<Void> deleteIssue(@PathVariable Integer issueId,
-                                              @RequestHeader("X-User-Name") String username) {
+                                            @RequestHeader("X-User-Name") String username) {
         issueService.deleteIssue(issueId, username);
         return new ResponseEntity<>(HttpStatus.OK);
     }
