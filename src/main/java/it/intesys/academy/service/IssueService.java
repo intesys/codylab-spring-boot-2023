@@ -1,7 +1,9 @@
 package it.intesys.academy.service;
 
+import it.intesys.academy.domain.Comment;
 import it.intesys.academy.domain.Issue;
 import it.intesys.academy.dto.IssueDTO;
+import it.intesys.academy.mapper.CommentMapper;
 import it.intesys.academy.mapper.IssueMapper;
 import it.intesys.academy.repository.CommentRepository;
 import it.intesys.academy.repository.IssueRepository;
@@ -25,12 +27,15 @@ public class IssueService {
 
     private final IssueMapper issueMapper;
 
-    public IssueService(IssueRepository issueRepository, CommentRepository commentRepository, UserProjectService userProjectService, IssueMapper issueMapper) {
+    private final CommentMapper commentMapper;
+
+    public IssueService(IssueRepository issueRepository, CommentMapper commentMapper,CommentRepository commentRepository, UserProjectService userProjectService, IssueMapper issueMapper) {
 
         this.issueRepository = issueRepository;
         this.commentRepository = commentRepository;
         this.userProjectService = userProjectService;
         this.issueMapper = issueMapper;
+        this.commentMapper = commentMapper;
     }
 
     public List<IssueDTO> readIssuesByProjectId(Integer projectId, String userName) {
@@ -57,8 +62,11 @@ public class IssueService {
         if (!userProjectService.canThisUserReadThisProject(userName, issueDTO.getProjectId())) {
             throw new RuntimeException("Security constraints violation");
         }
-
-        issueDTO.setComments(commentRepository.findCommentsByIssueId(issueId));
+        List<Comment> comments = commentRepository.findCommentsByIssueId(issueId);
+        issueDTO.setComments(comments.stream()
+                .map(commentMapper::toDTO)
+                .toList()
+        );
         return issueDTO;
 
     }

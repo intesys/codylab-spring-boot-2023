@@ -1,6 +1,10 @@
 package it.intesys.academy.repository;
 
+import it.intesys.academy.domain.Comment;
+import it.intesys.academy.domain.Issue;
 import it.intesys.academy.dto.CommentDTO;
+import org.springframework.data.repository.ListCrudRepository;
+import org.springframework.data.repository.ListPagingAndSortingRepository;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -9,23 +13,8 @@ import java.util.List;
 import java.util.Map;
 
 @Repository
-public class CommentRepository {
+public interface CommentRepository extends ListCrudRepository<Comment, Integer>, ListPagingAndSortingRepository<Comment, Integer> {
+    public List<Comment> findCommentsByIssueId(Integer issueId);
 
-    private final NamedParameterJdbcTemplate jdbcTemplate;
-
-    public CommentRepository(NamedParameterJdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
-
-    public List<CommentDTO> findCommentsByIssueId(Integer issueId) {
-        List<CommentDTO> comments =
-                jdbcTemplate.query("SELECT id, description, author, issueId FROM Comment WHERE issueId = :issueId",
-
-                        Map.of("issueId", issueId),
-
-                        BeanPropertyRowMapper.newInstance(CommentDTO.class));
-
-        return comments;
-
-    }
+    public Comment findCommentById(Integer commentId);
 }
