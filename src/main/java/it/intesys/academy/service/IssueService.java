@@ -104,7 +104,18 @@ public class IssueService {
             throw new RuntimeException("Security constraints violation");
         }
 
-        issueRepository.delete(issueRepository.findIssueById(issueId));
+        issueRepository.deleteById(issueId);
+    }
+
+    public void deleteAllFromIssue(Integer issueId, String username) {
+        Issue dbIssue = issueRepository.findIssueById(issueId);
+        if (!userProjectService.canThisUserReadThisProject(username, dbIssue.getProject().getId())) {
+            throw new RuntimeException("Security constraints violation");
+        }
+
+        List<Comment> comments = commentRepository.findCommentsByIssueIdIn(List.of(issueId));
+        commentRepository.deleteAllById(comments.stream().map(Comment::getId).toList());
+        issueRepository.deleteById(issueId);
     }
 
 }

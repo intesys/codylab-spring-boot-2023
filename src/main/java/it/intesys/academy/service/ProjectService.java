@@ -3,6 +3,7 @@ package it.intesys.academy.service;
 import it.intesys.academy.domain.Comment;
 import it.intesys.academy.domain.Issue;
 import it.intesys.academy.domain.Project;
+import it.intesys.academy.domain.UserProject;
 import it.intesys.academy.dto.IssueDTO;
 import it.intesys.academy.dto.ProjectDTO;
 import it.intesys.academy.mapper.CommentMapper;
@@ -11,6 +12,7 @@ import it.intesys.academy.mapper.ProjectMapper;
 import it.intesys.academy.repository.CommentRepository;
 import it.intesys.academy.repository.IssueRepository;
 import it.intesys.academy.repository.ProjectRepository;
+import it.intesys.academy.repository.UserProjectRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -36,7 +38,9 @@ public class ProjectService {
 
     private final CommentMapper commentMapper;
 
-    public ProjectService(ProjectRepository projectRepository, IssueRepository issueRepository, CommentRepository commentRepository,
+    private final UserProjectRepository userProjectRepository;
+
+    public ProjectService(UserProjectRepository userProjectRepository,ProjectRepository projectRepository, IssueRepository issueRepository, CommentRepository commentRepository,
                           UserProjectService userProjectService, ProjectMapper projectMapper, IssueMapper issueMapper, CommentMapper commentMapper) {
 
         this.projectRepository = projectRepository;
@@ -46,6 +50,7 @@ public class ProjectService {
         this.issueMapper = issueMapper;
         this.commentRepository = commentRepository;
         this.commentMapper = commentMapper;
+        this.userProjectRepository = userProjectRepository;
     }
 
     public ProjectDTO readProjectWithIssue(int projectId, String username) {
@@ -141,6 +146,23 @@ public class ProjectService {
             throw new RuntimeException("Security constraints violation");
         }
 
+        projectRepository.deleteById(projectId);
+    }
+
+    public void deleteAllFromProject(Integer projectId, String username){
+        if (!userProjectService.canThisUserReadThisProject(username, projectId)) {
+            throw new RuntimeException("Security constraints violation");
+        }
+        List<UserProject> userProjects = userProjectRepository.findUserProjectsByPersonUsernameAndProjectId(username,projectId);
+        List<Issue> issues = issueRepository.findByProjectIdIn(List.of(projectId));
+        List<Integer> issuesIds = issues.stream()
+                .map(Issue::getId)
+                .toList();
+        List<Comment> comments = commentRepository.findCommentsByIssueIdIn(issuesIds);
+
+        commentRepository.deleteAllById(comments.stream().map(Comment::getId).toList());
+        issueRepository.deleteAllById(issuesIds);
+        userProjectRepository.deleteAllById(userProjects.stream().map(UserProject::getId).toList());
         projectRepository.deleteById(projectId);
     }
 
