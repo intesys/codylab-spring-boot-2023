@@ -1,7 +1,9 @@
 package it.intesys.academy.service;
 
+import it.intesys.academy.domain.Comment;
 import it.intesys.academy.domain.Issue;
 import it.intesys.academy.dto.IssueDTO;
+import it.intesys.academy.mapper.CommentMapper;
 import it.intesys.academy.mapper.IssueMapper;
 import it.intesys.academy.repository.CommentRepository;
 import it.intesys.academy.repository.IssueRepository;
@@ -15,7 +17,7 @@ import java.util.stream.Collectors;
 @Service
 public class IssueService {
 
-    private static final Logger log = LoggerFactory.getLogger(IssueService.class);
+    private final Logger log = LoggerFactory.getLogger(IssueService.class);
 
     private final IssueRepository issueRepository;
 
@@ -25,12 +27,14 @@ public class IssueService {
 
     private final IssueMapper issueMapper;
 
-    public IssueService(IssueRepository issueRepository, CommentRepository commentRepository, UserProjectService userProjectService, IssueMapper issueMapper) {
+    private final CommentMapper commentMapper;
 
+    public IssueService(IssueRepository issueRepository, CommentRepository commentRepository, UserProjectService userProjectService, IssueMapper issueMapper, CommentMapper commentMapper) {
         this.issueRepository = issueRepository;
         this.commentRepository = commentRepository;
         this.userProjectService = userProjectService;
         this.issueMapper = issueMapper;
+        this.commentMapper = commentMapper;
     }
 
     public List<IssueDTO> readIssuesByProjectId(Integer projectId, String userName) {
@@ -41,7 +45,7 @@ public class IssueService {
             throw new RuntimeException("Security constraints violation");
         }
 
-        return issueRepository.readIssues(List.of(projectId))
+        return issueRepository.findById(projectId)
                 .stream()
                 .map(issueMapper::toDto)
                 .collect(Collectors.toList());
@@ -51,14 +55,12 @@ public class IssueService {
     public IssueDTO readIssueWithComments(Integer issueId, String userName) {
 
         log.info("Reading issue {}", issueId);
-
-        IssueDTO issueDTO = issueMapper.toDto(issueRepository.readIssue(issueId));
-
+        IssueDTO issueDTO = issueMapper.toDto(issueRepository.findIssueById(issueId));
         if (!userProjectService.canThisUserReadThisProject(userName, issueDTO.getProjectId())) {
             throw new RuntimeException("Security constraints violation");
         }
-
-        issueDTO.setComments(commentRepository.findCommentsByIssueId(issueId));
+        List<Comment> comments = commentRepository.findCommentsByIssueId(issueId);
+        issueDTO.setComments(comments.stream().map(commentMapper::toDto).toList());
         return issueDTO;
 
     }
@@ -68,7 +70,7 @@ public class IssueService {
         log.info("Creating for user {}", username);
 
 
-        Issue issue = issueRepository.createIssue(issueMapper.toEntity(issueDTO));
+        Issue issue = issueRepository.save(issueMapper.toEntity(issueDTO));
 
         return issueMapper.toDto(issue);
     }
@@ -79,24 +81,35 @@ public class IssueService {
             throw new RuntimeException("Security constraints violation");
         }
 
-        Issue dbIssue = issueRepository.readIssue(issueDTO.getId());
-        if ( dbIssue.getProject().getId() != issueDTO.getProjectId() &&
+        Issue dbIssue = issueRepository.findIssueById(issueDTO.getId());
+        if (dbIssue.getProject().getId() != issueDTO.getProjectId() &&
                 !userProjectService.canThisUserReadThisProject(userName, dbIssue.getProject().getId())) {
             throw new RuntimeException("Security constraints violation");
         }
 
-        Issue updatedIssue = issueRepository.updateIssue(issueMapper.toEntity(issueDTO));
+        Issue updatedIssue = issueRepository.save(issueMapper.toEntity(issueDTO));
 
         return issueMapper.toDto(updatedIssue);
     }
 
     public void deleteIssue(Integer issueId, String username) {
-        Issue dbIssue = issueRepository.readIssue(issueId);
+        Issue dbIssue = issueRepository.findIssueById(issueId);
         if (!userProjectService.canThisUserReadThisProject(username, dbIssue.getProject().getId())) {
             throw new RuntimeException("Security constraints violation");
         }
 
-        issueRepository.deleteIssue(issueId);
+        issueRepository.delete(issueRepository.findIssueById(issueId));
     }
 
+    public void deleteAllFromIssue(Integer issueId, String username) {
+        Issue dbIssue = issueRepository.findIssueById(issueId);
+        if (!userProjectService.canThisUserReadThisProject(username, dbIssue.getProject().getId())) {
+            throw new RuntimeException("Security constraints violation");
+        }
+
+        List<Comment> comments = commentRepository.findCommentsByIssueIdIn(List.of(issueId));
+        commentRepository.deleteAllById(comments.stream().map(Comment::getId).toList());
+        issueRepository.deleteById(issueId);
+
+    }
 }

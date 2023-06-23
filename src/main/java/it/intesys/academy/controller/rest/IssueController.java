@@ -1,5 +1,4 @@
 package it.intesys.academy.controller.rest;
-
 import it.intesys.academy.dto.IssueDTO;
 import it.intesys.academy.service.IssueService;
 import org.slf4j.Logger;
@@ -8,14 +7,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
 @RequestMapping("/api")
 public class IssueController {
 
-    private final static Logger log = LoggerFactory.getLogger(IssueController.class);
+    private final  Logger log = LoggerFactory.getLogger(IssueController.class);
 
     private final IssueService issueService;
 

@@ -27,15 +27,19 @@ public class ProjectService {
 
     private final IssueMapper issueMapper;
 
-    public ProjectService(ProjectRepository projectRepository, IssueRepository issueRepository,
-                          UserProjectService userProjectService, ProjectMapper projectMapper, IssueMapper issueMapper) {
+    private final IssueService issueService;
 
+    public ProjectService(ProjectRepository projectRepository, IssueRepository issueRepository, UserProjectService userProjectService, ProjectMapper projectMapper, IssueMapper issueMapper, IssueService issueService) {
         this.projectRepository = projectRepository;
         this.issueRepository = issueRepository;
         this.userProjectService = userProjectService;
         this.projectMapper = projectMapper;
         this.issueMapper = issueMapper;
+        this.issueService = issueService;
     }
+
+
+
 
     public ProjectDTO readProjectWithIssue(int projectId, String username) {
 
@@ -43,7 +47,7 @@ public class ProjectService {
 
         if (userProjectService.canThisUserReadThisProject(username, projectId)) {
             ProjectDTO projectDTO = projectMapper.toDto(projectRepository.findById(projectId).get());
-            issueRepository.readIssues(List.of(projectId))
+            issueRepository.findByProjectIdIn(List.of(projectId))
                     .forEach(issue -> projectDTO.addIssue(issueMapper.toDto(issue)));
             return projectDTO;
         }
@@ -122,6 +126,7 @@ public class ProjectService {
         if (!userProjectService.canThisUserReadThisProject(username, projectId)) {
             throw new RuntimeException("Security constraints violation");
         }
+
 
         projectRepository.deleteById(projectId);
     }

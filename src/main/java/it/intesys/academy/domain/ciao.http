@@ -1,4 +1,0 @@
-GET http://localhost:8081/api/projects
-Accept: application/json
-X-User-Name: gverdi
-Content-Type: application/json

@@ -2,6 +2,9 @@ package it.intesys.academy.domain;
 
 import jakarta.persistence.*;
 
+
+import java.util.List;
+
 @Entity
 @Table(name="Issue")
 public class Issue {
@@ -21,6 +24,7 @@ public class Issue {
 
     @Column(name="author")
     private String author;
+
 
     @ManyToOne
     @JoinColumn(name="projectid")

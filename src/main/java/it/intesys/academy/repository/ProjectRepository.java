@@ -10,7 +10,11 @@ import java.util.List;
 @Repository
 public interface ProjectRepository extends ListCrudRepository<Project, Integer>, ListPagingAndSortingRepository<Project, Integer> {
 
-    /*
+    List<Project> findByIdIn(List<Integer> ids);
+
+}
+
+     /*
     private final EntityManager em;
     private final NamedParameterJdbcTemplate jdbcTemplate;
     public ProjectRepository(NamedParameterJdbcTemplate jdbcTemplate, EntityManager em) {
@@ -18,8 +22,6 @@ public interface ProjectRepository extends ListCrudRepository<Project, Integer>,
         this.jdbcTemplate = jdbcTemplate;
     }
     */
-
-    public List<Project> findByIdIn(List<Integer> ids);
 
     /*
     public List<Project> readProjects(List<Integer> userProjectIds) {
@@ -31,7 +33,7 @@ public interface ProjectRepository extends ListCrudRepository<Project, Integer>,
     }
      */
 
-    //public Project findById(int projectId);
+//public Project findById(int projectId);
     /*
     public Project readProject(int projectId) {
         return em.find(Project.class, projectId);
@@ -66,5 +68,3 @@ public interface ProjectRepository extends ListCrudRepository<Project, Integer>,
 
     }
      */
-
-}
