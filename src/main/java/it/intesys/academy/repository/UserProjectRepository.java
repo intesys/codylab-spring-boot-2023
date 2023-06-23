@@ -17,4 +17,5 @@ import java.util.Optional;
 @Repository
 public interface UserProjectRepository extends ListCrudRepository<UserProject, Integer>, ListPagingAndSortingRepository<UserProject, Integer> {
     public List<UserProject> findAllByPerson_Id(Integer userId);
+    public List<UserProject> findByProject_Id(Integer projectId);
 }

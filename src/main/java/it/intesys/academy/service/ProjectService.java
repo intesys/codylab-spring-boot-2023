@@ -1,6 +1,8 @@
 package it.intesys.academy.service;
 
+import it.intesys.academy.domain.Issue;
 import it.intesys.academy.domain.Project;
+import it.intesys.academy.domain.UserProject;
 import it.intesys.academy.dto.ProjectDTO;
 import it.intesys.academy.mapper.IssueMapper;
 import it.intesys.academy.mapper.ProjectMapper;
@@ -26,15 +28,17 @@ public class ProjectService {
     private final ProjectMapper projectMapper;
 
     private final IssueMapper issueMapper;
+    private final IssueService issueService;
 
     public ProjectService(ProjectRepository projectRepository, IssueRepository issueRepository,
-                          UserProjectService userProjectService, ProjectMapper projectMapper, IssueMapper issueMapper) {
+                          UserProjectService userProjectService, ProjectMapper projectMapper, IssueMapper issueMapper, IssueService issueService) {
 
         this.projectRepository = projectRepository;
         this.issueRepository = issueRepository;
         this.userProjectService = userProjectService;
         this.projectMapper = projectMapper;
         this.issueMapper = issueMapper;
+        this.issueService = issueService;
     }
 
     public ProjectDTO readProjectWithIssue(int projectId, String username) {
@@ -43,7 +47,7 @@ public class ProjectService {
 
         if (userProjectService.canThisUserReadThisProject(username, projectId)) {
             ProjectDTO projectDTO = projectMapper.toDto(projectRepository.findById(projectId).get());
-            issueRepository.readIssues(List.of(projectId))
+            issueRepository.findByProject_Id(projectId)
                     .forEach(issue -> projectDTO.addIssue(issueMapper.toDto(issue)));
             return projectDTO;
         }
@@ -122,7 +126,10 @@ public class ProjectService {
         if (!userProjectService.canThisUserReadThisProject(username, projectId)) {
             throw new RuntimeException("Security constraints violation");
         }
-
+        for (Issue issue : issueService.readIssuesByProjectId(projectId, username).stream().map(issueMapper::toEntity).toList()) {
+            issueService.deleteIssue(issue.getId(), username);
+        }
+        userProjectService.deleteUserProject(username, projectId);
         projectRepository.deleteById(projectId);
     }
 

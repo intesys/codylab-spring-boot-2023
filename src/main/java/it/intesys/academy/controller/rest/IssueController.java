@@ -37,6 +37,7 @@ public class IssueController {
         return ResponseEntity.ok(issueService.readIssueWithComments(issueId, username));
     }
 
+
     @PostMapping("/issues")
     public ResponseEntity<IssueDTO> createIssue(@RequestBody IssueDTO issueDTO,
                                                     @RequestHeader(name = "X-User-Name") String username) {
@@ -67,7 +68,6 @@ public class IssueController {
 
         return ResponseEntity.ok(issueService.updateIssue(issueDTO, username));
     }
-
     @DeleteMapping("/issues/{issueId}")
     public ResponseEntity<Void> deleteIssue(@PathVariable Integer issueId,
                                               @RequestHeader("X-User-Name") String username) {

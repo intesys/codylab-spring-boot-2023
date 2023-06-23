@@ -42,5 +42,14 @@ public class UserProjectService {
 
         userProjectRepository.save(userProject);
     }
+    public void deleteUserProject(String username, Integer projectId){
+        if(!getUserProjects(username).contains(projectId)){
+            throw new RuntimeException("Security constraints violation");
+        }
+
+        for (UserProject us:userProjectRepository.findByProject_Id(projectId)) {
+            userProjectRepository.deleteById(us.getId());
+        }
+    }
 
 }

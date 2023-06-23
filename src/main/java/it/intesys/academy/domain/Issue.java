@@ -2,6 +2,8 @@ package it.intesys.academy.domain;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 @Table(name="Issue")
 public class Issue {
@@ -25,6 +27,16 @@ public class Issue {
     @ManyToOne
     @JoinColumn(name="projectid")
     private Project project;
+    @OneToMany(mappedBy = "issue")
+    private List<Comment> comments;
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
 
     public Integer getId() {
         return id;
