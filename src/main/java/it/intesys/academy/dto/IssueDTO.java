@@ -1,5 +1,6 @@
 package it.intesys.academy.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class IssueDTO {
@@ -13,7 +14,7 @@ public class IssueDTO {
 
     private int projectId;
 
-    private List<CommentDTO> comments;
+    private List<CommentDTO> comments = new ArrayList<>();
 
     public int getProjectId() {
 
@@ -68,6 +69,11 @@ public class IssueDTO {
     public List<CommentDTO> getComments() {
 
         return comments;
+    }
+
+    public void addComment(CommentDTO commentDTO){
+
+        this.comments.add(commentDTO);
     }
 
     public void setComments(List<CommentDTO> comments) {

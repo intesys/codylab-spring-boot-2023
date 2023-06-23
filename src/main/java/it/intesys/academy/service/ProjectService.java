@@ -1,9 +1,14 @@
 package it.intesys.academy.service;
 
+import it.intesys.academy.domain.Comment;
+import it.intesys.academy.domain.Issue;
 import it.intesys.academy.domain.Project;
+import it.intesys.academy.dto.IssueDTO;
 import it.intesys.academy.dto.ProjectDTO;
+import it.intesys.academy.mapper.CommentMapper;
 import it.intesys.academy.mapper.IssueMapper;
 import it.intesys.academy.mapper.ProjectMapper;
+import it.intesys.academy.repository.CommentRepository;
 import it.intesys.academy.repository.IssueRepository;
 import it.intesys.academy.repository.ProjectRepository;
 import org.slf4j.Logger;
@@ -27,14 +32,20 @@ public class ProjectService {
 
     private final IssueMapper issueMapper;
 
-    public ProjectService(ProjectRepository projectRepository, IssueRepository issueRepository,
-                          UserProjectService userProjectService, ProjectMapper projectMapper, IssueMapper issueMapper) {
+    private final CommentRepository commentRepository;
+
+    private final CommentMapper commentMapper;
+
+    public ProjectService(ProjectRepository projectRepository, IssueRepository issueRepository, CommentRepository commentRepository,
+                          UserProjectService userProjectService, ProjectMapper projectMapper, IssueMapper issueMapper, CommentMapper commentMapper) {
 
         this.projectRepository = projectRepository;
         this.issueRepository = issueRepository;
         this.userProjectService = userProjectService;
         this.projectMapper = projectMapper;
         this.issueMapper = issueMapper;
+        this.commentRepository = commentRepository;
+        this.commentMapper = commentMapper;
     }
 
     public ProjectDTO readProjectWithIssue(int projectId, String username) {
@@ -43,8 +54,15 @@ public class ProjectService {
 
         if (userProjectService.canThisUserReadThisProject(username, projectId)) {
             ProjectDTO projectDTO = projectMapper.toDto(projectRepository.findById(projectId).get());
-            issueRepository.findByProjectIdIn(List.of(projectId))
-                    .forEach(issue -> projectDTO.addIssue(issueMapper.toDto(issue)));
+            List<Issue> issues= issueRepository.findByProjectIdIn(List.of(projectId));
+            for(Issue issue:issues){
+                IssueDTO issueDTO = issueMapper.toDto(issue);
+                List<Comment> comments= commentRepository.findCommentsByIssueId(issueDTO.getId());
+                for(Comment comment : comments){
+                    issueDTO.addComment(commentMapper.toDTO(comment));
+                }
+                projectDTO.addIssue(issueDTO);
+            }
             return projectDTO;
         }
 

@@ -17,4 +17,6 @@ public interface CommentRepository extends ListCrudRepository<Comment, Integer>,
     public List<Comment> findCommentsByIssueId(Integer issueId);
 
     public Comment findCommentById(Integer commentId);
+
+    public List<Comment> findCommentsByIssueIdIn(List<Integer> issueId);
 }
