@@ -43,7 +43,7 @@ public class ProjectService {
 
         if (userProjectService.canThisUserReadThisProject(username, projectId)) {
             ProjectDTO projectDTO = projectMapper.toDto(projectRepository.findById(projectId).get());
-            issueRepository.readIssues(List.of(projectId))
+            issueRepository.findByProjectIdIn(List.of(projectId))
                     .forEach(issue -> projectDTO.addIssue(issueMapper.toDto(issue)));
             return projectDTO;
         }

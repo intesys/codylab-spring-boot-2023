@@ -12,6 +12,8 @@ public class ProjectDTO {
 
     private String description;
 
+    private Integer authorid;
+
     private ArrayList<IssueDTO> issues = new ArrayList<>();
 
     public void addIssue(IssueDTO issue) {
@@ -73,4 +75,11 @@ public class ProjectDTO {
         return this.name.equals(projectDTO.getName()) && this.description.equals(projectDTO.getDescription());
     }
 
+    public Integer getAuthorid() {
+        return authorid;
+    }
+
+    public void setAuthorid(Integer authorid) {
+        this.authorid = authorid;
+    }
 }

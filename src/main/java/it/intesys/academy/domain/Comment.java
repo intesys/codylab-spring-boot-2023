@@ -3,26 +3,22 @@ package it.intesys.academy.domain;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name="issue")
-public class Issue {
-
+@Table(name = "comment")
+public class Comment {
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
-    @Column(name="id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Integer id;
 
-    @Column(name="name")
-    private String name;
-
-    @Column(name="description")
+    @Column(name = "description")
     private String description;
 
-    @Column(name="author")
+    @Column(name = "author")
     private String author;
 
     @ManyToOne
-    @JoinColumn(name="projectid")
-    private Project project;
+    @JoinColumn(name = "issueid")
+    private Issue issue;
 
     public Integer getId() {
         return id;
@@ -30,14 +26,6 @@ public class Issue {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getDescription() {
@@ -56,11 +44,11 @@ public class Issue {
         this.author = author;
     }
 
-    public Project getProject() {
-        return project;
+    public Issue getIssue() {
+        return issue;
     }
 
-    public void setProject(Project project) {
-        this.project = project;
+    public void setIssue(Issue issue) {
+        this.issue = issue;
     }
 }

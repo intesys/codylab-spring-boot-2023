@@ -5,14 +5,13 @@ import java.util.List;
 public class IssueDTO {
 
     private Integer id;
-
-    private int projectId;
-
     private String name;
 
     private String description;
 
     private String author;
+
+    private int projectId;
 
     private List<CommentDTO> comments;
 

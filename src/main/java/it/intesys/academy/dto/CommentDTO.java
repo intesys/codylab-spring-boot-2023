@@ -4,12 +4,11 @@ public class CommentDTO {
 
     private Integer id;
 
-    private String text;
+    private String description;
 
     private String author;
 
     private Integer issueId;
-
 
     public Integer getId() {
         return id;
@@ -19,12 +18,12 @@ public class CommentDTO {
         this.id = id;
     }
 
-    public String getText() {
-        return text;
+    public String getDescription() {
+        return description;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getAuthor() {

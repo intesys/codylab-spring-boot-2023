@@ -41,7 +41,7 @@ public class IssueService {
             throw new RuntimeException("Security constraints violation");
         }
 
-        return issueRepository.readIssues(List.of(projectId))
+        return issueRepository.findByProjectIdIn(List.of(projectId))
                 .stream()
                 .map(issueMapper::toDto)
                 .collect(Collectors.toList());
@@ -52,7 +52,7 @@ public class IssueService {
 
         log.info("Reading issue {}", issueId);
 
-        IssueDTO issueDTO = issueMapper.toDto(issueRepository.readIssue(issueId));
+        IssueDTO issueDTO = issueMapper.toDto(issueRepository.findIssueById(issueId));
 
         if (!userProjectService.canThisUserReadThisProject(userName, issueDTO.getProjectId())) {
             throw new RuntimeException("Security constraints violation");
@@ -68,35 +68,35 @@ public class IssueService {
         log.info("Creating for user {}", username);
 
 
-        Issue issue = issueRepository.createIssue(issueMapper.toEntity(issueDTO));
+        Issue issue = issueRepository.save(issueMapper.toEntity(issueDTO));
 
         return issueMapper.toDto(issue);
     }
 
     public IssueDTO updateIssue(IssueDTO issueDTO, String userName) {
 
-        if (!userProjectService.canThisUserReadThisProject(userName, issueDTO.getId())) {
+        if (!userProjectService.canThisUserReadThisProject(userName, issueDTO.getProjectId())) {
             throw new RuntimeException("Security constraints violation");
         }
 
-        Issue dbIssue = issueRepository.readIssue(issueDTO.getId());
+        Issue dbIssue = issueRepository.findIssueById(issueDTO.getId());
         if ( dbIssue.getProject().getId() != issueDTO.getProjectId() &&
                 !userProjectService.canThisUserReadThisProject(userName, dbIssue.getProject().getId())) {
             throw new RuntimeException("Security constraints violation");
         }
 
-        Issue updatedIssue = issueRepository.updateIssue(issueMapper.toEntity(issueDTO));
+        Issue updatedIssue = issueRepository.save(issueMapper.toEntity(issueDTO));
 
         return issueMapper.toDto(updatedIssue);
     }
 
     public void deleteIssue(Integer issueId, String username) {
-        Issue dbIssue = issueRepository.readIssue(issueId);
+        Issue dbIssue = issueRepository.findIssueById(issueId);
         if (!userProjectService.canThisUserReadThisProject(username, dbIssue.getProject().getId())) {
             throw new RuntimeException("Security constraints violation");
         }
 
-        issueRepository.deleteIssue(issueId);
+        issueRepository.delete(issueRepository.findIssueById(issueId));
     }
 
 }
