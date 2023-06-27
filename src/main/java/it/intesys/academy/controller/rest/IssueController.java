@@ -1,5 +1,6 @@
 package it.intesys.academy.controller.rest;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import it.intesys.academy.dto.IssueDTO;
 import it.intesys.academy.service.IssueService;
 import org.slf4j.Logger;
@@ -13,6 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
+@Tag(name = "Issue", description = "Issue API")
 public class IssueController {
 
     private final static Logger log = LoggerFactory.getLogger(IssueController.class);
