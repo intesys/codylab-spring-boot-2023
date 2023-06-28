@@ -1,6 +1,7 @@
 package it.intesys.academy.controller;
 
 import it.intesys.academy.dto.ProjectDTO;
+import it.intesys.academy.service.IssueService;
 import it.intesys.academy.service.ProjectService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -40,21 +41,15 @@ public class MvcProjectController {
     }
 
     @GetMapping("/projects/new")
-    public String getNewProjectForm(Model model, @RequestParam String userName) {
-
+    public String createProjectPage(Model model, @RequestParam String userName) {
         model.addAttribute("username", userName);
-
         return "create-project";
-
     }
 
     @PostMapping("/projects")
-    public String createProject(
-            @RequestParam String userName,//not a good practice, just as an example
-            @ModelAttribute("project") ProjectDTO projectDTO) {
-
-        ProjectDTO newProject = projectService.createProject(projectDTO, userName);
-        return "redirect:/mvc/projects/" + newProject.getId() + "?userName=" + userName;
+    public String createNewProject(@ModelAttribute ProjectDTO projectDTO,@RequestParam String userName) {
+        ProjectDTO project = projectService.createProject(projectDTO, userName);
+                return "redirect:/mvc/projects/" + project.getId() + "?userName=" + userName;
     }
 
 }

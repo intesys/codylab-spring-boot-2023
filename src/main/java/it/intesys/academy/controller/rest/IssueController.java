@@ -1,6 +1,6 @@
 package it.intesys.academy.controller.rest;
 
-import io.swagger.v3.oas.annotations.tags.Tag;
+import it.intesys.academy.controller.rest.errors.BadRequestException;
 import it.intesys.academy.dto.IssueDTO;
 import it.intesys.academy.service.IssueService;
 import org.slf4j.Logger;
@@ -14,7 +14,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
-@Tag(name = "Issue", description = "Issue API")
 public class IssueController {
 
     private final static Logger log = LoggerFactory.getLogger(IssueController.class);
@@ -44,12 +43,12 @@ public class IssueController {
                                                     @RequestHeader(name = "X-User-Name") String username) {
         if (issueDTO.getId() != null) {
             log.error("Bad request, id must be null when creating a new issue");
-            return ResponseEntity.badRequest().build();
+            throw new BadRequestException("id must be null when creating a new issue");
         }
 
         if (!StringUtils.hasText(issueDTO.getDescription())
                 || !StringUtils.hasText(issueDTO.getName())) {
-            throw new RuntimeException("Invalid DTO");
+            throw new BadRequestException("Invalid DTO");
         }
 
         return ResponseEntity.ok(issueService.createIssue(issueDTO, username));
