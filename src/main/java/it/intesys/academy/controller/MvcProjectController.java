@@ -1,13 +1,10 @@
 package it.intesys.academy.controller;
 
-import it.intesys.academy.service.IssueService;
+import it.intesys.academy.dto.ProjectDTO;
 import it.intesys.academy.service.ProjectService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/mvc")
@@ -40,6 +37,18 @@ public class MvcProjectController {
 
         return "project";
 
+    }
+
+    @GetMapping("/projects/new")
+    public String createNewProject(Model model, @RequestParam String userName){
+        model.addAttribute("username",userName);
+        return  "create-project";
+    }
+
+    @PostMapping("/projects")
+    public String postNewProject(@ModelAttribute ProjectDTO projectDTO, @RequestParam String userName){
+        ProjectDTO newprojectDTO = projectService.createProject(projectDTO,userName);
+        return "redirect:/mvc/projects/"+ newprojectDTO.getId() +"?userName="+userName;
     }
 
 }

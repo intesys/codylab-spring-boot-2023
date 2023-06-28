@@ -35,7 +35,7 @@ public class ProjectMapper {
         project.setName(projectDTO.getName());
         project.setDescription(projectDTO.getDescription());
         Person person = new Person();
-        person.setId(projectDTO.getAuthorid());
+            person.setId(projectDTO.getAuthorid());
         project.setUser(person);
         return project;
     }

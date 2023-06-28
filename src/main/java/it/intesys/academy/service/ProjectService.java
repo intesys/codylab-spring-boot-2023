@@ -1,18 +1,12 @@
 package it.intesys.academy.service;
 
-import it.intesys.academy.domain.Comment;
-import it.intesys.academy.domain.Issue;
-import it.intesys.academy.domain.Project;
-import it.intesys.academy.domain.UserProject;
+import it.intesys.academy.domain.*;
 import it.intesys.academy.dto.IssueDTO;
 import it.intesys.academy.dto.ProjectDTO;
 import it.intesys.academy.mapper.CommentMapper;
 import it.intesys.academy.mapper.IssueMapper;
 import it.intesys.academy.mapper.ProjectMapper;
-import it.intesys.academy.repository.CommentRepository;
-import it.intesys.academy.repository.IssueRepository;
-import it.intesys.academy.repository.ProjectRepository;
-import it.intesys.academy.repository.UserProjectRepository;
+import it.intesys.academy.repository.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -36,11 +30,13 @@ public class ProjectService {
 
     private final CommentRepository commentRepository;
 
+    private final PersonRepository personRepository;
+
     private final CommentMapper commentMapper;
 
     private final UserProjectRepository userProjectRepository;
 
-    public ProjectService(UserProjectRepository userProjectRepository,ProjectRepository projectRepository, IssueRepository issueRepository, CommentRepository commentRepository,
+    public ProjectService(PersonRepository personRepository,UserProjectRepository userProjectRepository,ProjectRepository projectRepository, IssueRepository issueRepository, CommentRepository commentRepository,
                           UserProjectService userProjectService, ProjectMapper projectMapper, IssueMapper issueMapper, CommentMapper commentMapper) {
 
         this.projectRepository = projectRepository;
@@ -51,6 +47,7 @@ public class ProjectService {
         this.commentRepository = commentRepository;
         this.commentMapper = commentMapper;
         this.userProjectRepository = userProjectRepository;
+        this.personRepository = personRepository;
     }
 
     public ProjectDTO readProjectWithIssue(int projectId, String username) {
@@ -96,9 +93,11 @@ public class ProjectService {
     public ProjectDTO createProject(ProjectDTO projectDTO, String username) {
 
         log.info("Creating for user {}", username);
+        Project projectN = projectMapper.toEntity(projectDTO);
+        Person personN = personRepository.findPersonByUsername(username);
+        projectN.setUser(personN);
 
-
-        Project project = projectRepository.save(projectMapper.toEntity(projectDTO));
+        Project project = projectRepository.save(projectN);
         userProjectService.associateUserToProject(username, project.getId());
 
         return projectMapper.toDto(project);
