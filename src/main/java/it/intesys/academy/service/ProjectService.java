@@ -1,5 +1,6 @@
 package it.intesys.academy.service;
 
+import it.intesys.academy.controller.openapi.model.ProjectApiDTO;
 import it.intesys.academy.domain.Project;
 import it.intesys.academy.dto.ProjectDTO;
 import it.intesys.academy.mapper.IssueMapper;
@@ -63,14 +64,14 @@ public class ProjectService {
         throw new RuntimeException("Security constraints violation");
     }
 
-    public List<ProjectDTO> readProjectsWithIssues(String username) {
+    public List<ProjectApiDTO> readProjectsWithIssues(String username) {
 
         log.info("Reading projects for user {}", username);
         return readProjectsWithIssues(userProjectService.getUserProjects(username));
 
     }
 
-    public ProjectDTO createProject(ProjectDTO projectDTO, String username) {
+    public ProjectApiDTO createProject(ProjectApiDTO projectDTO, String username) {
 
         log.info("Creating for user {}", username);
 
@@ -78,7 +79,7 @@ public class ProjectService {
         Project project = projectRepository.save(projectMapper.toEntity(projectDTO));
         userProjectService.associateUserToProject(username, project.getId());
 
-        return projectMapper.toDto(project);
+        return projectMapper.toApiDto(project);
     }
 
     public ProjectDTO updateProject(ProjectDTO projectDTO, String userName) {
@@ -109,11 +110,11 @@ public class ProjectService {
         return projectMapper.toDto(projectRepository.save(dbProject));
     }
 
-    private List<ProjectDTO> readProjectsWithIssues(List<Integer> userProjectIds) {
+    private List<ProjectApiDTO> readProjectsWithIssues(List<Integer> userProjectIds) {
 
         return projectRepository.findByIdIn(userProjectIds)
                 .stream()
-                .map(projectMapper::toDtoWithIssues)
+                .map(projectMapper::toApiDtoWithIssues)
                 .toList();
 
     }
