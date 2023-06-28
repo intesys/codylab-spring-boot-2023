@@ -1,5 +1,6 @@
 package it.intesys.academy.service;
 
+import it.intesys.academy.controller.rest.errors.ProjectPermissionException;
 import it.intesys.academy.domain.Issue;
 import it.intesys.academy.dto.IssueDTO;
 import it.intesys.academy.mapper.IssueMapper;
@@ -38,7 +39,7 @@ public class IssueService {
         log.info("Reading issues for project {}", projectId);
 
         if (!userProjectService.canThisUserReadThisProject(userName, projectId)) {
-            throw new RuntimeException("Security constraints violation");
+            throw new ProjectPermissionException("Access to project " + projectId + " forbidden");
         }
 
         return issueRepository.readIssues(List.of(projectId))
@@ -55,7 +56,7 @@ public class IssueService {
         IssueDTO issueDTO = issueMapper.toDto(issueRepository.readIssue(issueId));
 
         if (!userProjectService.canThisUserReadThisProject(userName, issueDTO.getProjectId())) {
-            throw new RuntimeException("Security constraints violation");
+            throw new ProjectPermissionException("Access to project " + issueDTO.getProjectId() + " forbidden");
         }
 
         issueDTO.setComments(commentRepository.findCommentsByIssueId(issueId));
@@ -76,13 +77,13 @@ public class IssueService {
     public IssueDTO updateIssue(IssueDTO issueDTO, String userName) {
 
         if (!userProjectService.canThisUserReadThisProject(userName, issueDTO.getId())) {
-            throw new RuntimeException("Security constraints violation");
+            throw new ProjectPermissionException("Access to project " + issueDTO.getProjectId() + " forbidden");
         }
 
         Issue dbIssue = issueRepository.readIssue(issueDTO.getId());
         if ( dbIssue.getProject().getId() != issueDTO.getProjectId() &&
                 !userProjectService.canThisUserReadThisProject(userName, dbIssue.getProject().getId())) {
-            throw new RuntimeException("Security constraints violation");
+            throw new ProjectPermissionException("Access to project " + issueDTO.getProjectId() + " forbidden");
         }
 
         Issue updatedIssue = issueRepository.updateIssue(issueMapper.toEntity(issueDTO));
@@ -93,7 +94,7 @@ public class IssueService {
     public void deleteIssue(Integer issueId, String username) {
         Issue dbIssue = issueRepository.readIssue(issueId);
         if (!userProjectService.canThisUserReadThisProject(username, dbIssue.getProject().getId())) {
-            throw new RuntimeException("Security constraints violation");
+            throw new ProjectPermissionException("Access to project " + dbIssue.getProject().getId() + " forbidden");
         }
 
         issueRepository.deleteIssue(issueId);

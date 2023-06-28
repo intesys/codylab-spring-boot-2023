@@ -1,5 +1,6 @@
 package it.intesys.academy.service;
 
+import it.intesys.academy.controller.rest.errors.ProjectPermissionException;
 import it.intesys.academy.domain.Project;
 import it.intesys.academy.dto.ProjectDTO;
 import it.intesys.academy.mapper.IssueMapper;
@@ -48,7 +49,7 @@ public class ProjectService {
             return projectDTO;
         }
 
-        throw new RuntimeException("Security constraints violation");
+        throw new ProjectPermissionException("Access to project " + projectId + " forbidden");
 
     }
 
@@ -60,7 +61,7 @@ public class ProjectService {
             return projectMapper.toDto(projectRepository.findById(projectId).get());
         }
 
-        throw new RuntimeException("Security constraints violation");
+        throw new ProjectPermissionException("Access to project " + projectId + " forbidden");
     }
 
     public List<ProjectDTO> readProjectsWithIssues(String username) {
@@ -83,7 +84,7 @@ public class ProjectService {
 
     public ProjectDTO updateProject(ProjectDTO projectDTO, String userName) {
         if (!userProjectService.canThisUserReadThisProject(userName, projectDTO.getId())) {
-            throw new RuntimeException("Security constraints violation");
+            throw new ProjectPermissionException("Access to project " + projectDTO.getId() + " forbidden");
         }
 
         Project updatedProject = projectRepository.save(projectMapper.toEntity(projectDTO));
@@ -93,7 +94,7 @@ public class ProjectService {
 
     public ProjectDTO patchProject(ProjectDTO projectDTO, String userName) {
         if (!userProjectService.canThisUserReadThisProject(userName, projectDTO.getId())) {
-            throw new RuntimeException("Security constraints violation");
+            throw new ProjectPermissionException("Access to project " + projectDTO.getId() + " forbidden");
         }
 
         Project dbProject = projectRepository.findById(projectDTO.getId()).get();
@@ -120,7 +121,7 @@ public class ProjectService {
 
     public void deleteProject(Integer projectId, String username) {
         if (!userProjectService.canThisUserReadThisProject(username, projectId)) {
-            throw new RuntimeException("Security constraints violation");
+            throw new ProjectPermissionException("Access to project " + projectId + " forbidden");
         }
 
         projectRepository.deleteById(projectId);
