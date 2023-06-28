@@ -1,6 +1,7 @@
 package it.intesys.academy.controller.rest;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import it.intesys.academy.controller.rest.errors.BadRequestException;
 import it.intesys.academy.dto.IssueDTO;
 import it.intesys.academy.service.IssueService;
 import org.slf4j.Logger;
@@ -44,12 +45,12 @@ public class IssueController {
                                                     @RequestHeader(name = "X-User-Name") String username) {
         if (issueDTO.getId() != null) {
             log.error("Bad request, id must be null when creating a new issue");
-            return ResponseEntity.badRequest().build();
+            throw new BadRequestException("Id must be null when creating a new issue");
         }
 
         if (!StringUtils.hasText(issueDTO.getDescription())
                 || !StringUtils.hasText(issueDTO.getName())) {
-            throw new RuntimeException("Invalid DTO");
+            throw new BadRequestException("Invalid IssueDTO");
         }
 
         return ResponseEntity.ok(issueService.createIssue(issueDTO, username));
@@ -60,11 +61,10 @@ public class IssueController {
                                                     @RequestHeader(name = "X-User-Name") String username) {
         if (issueDTO.getId() == null) {
             log.error("Bad request, id must not be null when updating a issue");
-            return ResponseEntity.badRequest().build();
-        }
+            throw new BadRequestException("id must not be null when updating a issue")  ;      }
         if (issueDTO.getId() != issueId) {
             log.error("Bad request, id in path and in body must be the same");
-            return ResponseEntity.badRequest().build();
+            throw  new BadRequestException("id in path and in body must be the same");
         }
 
         return ResponseEntity.ok(issueService.updateIssue(issueDTO, username));
