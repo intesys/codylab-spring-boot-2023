@@ -3,7 +3,6 @@ package it.intesys.academy.service;
 import it.intesys.academy.domain.Comment;
 import it.intesys.academy.dto.CommentDTO;
 import it.intesys.academy.mapper.CommentMapper;
-import it.intesys.academy.mapper.IssueMapper;
 import it.intesys.academy.repository.CommentRepository;
 import it.intesys.academy.repository.IssueRepository;
 import org.slf4j.Logger;

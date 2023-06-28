@@ -1,5 +1,6 @@
 package it.intesys.academy.controller.rest;
 
+import it.intesys.academy.controller.rest.errors.BadRequestException;
 import it.intesys.academy.dto.ProjectDTO;
 import it.intesys.academy.service.ProjectService;
 import org.slf4j.Logger;
@@ -40,13 +41,13 @@ public class ProjectController {
     public ResponseEntity<ProjectDTO> createProject(@RequestBody ProjectDTO projectDTO,
                                                     @RequestHeader(name = "X-User-Name") String username) {
         if (projectDTO.getId() != null) {
-            log.error("Bad request, id must be null when creating a new project");
-            return ResponseEntity.badRequest().build();
+            throw new BadRequestException("Bad request, id must be null when creating a new project");
+
         }
 
         if (!StringUtils.hasText(projectDTO.getDescription())
                 || !StringUtils.hasText(projectDTO.getName())) {
-            throw new RuntimeException("Invalid DTO");
+            throw new BadRequestException("Invalid DTO");
         }
 
         return ResponseEntity.ok(projectService.createProject(projectDTO, username));
@@ -56,12 +57,12 @@ public class ProjectController {
     public ResponseEntity<ProjectDTO> updateProject(@PathVariable int projectId, @RequestBody ProjectDTO projectDTO,
                                                     @RequestHeader(name = "X-User-Name") String username) {
         if (projectDTO.getId() == null) {
-            log.error("Bad request, id must not be null when updating a project");
-            return ResponseEntity.badRequest().build();
+            throw new BadRequestException("Bad request, id must not be null when updating a project");
+
         }
         if (projectDTO.getId() != projectId) {
-            log.error("Bad request, id in path and in body must be the same");
-            return ResponseEntity.badRequest().build();
+            throw new BadRequestException("Bad request, id in path and in body must be the same");
+
         }
 
         return ResponseEntity.ok(projectService.updateProject(projectDTO, username));
@@ -71,12 +72,12 @@ public class ProjectController {
     public ResponseEntity<ProjectDTO> patchProject(@PathVariable int projectId, @RequestBody ProjectDTO projectDTO,
                                                    @RequestHeader("X-User-Name") String username) {
         if (projectDTO.getId() == null) {
-            log.error("Bad request, id must not be null when updating a project");
-            return ResponseEntity.badRequest().build();
+            throw new BadRequestException("Bad request, id must not be null when updating a project");
+
         }
         if (projectDTO.getId() != projectId) {
-            log.error("Bad request, id in path and in body must be the same");
-            return ResponseEntity.badRequest().build();
+            throw new BadRequestException("Bad request, id in path and in body must be the same");
+
         }
 
         return ResponseEntity.ok(projectService.patchProject(projectDTO, username));

@@ -1,9 +1,8 @@
 package it.intesys.academy.mapper;
 
 import it.intesys.academy.domain.Issue;
-import it.intesys.academy.dto.IssueDTO;
-import it.intesys.academy.domain.Issue;
 import it.intesys.academy.domain.Project;
+import it.intesys.academy.dto.IssueDTO;
 import org.springframework.stereotype.Component;
 
 @Component

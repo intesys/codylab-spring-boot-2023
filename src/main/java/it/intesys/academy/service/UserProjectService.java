@@ -1,5 +1,6 @@
 package it.intesys.academy.service;
 
+import it.intesys.academy.controller.rest.errors.ProjectAccessException;
 import it.intesys.academy.domain.Person;
 import it.intesys.academy.domain.Project;
 import it.intesys.academy.domain.UserProject;
@@ -44,7 +45,7 @@ public class UserProjectService {
     }
     public void deleteUserProject(String username, Integer projectId){
         if(!getUserProjects(username).contains(projectId)){
-            throw new RuntimeException("Security constraints violation");
+            throw new ProjectAccessException("Project permission error", projectId);
         }
 
         for (UserProject us:userProjectRepository.findByProject_Id(projectId)) {

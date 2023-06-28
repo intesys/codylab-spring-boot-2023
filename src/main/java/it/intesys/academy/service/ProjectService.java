@@ -1,8 +1,8 @@
 package it.intesys.academy.service;
 
+import it.intesys.academy.controller.rest.errors.ProjectAccessException;
 import it.intesys.academy.domain.Issue;
 import it.intesys.academy.domain.Project;
-import it.intesys.academy.domain.UserProject;
 import it.intesys.academy.dto.ProjectDTO;
 import it.intesys.academy.mapper.IssueMapper;
 import it.intesys.academy.mapper.ProjectMapper;
@@ -87,7 +87,7 @@ public class ProjectService {
 
     public ProjectDTO updateProject(ProjectDTO projectDTO, String userName) {
         if (!userProjectService.canThisUserReadThisProject(userName, projectDTO.getId())) {
-            throw new RuntimeException("Security constraints violation");
+            throw new ProjectAccessException("Project permission error", projectDTO.getId());
         }
 
         Project updatedProject = projectRepository.save(projectMapper.toEntity(projectDTO));
@@ -97,7 +97,7 @@ public class ProjectService {
 
     public ProjectDTO patchProject(ProjectDTO projectDTO, String userName) {
         if (!userProjectService.canThisUserReadThisProject(userName, projectDTO.getId())) {
-            throw new RuntimeException("Security constraints violation");
+            throw new ProjectAccessException("Project permission error", projectDTO.getId());
         }
 
         Project dbProject = projectRepository.findById(projectDTO.getId()).get();
@@ -124,7 +124,7 @@ public class ProjectService {
 
     public void deleteProject(Integer projectId, String username) {
         if (!userProjectService.canThisUserReadThisProject(username, projectId)) {
-            throw new RuntimeException("Security constraints violation");
+            throw new ProjectAccessException("Project permission error", projectId);
         }
         for (Issue issue : issueService.readIssuesByProjectId(projectId, username).stream().map(issueMapper::toEntity).toList()) {
             issueService.deleteIssue(issue.getId(), username);

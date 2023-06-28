@@ -1,5 +1,6 @@
 package it.intesys.academy.service;
 
+import it.intesys.academy.controller.rest.errors.ProjectAccessException;
 import it.intesys.academy.domain.Comment;
 import it.intesys.academy.domain.Issue;
 import it.intesys.academy.dto.IssueDTO;
@@ -41,7 +42,7 @@ public class IssueService {
         log.info("Reading issues for project {}", projectId);
 
         if (!userProjectService.canThisUserReadThisProject(userName, projectId)) {
-            throw new RuntimeException("Security constraints violation");
+            throw new ProjectAccessException("Project permission error", projectId);
         }
 
 
@@ -59,7 +60,7 @@ public class IssueService {
         IssueDTO issueDTO = issueMapper.toDto(issueRepository.findIssueById(issueId));
 
         if (!userProjectService.canThisUserReadThisProject(userName, issueDTO.getProjectId())) {
-            throw new RuntimeException("Security constraints violation");
+            throw new ProjectAccessException("Project permission error", issueDTO.getProjectId());
         }
 
         issueDTO.setComments(commentService.readCommentsByIssueId(issueId));
@@ -81,13 +82,13 @@ public class IssueService {
     public IssueDTO updateIssue(IssueDTO issueDTO, String userName) {
 
         if (!userProjectService.canThisUserReadThisProject(userName, issueDTO.getProjectId())) {
-            throw new RuntimeException("Security constraints violation");
+            throw new ProjectAccessException("Project permission error", issueDTO.getProjectId());
         }
 
         Issue dbIssue = issueRepository.findIssueById(issueDTO.getId());
         if ( dbIssue.getProject().getId() != issueDTO.getProjectId() &&
                 !userProjectService.canThisUserReadThisProject(userName, dbIssue.getProject().getId())) {
-            throw new RuntimeException("Security constraints violation");
+            throw new ProjectAccessException("Project permission error", issueDTO.getProjectId());
         }
 
         Issue updatedIssue = issueRepository.save(issueMapper.toEntity(issueDTO));
