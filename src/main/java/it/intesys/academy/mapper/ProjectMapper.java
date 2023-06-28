@@ -1,5 +1,6 @@
 package it.intesys.academy.mapper;
 
+import it.intesys.academy.controller.openapi.model.ProjectApiDTO;
 import it.intesys.academy.domain.Project;
 import it.intesys.academy.dto.ProjectDTO;
 import org.springframework.stereotype.Component;
@@ -21,9 +22,9 @@ public class ProjectMapper {
         return projectDTO;
     }
 
-    public ProjectDTO toDtoWithIssues(Project project) {
-        ProjectDTO projectDTO = toDto(project);
-        project.getIssues().forEach(issue -> projectDTO.addIssue(issueMapper.toDto(issue)));
+    public ProjectApiDTO toApiDtoWithIssues(Project project) {
+        ProjectApiDTO projectDTO = toApiDto(project);
+        //project.getIssues().forEach(issue -> projectDTO.addIssue(issueMapper.toDto(issue)));
         return projectDTO;
     }
 
@@ -33,5 +34,21 @@ public class ProjectMapper {
         project.setName(projectDTO.getName());
         project.setDescription(projectDTO.getDescription());
         return project;
+    }
+
+    public Project toEntity(ProjectApiDTO projectApiDTO) {
+        Project project = new Project();
+        project.setId(projectApiDTO.getId());
+        project.setName(projectApiDTO.getName());
+        project.setDescription(projectApiDTO.getDescription());
+        return project;
+    }
+
+    public ProjectApiDTO toApiDto(Project project) {
+        ProjectApiDTO projectApiDTO = new ProjectApiDTO();
+        projectApiDTO.setId(project.getId());
+        projectApiDTO.setName(project.getName());
+        projectApiDTO.setDescription(project.getDescription());
+        return projectApiDTO;
     }
 }
