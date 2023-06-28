@@ -7,10 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -22,12 +19,6 @@ public class ProjectController {
 
     public ProjectController(ProjectService projectService) {
         this.projectService = projectService;
-    }
-
-    @GetMapping("/projects")
-    public ResponseEntity<List<ProjectDTO>> getProjects(@RequestHeader(name = "X-User-Name") String userName) {
-
-        return ResponseEntity.ok(projectService.readProjectsWithIssues(userName));
     }
 
     @GetMapping("/projects/{projectId}")

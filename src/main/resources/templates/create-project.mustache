@@ -1,0 +1,16 @@
+{{>header}}
+
+<h2>Create Project</h2>
+<form action="/mvc/project?userName={{username}}" method="POST">
+    <div class="input-field">
+        <input type="text" id="name" name="name" required>
+        <label for="name">Project Name</label>
+    </div>
+    <div class="input-field">
+        <textarea id="description" class="materialize-textarea" name="description" required></textarea>
+        <label for="description">Project Description</label>
+    </div>
+    <button class="btn waves-effect waves-light" type="submit">Create</button>
+</form>
+
+{{>footer}}
