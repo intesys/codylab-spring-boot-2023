@@ -1,5 +1,6 @@
 package it.intesys.academy.controller.rest;
 
+import it.intesys.academy.controller.rest.errors.BadRequestException;
 import it.intesys.academy.dto.IssueDTO;
 import it.intesys.academy.service.IssueService;
 import org.slf4j.Logger;
@@ -42,7 +43,7 @@ public class IssueController {
                                                     @RequestHeader(name = "X-User-Name") String username) {
         if (issueDTO.getId() != null) {
             log.error("Bad request, id must be null when creating a new issue");
-            return ResponseEntity.badRequest().build();
+            throw new BadRequestException("ID");
         }
 
         if (!StringUtils.hasText(issueDTO.getDescription())

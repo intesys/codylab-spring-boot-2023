@@ -1,5 +1,6 @@
 package it.intesys.academy.service;
 
+import it.intesys.academy.controller.rest.errors.ProjectAccessException;
 import it.intesys.academy.domain.Comment;
 import it.intesys.academy.domain.Issue;
 import it.intesys.academy.dto.IssueDTO;
@@ -43,7 +44,7 @@ public class IssueService {
         log.info("Reading issues for project {}", projectId);
 
         if (!userProjectService.canThisUserReadThisProject(userName, projectId)) {
-            throw new RuntimeException("Security constraints violation");
+            throw new ProjectAccessException("Project Permission error",projectId);
         }
 
         return issueRepository.findByProjectIdIn(List.of(projectId))
@@ -60,7 +61,7 @@ public class IssueService {
         IssueDTO issueDTO = issueMapper.toDto(issueRepository.findIssueById(issueId));
 
         if (!userProjectService.canThisUserReadThisProject(userName, issueDTO.getProjectId())) {
-            throw new RuntimeException("Security constraints violation");
+            throw new ProjectAccessException("Project Permission error",issueDTO.getProjectId());
         }
         List<Comment> comments = commentRepository.findCommentsByIssueId(issueId);
         issueDTO.setComments(comments.stream()
@@ -90,7 +91,7 @@ public class IssueService {
         Issue dbIssue = issueRepository.findIssueById(issueDTO.getId());
         if ( dbIssue.getProject().getId() != issueDTO.getProjectId() &&
                 !userProjectService.canThisUserReadThisProject(userName, dbIssue.getProject().getId())) {
-            throw new RuntimeException("Security constraints violation");
+            throw new ProjectAccessException("Project Permission error",dbIssue.getProject().getId());
         }
 
         Issue updatedIssue = issueRepository.save(issueMapper.toEntity(issueDTO));
@@ -101,7 +102,7 @@ public class IssueService {
     public void deleteIssue(Integer issueId, String username) {
         Issue dbIssue = issueRepository.findIssueById(issueId);
         if (!userProjectService.canThisUserReadThisProject(username, dbIssue.getProject().getId())) {
-            throw new RuntimeException("Security constraints violation");
+            throw new ProjectAccessException("Project Permission error",dbIssue.getProject().getId());
         }
 
         issueRepository.deleteById(issueId);
@@ -110,7 +111,7 @@ public class IssueService {
     public void deleteAllFromIssue(Integer issueId, String username) {
         Issue dbIssue = issueRepository.findIssueById(issueId);
         if (!userProjectService.canThisUserReadThisProject(username, dbIssue.getProject().getId())) {
-            throw new RuntimeException("Security constraints violation");
+            throw new ProjectAccessException("Project Permission error",dbIssue.getProject().getId());
         }
 
         List<Comment> comments = commentRepository.findCommentsByIssueIdIn(List.of(issueId));
