@@ -1,11 +1,13 @@
 package it.intesys.academy.repository;
 
 import it.intesys.academy.dto.UserProjectDTO;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -22,16 +24,22 @@ public class UserProjectRepository {
 
     public Optional<UserProjectDTO> usernameProjectVisibility(String username, Integer projectId) {
 
+        //Add http client
         try {
-            UserProjectDTO project = jdbcTemplate.queryForObject("SELECT id FROM UserProject where projectId = (:projectId) and username = (:username)",
+            HttpRequest request =
+                HttpRequest.newBuilder().uri(new URI("http://localhost:3003/api/v1/projects/" + username))
+                       .GET()
+                       .build();
 
-                    Map.of("projectId", projectId, "username", username),
+                HttpResponse<String> response = HttpClient.newHttpClient()
+                                                          .send(request, HttpResponse.BodyHandlers.ofString());
+                response.body();
 
-                    BeanPropertyRowMapper.newInstance(UserProjectDTO.class));
-
-            return Optional.ofNullable(project);
-        } catch (EmptyResultDataAccessException e) {
-            return Optional.empty();
+                //Check id project is into the list with projectId
+                return Optional.empty();
+        }
+        catch (Exception e) {
+            throw new RuntimeException(e);
         }
 
     }
