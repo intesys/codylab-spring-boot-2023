@@ -1,6 +1,6 @@
 package it.intesys.academy.controller.rest;
 
-import it.intesys.academy.controller.rest.errors.BadRequestException;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import it.intesys.academy.dto.IssueDTO;
 import it.intesys.academy.service.IssueService;
 import org.slf4j.Logger;
@@ -14,6 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
+@Tag(name = "Issue", description = "Issue API")
 public class IssueController {
 
     private final static Logger log = LoggerFactory.getLogger(IssueController.class);
@@ -26,37 +27,36 @@ public class IssueController {
 
     @GetMapping("/issues")
     public ResponseEntity<List<IssueDTO>> getIssues(
-            @RequestParam Integer projectId, @RequestHeader(name = "X-User-Name") String userName) {
+            @RequestParam Integer projectId) {
 
-        return ResponseEntity.ok(issueService.readIssuesByProjectId(projectId, userName));
+        return ResponseEntity.ok(issueService.readIssuesByProjectId(projectId));
     }
 
     @GetMapping("/issues/{issueId}")
-    public ResponseEntity<IssueDTO> getIssue(@PathVariable int issueId,
-                                                 @RequestHeader(name = "X-User-Name") String username) {
+    public ResponseEntity<IssueDTO> getIssue(@PathVariable int issueId)
+                                              {
 
-        return ResponseEntity.ok(issueService.readIssueWithComments(issueId, username));
+        return ResponseEntity.ok(issueService.readIssueWithComments(issueId));
     }
 
     @PostMapping("/issues")
-    public ResponseEntity<IssueDTO> createIssue(@RequestBody IssueDTO issueDTO,
-                                                    @RequestHeader(name = "X-User-Name") String username) {
+    public ResponseEntity<IssueDTO> createIssue(@RequestBody IssueDTO issueDTO) {
         if (issueDTO.getId() != null) {
             log.error("Bad request, id must be null when creating a new issue");
-            throw new BadRequestException("id must be null when creating a new issue");
+            return ResponseEntity.badRequest().build();
         }
 
         if (!StringUtils.hasText(issueDTO.getDescription())
                 || !StringUtils.hasText(issueDTO.getName())) {
-            throw new BadRequestException("Invalid DTO");
+            throw new RuntimeException("Invalid DTO");
         }
 
-        return ResponseEntity.ok(issueService.createIssue(issueDTO, username));
+        return ResponseEntity.ok(issueService.createIssue(issueDTO));
     }
 
     @PutMapping("/issues/{issueId}")
     public ResponseEntity<IssueDTO> updateIssue(@PathVariable int issueId, @RequestBody IssueDTO issueDTO,
-                                                    @RequestHeader(name = "X-User-Name") String username) {
+                                                @RequestHeader(name = "X-User-Name") String username) {
         if (issueDTO.getId() == null) {
             log.error("Bad request, id must not be null when updating a issue");
             return ResponseEntity.badRequest().build();
@@ -71,7 +71,7 @@ public class IssueController {
 
     @DeleteMapping("/issues/{issueId}")
     public ResponseEntity<Void> deleteIssue(@PathVariable Integer issueId,
-                                              @RequestHeader("X-User-Name") String username) {
+                                            @RequestHeader("X-User-Name") String username) {
         issueService.deleteIssue(issueId, username);
         return new ResponseEntity<>(HttpStatus.OK);
     }

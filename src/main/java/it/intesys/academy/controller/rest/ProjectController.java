@@ -7,14 +7,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api")
-@Tag(name = "Project", description = "Project API")
+@Tag(name = "Project", description = "ProjectAPI")
 public class ProjectController {
 
     private final static Logger log = LoggerFactory.getLogger(ProjectController.class);
@@ -25,12 +22,6 @@ public class ProjectController {
         this.projectService = projectService;
     }
 
-    @GetMapping("/projects")
-    public ResponseEntity<List<ProjectDTO>> getProjects(@RequestHeader(name = "X-User-Name") String userName) {
-
-        return ResponseEntity.ok(projectService.readProjectsWithIssues(userName));
-    }
-
     @GetMapping("/projects/{projectId}")
     public ResponseEntity<ProjectDTO> getProject(@PathVariable int projectId,
                                                  @RequestHeader(name = "X-User-Name") String username) {
@@ -38,21 +29,6 @@ public class ProjectController {
         return ResponseEntity.ok(projectService.readProjectWithIssue(projectId, username));
     }
 
-    @PostMapping("/projects")
-    public ResponseEntity<ProjectDTO> createProject(@RequestBody ProjectDTO projectDTO,
-                                                    @RequestHeader(name = "X-User-Name") String username) {
-        if (projectDTO.getId() != null) {
-            log.error("Bad request, id must be null when creating a new project");
-            return ResponseEntity.badRequest().build();
-        }
-
-        if (!StringUtils.hasText(projectDTO.getDescription())
-                || !StringUtils.hasText(projectDTO.getName())) {
-            throw new RuntimeException("Invalid DTO");
-        }
-
-        return ResponseEntity.ok(projectService.createProject(projectDTO, username));
-    }
 
     @PutMapping("/projects/{projectId}")
     public ResponseEntity<ProjectDTO> updateProject(@PathVariable int projectId, @RequestBody ProjectDTO projectDTO,

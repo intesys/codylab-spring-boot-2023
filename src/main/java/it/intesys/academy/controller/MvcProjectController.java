@@ -1,5 +1,6 @@
 package it.intesys.academy.controller;
 
+import it.intesys.academy.controller.openapi.model.ProjectApiDTO;
 import it.intesys.academy.dto.ProjectDTO;
 import it.intesys.academy.service.IssueService;
 import it.intesys.academy.service.ProjectService;
@@ -22,7 +23,7 @@ public class MvcProjectController {
     public String getProjectList(Model model, @RequestParam String userName) {
 
         model.addAttribute("username", userName);
-        model.addAttribute("projects", projectService.readProjectsWithIssues(userName));
+        model.addAttribute("projects", projectService.readProjectsWithIssues());
 
         return "index";
 
@@ -47,8 +48,8 @@ public class MvcProjectController {
     }
 
     @PostMapping("/projects")
-    public String createNewProject(@ModelAttribute ProjectDTO projectDTO,@RequestParam String userName) {
-        ProjectDTO project = projectService.createProject(projectDTO, userName);
+    public String createNewProject(@ModelAttribute ProjectApiDTO projectApiDTO, @RequestParam String userName) {
+        ProjectApiDTO project = projectService.createProject(projectApiDTO, userName);
                 return "redirect:/mvc/projects/" + project.getId() + "?userName=" + userName;
     }
 

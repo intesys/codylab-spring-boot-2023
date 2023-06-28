@@ -1,6 +1,6 @@
 package it.intesys.academy.service;
 
-import it.intesys.academy.controller.rest.errors.ProjectPermissionException;
+import it.intesys.academy.controller.openapi.model.ProjectApiDTO;
 import it.intesys.academy.domain.Project;
 import it.intesys.academy.dto.ProjectDTO;
 import it.intesys.academy.mapper.IssueMapper;
@@ -44,12 +44,12 @@ public class ProjectService {
 
         if (userProjectService.canThisUserReadThisProject(username, projectId)) {
             ProjectDTO projectDTO = projectMapper.toDto(projectRepository.findById(projectId).get());
-            issueRepository.readIssues(List.of(projectId))
+            issueRepository.findAllById(List.of(projectId))
                     .forEach(issue -> projectDTO.addIssue(issueMapper.toDto(issue)));
             return projectDTO;
         }
 
-        throw new ProjectPermissionException("Access to project " + projectId + " forbidden");
+        throw new RuntimeException("Security constraints violation");
 
     }
 
@@ -61,17 +61,19 @@ public class ProjectService {
             return projectMapper.toDto(projectRepository.findById(projectId).get());
         }
 
-        throw new ProjectPermissionException("Access to project " + projectId + " forbidden");
+        throw new RuntimeException("Security constraints violation");
     }
 
-    public List<ProjectDTO> readProjectsWithIssues(String username) {
+    public List<ProjectApiDTO> readProjectsWithIssues() {
+
+        var username= SecurityUtils.getCurrentUser();
 
         log.info("Reading projects for user {}", username);
         return readProjectsWithIssues(userProjectService.getUserProjects(username));
 
     }
 
-    public ProjectDTO createProject(ProjectDTO projectDTO, String username) {
+    public ProjectApiDTO createProject(ProjectApiDTO projectDTO, String username) {
 
         log.info("Creating for user {}", username);
 
@@ -79,12 +81,12 @@ public class ProjectService {
         Project project = projectRepository.save(projectMapper.toEntity(projectDTO));
         userProjectService.associateUserToProject(username, project.getId());
 
-        return projectMapper.toDto(project);
+        return projectMapper.toApiDto(project);
     }
 
     public ProjectDTO updateProject(ProjectDTO projectDTO, String userName) {
         if (!userProjectService.canThisUserReadThisProject(userName, projectDTO.getId())) {
-            throw new ProjectPermissionException("Access to project " + projectDTO.getId() + " forbidden");
+            throw new RuntimeException("Security constraints violation");
         }
 
         Project updatedProject = projectRepository.save(projectMapper.toEntity(projectDTO));
@@ -94,7 +96,7 @@ public class ProjectService {
 
     public ProjectDTO patchProject(ProjectDTO projectDTO, String userName) {
         if (!userProjectService.canThisUserReadThisProject(userName, projectDTO.getId())) {
-            throw new ProjectPermissionException("Access to project " + projectDTO.getId() + " forbidden");
+            throw new RuntimeException("Security constraints violation");
         }
 
         Project dbProject = projectRepository.findById(projectDTO.getId()).get();
@@ -110,18 +112,18 @@ public class ProjectService {
         return projectMapper.toDto(projectRepository.save(dbProject));
     }
 
-    private List<ProjectDTO> readProjectsWithIssues(List<Integer> userProjectIds) {
+    private List<ProjectApiDTO> readProjectsWithIssues(List<Integer> userProjectIds) {
 
         return projectRepository.findByIdIn(userProjectIds)
                 .stream()
-                .map(projectMapper::toDtoWithIssues)
+                .map(projectMapper::toApiDtoWithIssues)
                 .toList();
 
     }
 
     public void deleteProject(Integer projectId, String username) {
         if (!userProjectService.canThisUserReadThisProject(username, projectId)) {
-            throw new ProjectPermissionException("Access to project " + projectId + " forbidden");
+            throw new RuntimeException("Security constraints violation");
         }
 
         projectRepository.deleteById(projectId);

@@ -20,3 +20,8 @@ springdoc:
     enabled: true
     path: /swagger-ui.html
   packages-to-scan: it.intesys.academy.controller.rest
+
+  logging:
+    level:
+      root: info
+      org.springframework.security: debug

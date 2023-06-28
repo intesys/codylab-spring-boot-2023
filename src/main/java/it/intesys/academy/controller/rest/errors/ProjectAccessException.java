@@ -9,15 +9,16 @@ import java.time.Instant;
 
 public class ProjectAccessException extends ErrorResponseException {
 
-    public ProjectAccessException(String message) {
-        super(HttpStatus.FORBIDDEN, asProblemDetail(message), null);
+    public ProjectAccessException(String message, Integer projectId) {
+        super(HttpStatus.FORBIDDEN, asProblemDetail(message, projectId), null);
     }
 
-    private static ProblemDetail asProblemDetail(String message) {
+    private static ProblemDetail asProblemDetail(String message, Integer projectId) {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, message);
         problemDetail.setTitle("Project permission error");
         problemDetail.setType(URI.create("https://api.issuetracker.com/errors/project-permission-error"));
         problemDetail.setProperty("timestamp", Instant.now());
+        problemDetail.setProperty("projectId", projectId);
         return problemDetail;
     }
 }

@@ -10,7 +10,7 @@ import java.util.List;
 @Repository
 public interface ProjectRepository extends ListCrudRepository<Project, Integer>, ListPagingAndSortingRepository<Project, Integer> {
 
-    public List<Project> findByIdIn(List<Integer> ids);
+    List<Project> findByIdIn(List<Integer> ids);
 
 
 }
