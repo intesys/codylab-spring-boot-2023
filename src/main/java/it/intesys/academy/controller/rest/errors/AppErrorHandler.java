@@ -1,4 +1,4 @@
-package it.intesys.academy.controller.rest;
+package it.intesys.academy.controller.rest.errors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;

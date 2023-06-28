@@ -1,5 +1,6 @@
 package it.intesys.academy.service;
 
+import it.intesys.academy.controller.rest.errors.ProjectAccessException;
 import it.intesys.academy.domain.Issue;
 import it.intesys.academy.dto.IssueDTO;
 import it.intesys.academy.mapper.IssueMapper;
@@ -38,7 +39,7 @@ public class IssueService {
         log.info("Reading issues for project {}", projectId);
 
         if (!userProjectService.canThisUserReadThisProject(userName, projectId)) {
-            throw new RuntimeException("Security constraints violation");
+            throw new ProjectAccessException("Project permission error", projectId);
         }
 
         return issueRepository.readIssues(List.of(projectId))
