@@ -5,6 +5,7 @@ import it.intesys.academy.domain.Person;
 import it.intesys.academy.domain.Project;
 import it.intesys.academy.domain.UserProject;
 import it.intesys.academy.repository.UserProjectRepository;
+import it.intesys.academy.repository.UserProjectRepositoryApi;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,17 +15,22 @@ public class UserProjectService {
 
     private final UserProjectRepository userProjectRepository;
     private final PersonService personService;
+    private final UserProjectRepositoryApi userProjectRepositoryApi;
 
-    public UserProjectService(UserProjectRepository userProjectRepository, PersonService personService) {
+    public UserProjectService(UserProjectRepository userProjectRepository, PersonService personService, UserProjectRepositoryApi userProjectRepositoryApi) {
 
         this.userProjectRepository = userProjectRepository;
         this.personService = personService;
+        this.userProjectRepositoryApi = userProjectRepositoryApi;
     }
 
     public boolean canThisUserReadThisProject(String username, int projectId) {
 
         return getUserProjects(username).contains(projectId);
 
+    }
+    public boolean alternativePermissionToProjects(String username, int projectId){
+        return userProjectRepositoryApi.usernameProjectVisibility(username, projectId);
     }
 
     public List<Integer> getUserProjects(String username) {

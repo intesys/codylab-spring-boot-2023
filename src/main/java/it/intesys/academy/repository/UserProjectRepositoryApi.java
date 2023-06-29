@@ -1,36 +1,25 @@
 package it.intesys.academy.repository;
 
-import it.intesys.academy.domain.UserProject;
+import it.intesys.academy.mockoon.client.MockoonApi;
+import it.intesys.academy.mockoon.client.model.ProjectsMockoonDTO;
 import org.springframework.stereotype.Repository;
 
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.util.Optional;
+
 
 @Repository
 public class UserProjectRepositoryApi {
 
-    public Optional<UserProject> usernameProjectVisibility(String username, Integer projectId) {
+private final MockoonApi mockoonApi;
 
-        //Add http client
-        try {
-            HttpRequest request =
-                    HttpRequest.newBuilder().uri(new URI("http://localhost:3003/api/v1/projects/" + username))
-                            .GET()
-                            .build();
+    public UserProjectRepositoryApi(MockoonApi mockoonApi) {
+        this.mockoonApi = mockoonApi;
+    }
 
-            HttpResponse<String> response = HttpClient.newHttpClient()
-                    .send(request, HttpResponse.BodyHandlers.ofString());
-            response.body();
+    public boolean usernameProjectVisibility(String username, Integer projectId) {
 
-            //Check id project is into the list with projectId
-            return Optional.empty();
-        }
-        catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        ProjectsMockoonDTO projectsMockoonDTO = mockoonApi.getProjectsForUsername(username);
+
+        return projectsMockoonDTO.getProjects().stream().anyMatch(projectMockoonDTO -> projectMockoonDTO.getId() == projectId);
 
     }
 /*

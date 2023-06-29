@@ -3,7 +3,7 @@ info:
   title: OpenAPI definition
   version: v0
 servers:
-  - url: http://localhost:8080/openapi
+  - url: http://localhost:3004/api/v1
 tags:
   - name: Projects
     description: Projects API
@@ -11,7 +11,7 @@ paths:
   /projects/{username}:
     get:
       tags:
-        - Projects
+        - Mockoon
       operationId: getProjectsForUsername
       parameters:
         - name: username

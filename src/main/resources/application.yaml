@@ -1,5 +1,6 @@
 app:
   message: Hi from properties!
+  mockoon: http://localhost:3004/api/v1
   port: 8080
 server:
   port: 8080

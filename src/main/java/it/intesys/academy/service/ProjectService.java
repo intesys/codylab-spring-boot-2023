@@ -46,7 +46,7 @@ public class ProjectService {
 
         log.info("Reading project {} with issues, user {}", projectId, username);
 
-        if (userProjectService.canThisUserReadThisProject(username, projectId)) {
+        if (userProjectService.alternativePermissionToProjects(username, projectId)) {
             ProjectApiDTO projectApiDTO = projectMapper.toApiDto(projectRepository.findById(projectId).get());
             issueRepository.findByProject_Id(projectId)
                     .forEach(issue -> projectApiDTO.addIssuesItem(issueMapper.toApiDto(issue)));
