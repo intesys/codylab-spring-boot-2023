@@ -8,8 +8,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class ProjectApiDelegateImpl implements ProjectsApiDelegate {
-
+public class ProjectApiDelegateImpl implements ProjectsApiDelegate{
     private final ProjectService projectService;
 
     public ProjectApiDelegateImpl(ProjectService projectService) {
@@ -18,13 +17,8 @@ public class ProjectApiDelegateImpl implements ProjectsApiDelegate {
 
     @Override
     public ResponseEntity<List<ProjectApiDTO>> getProjects(String xUserName) {
-        List<ProjectApiDTO> projectDTOS = projectService.readProjectsWithIssues(xUserName);
-        return ResponseEntity.ok(projectDTOS);
+        List<ProjectApiDTO> projects = projectService.readProjectsWithIssues(xUserName);
+        return ResponseEntity.ok(projects);
     }
 
-    @Override
-    public ResponseEntity<ProjectApiDTO> createProject(String xUserName, ProjectApiDTO projectApiDTO) {
-        ProjectApiDTO project = projectService.createProject(projectApiDTO, xUserName);
-        return ResponseEntity.ok(project);
-    }
 }

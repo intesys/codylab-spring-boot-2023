@@ -3,11 +3,76 @@ info:
   title: OpenAPI definition
   version: v0
 servers:
-  - url: http://localhost:8081/openapi
-    description: Generated server url
+  - url: http://localhost:8080/openapi
+    description: Generated server URL
 tags:
   - name: Project
     description: Project API
+  - name: Issue
+    description: Issue API
+components:
+  schemas:
+    Comment:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        text:
+          type: string
+        author:
+          type: string
+        issueId:
+          type: integer
+          format: int32
+    Issue:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        name:
+          type: string
+        description:
+          type: string
+        author:
+          type: string
+        projectId:
+          type: integer
+          format: int32
+        comments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Comment'
+    Project:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        name:
+          type: string
+        description:
+          type: string
+        issues:
+          type: array
+          items:
+            $ref: '#/components/schemas/Issue'
+    Person:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        username:
+          type: string
+        name:
+          type: string
+        surname:
+          type: string
+        authorId:
+          type: integer
+          format: int32
 paths:
   /projects/{projectId}:
     get:
@@ -30,7 +95,7 @@ paths:
         '200':
           description: OK
           content:
-            'application/json':
+            application/json:
               schema:
                 $ref: '#/components/schemas/Project'
     put:
@@ -59,11 +124,9 @@ paths:
         '200':
           description: OK
           content:
-            'application/json':
+            application/json:
               schema:
                 $ref: '#/components/schemas/Project'
-
-
     delete:
       tags:
         - Project
@@ -109,7 +172,7 @@ paths:
         '200':
           description: OK
           content:
-            'application/json':
+            application/json:
               schema:
                 $ref: '#/components/schemas/Project'
 
@@ -128,7 +191,7 @@ paths:
         '200':
           description: OK
           content:
-            'application/json':
+            application/json:
               schema:
                 type: array
                 items:
@@ -153,32 +216,246 @@ paths:
         '200':
           description: OK
           content:
-            'application/json':
+            application/json:
               schema:
                 $ref: '#/components/schemas/Project'
-
-components:
-  schemas:
-    Comment:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int32
-        text:
-          type: string
-        author:
-          type: string
-        issueId:
-          type: integer
-          format: int32
-    Project:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int32
-        name:
-          type: string
-        description:
-          type: string
+  /issues/{issueId}:
+    get:
+      tags:
+        - Issue
+      operationId: getIssue
+      parameters:
+        - name: issueId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+        - name: X-User-Name
+          in: header
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Issue'
+    put:
+      tags:
+        - Issue
+      operationId: updateIssue
+      parameters:
+        - name: issueId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+        - name: X-User-Name
+          in: header
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Issue'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Issue'
+    delete:
+      tags:
+        - Issue
+      operationId: deleteIssue
+      parameters:
+        - name: issueId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+        - name: X-User-Name
+          in: header
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+    patch:
+      tags:
+        - Issue
+      operationId: patchIssue
+      parameters:
+        - name: issueId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+        - name: X-User-Name
+          in: header
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Issue'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Issue'
+  /issues:
+    get:
+      tags:
+        - Issue
+      operationId: getIssues
+      parameters:
+        - name: X-User-Name
+          in: header
+          required: true
+          schema:
+            type: string
+        - name: projectId
+          in: query
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Issue'
+    post:
+      tags:
+        - Issue
+      operationId: createIssue
+      parameters:
+        - name: X-User-Name
+          in: header
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Issue'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Issue'
+  /comments/{commentId}:
+    get:
+      tags:
+        - Comment
+      operationId: getComment
+      parameters:
+        - name: commentId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+        - name: X-User-Name
+          in: header
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+    delete:
+      tags:
+        - Comment
+      operationId: deleteComment
+      parameters:
+        - name: commentId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+        - name: X-User-Name
+          in: header
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+  /comments:
+    get:
+      tags:
+        - Comment
+      operationId: getComments
+      parameters:
+        - name: X-User-Name
+          in: header
+          required: true
+          schema:
+            type: string
+        - name: issueId
+          in: query
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Comment'
+    post:
+      tags:
+        - Comment
+      operationId: createComment
+      parameters:
+        - name: X-User-Name
+          in: header
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Comment'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'

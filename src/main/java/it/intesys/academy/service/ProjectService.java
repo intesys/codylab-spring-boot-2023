@@ -1,5 +1,6 @@
 package it.intesys.academy.service;
 
+import it.intesys.academy.controller.openapi.model.ProjectApiDTO;
 import it.intesys.academy.controller.rest.errors.ProjectAccessException;
 import it.intesys.academy.domain.Issue;
 import it.intesys.academy.domain.Project;
@@ -74,7 +75,7 @@ public class ProjectService {
 
     }
 
-    public ProjectApiDTO createProject(ProjectApiDTO projectDTO, String username) {
+    public ProjectDTO createProject(ProjectDTO projectDTO, String username) {
 
         log.info("Creating for user {}", username);
 
@@ -82,7 +83,7 @@ public class ProjectService {
         Project project = projectRepository.save(projectMapper.toEntity(projectDTO));
         userProjectService.associateUserToProject(username, project.getId());
 
-        return projectMapper.toApiDto(project);
+        return projectMapper.toDto(project);
     }
 
     public ProjectDTO updateProject(ProjectDTO projectDTO, String userName) {
