@@ -4,8 +4,10 @@ import it.intesys.academy.controller.openapi.model.ProjectApiDTO;
 import it.intesys.academy.service.ProjectService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.NativeWebRequest;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProjectApiDelegateImpl implements ProjectsApiDelegate{
@@ -18,7 +20,7 @@ public class ProjectApiDelegateImpl implements ProjectsApiDelegate{
 
     @Override
     public ResponseEntity<ProjectApiDTO> getProject(Integer projectId, String xUserName) {
-        return ProjectsApiDelegate.super.getProject(projectId, xUserName);
+        return ResponseEntity.ok(projectService.readProjectWithIssue(projectId,xUserName));
     }
 
     @Override
@@ -27,4 +29,9 @@ public class ProjectApiDelegateImpl implements ProjectsApiDelegate{
     }
 
 
+
+    @Override
+    public ResponseEntity<ProjectApiDTO> createProject(String xUserName, ProjectApiDTO projectApiDTO) {
+        return ResponseEntity.ok(projectService.createProject(projectApiDTO,xUserName));
+    }
 }

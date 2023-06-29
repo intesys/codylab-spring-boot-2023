@@ -56,7 +56,7 @@ public class IssueController {
     }
 
     @PutMapping("/issues/{issueId}")
-    public ResponseEntity<IssueApiDTO> updateIssue(@PathVariable int issueId, @RequestBody IssueDTO issueDTO,
+    public ResponseEntity<IssueApiDTO> updateIssue(@PathVariable int issueId, @RequestBody IssueApiDTO issueDTO,
                                                     @RequestHeader(name = "X-User-Name") String username) {
         if (issueDTO.getId() == null) {
             log.error("Bad request, id must not be null when updating a issue");
