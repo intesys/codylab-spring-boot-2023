@@ -1,9 +1,11 @@
 package it.intesys.academy.repository;
 
 import it.intesys.academy.dto.UserProjectDTO;
+import it.intesys.academy.mockoon.client.model.ProjectsMockoonDTO;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import it.intesys.academy.mockoon.client.MockoonApi;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -15,24 +17,18 @@ public class UserProjectRepository {
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
 
-    public UserProjectRepository(NamedParameterJdbcTemplate jdbcTemplate) {
+    private final MockoonApi mockoonApi;
+
+    public UserProjectRepository(NamedParameterJdbcTemplate jdbcTemplate, MockoonApi mockoonApi) {
 
         this.jdbcTemplate = jdbcTemplate;
+        this.mockoonApi = mockoonApi;
     }
 
-    public Optional<UserProjectDTO> usernameProjectVisibility(String username, Integer projectId) {
+    public boolean usernameProjectVisibility(String username, Integer projectId) {
 
-        try {
-            UserProjectDTO project = jdbcTemplate.queryForObject("SELECT id FROM UserProject where projectId = (:projectId) and username = (:username)",
-
-                    Map.of("projectId", projectId, "username", username),
-
-                    BeanPropertyRowMapper.newInstance(UserProjectDTO.class));
-
-            return Optional.ofNullable(project);
-        } catch (EmptyResultDataAccessException e) {
-            return Optional.empty();
-        }
+        ProjectsMockoonDTO projectsMockoonDTO = mockoonApi.getProjectsForUsername(username);
+        return projectsMockoonDTO.getProjects().stream().anyMatch(projectMockoonDTO -> projectMockoonDTO.getId() == projectId);
 
     }
 
