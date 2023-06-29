@@ -28,6 +28,8 @@
 
         <openapi-generator.version>6.6.0</openapi-generator.version>
         <jackson-databind-nullable.version>0.2.6</jackson-databind-nullable.version>
+
+        <swagger-annotations.version>2.2.14</swagger-annotations.version>
     </properties>
 
     <dependencies>
@@ -78,6 +80,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-annotations</artifactId>
+            <version>${swagger-annotations.version}</version>
         </dependency>
     </dependencies>
 
