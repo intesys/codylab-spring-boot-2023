@@ -1,0 +1,90 @@
+{
+    "source": "mockoon:1.12.0",
+    "data": [
+        {
+            "type": "environment",
+            "item": {
+                "uuid": "",
+                "lastMigration": 13,
+                "name": "Cody Lab",
+                "endpointPrefix": "api/v1",
+                "latency": 0,
+                "port": 3004,
+                "routes": [
+                    {
+                        "uuid": "",
+                        "documentation": "",
+                        "method": "get",
+                        "endpoint": "projects/:username",
+                        "responses": [
+                            {
+                                "uuid": "",
+                                "body": "{\n  \"projects\":\n  [\n    {\n      \"id\":\"1\",\n      \"name\": \"First Project\",\n      \"description\": \"This is a description of a the 1st project\"\n    },\n    {\n      \"id\":\"6\",\n      \"name\": \"Progetto nuovo\",\n      \"description\": \"Progetto per la lezione 8\"\n    },\n    {\n      \"id\":\"7\",\n      \"name\": \"Progetto nuovo - 2\",\n      \"description\": \"Progetto per la lezione 8 - 2\"\n    }\n  ]\n}",
+                                "latency": 0,
+                                "statusCode": 200,
+                                "label": "eoliosi",
+                                "headers": [],
+                                "filePath": "",
+                                "sendFileAsBody": false,
+                                "rules": [
+                                    {
+                                        "target": "params",
+                                        "modifier": "username",
+                                        "value": "eoliosi",
+                                        "isRegex": false
+                                    }
+                                ],
+                                "rulesOperator": "OR",
+                                "disableTemplating": false
+                            },
+                            {
+                                "uuid": "",
+                                "body": "{\n  \"projects\":\n    [\n      {\n        \"id\":\"2\",\n        \"name\": \"Second Project\",\n        \"description\": \"Description of a the 2nd project\"\n      }\n    ]\n}",
+                                "latency": 0,
+                                "statusCode": 200,
+                                "label": "ecostanzi",
+                                "headers": [],
+                                "filePath": "",
+                                "sendFileAsBody": false,
+                                "rules": [
+                                    {
+                                        "target": "params",
+                                        "modifier": "username",
+                                        "value": "ecostanzi",
+                                        "isRegex": false
+                                    }
+                                ],
+                                "rulesOperator": "OR",
+                                "disableTemplating": false
+                            }
+                        ],
+                        "enabled": true,
+                        "randomResponse": false
+                    }
+                ],
+                "proxyMode": false,
+                "proxyHost": "",
+                "https": false,
+                "cors": true,
+                "headers": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "proxyReqHeaders": [
+                    {
+                        "key": "",
+                        "value": ""
+                    }
+                ],
+                "proxyResHeaders": [
+                    {
+                        "key": "",
+                        "value": ""
+                    }
+                ]
+            }
+        }
+    ]
+}

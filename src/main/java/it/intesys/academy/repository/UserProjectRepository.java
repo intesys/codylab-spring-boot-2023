@@ -1,13 +1,13 @@
 package it.intesys.academy.repository;
 
 import it.intesys.academy.dto.UserProjectDTO;
+import it.intesys.academy.mockoon.client.MockoonApi;
+import it.intesys.academy.mockoon.client.model.ProjectsMockoonDTO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -15,32 +15,34 @@ import java.util.Optional;
 @Repository
 public class UserProjectRepository {
 
+    private static final Logger log = LoggerFactory.getLogger(UserProjectRepository.class);
+
     private final NamedParameterJdbcTemplate jdbcTemplate;
 
-    public UserProjectRepository(NamedParameterJdbcTemplate jdbcTemplate) {
+    private final MockoonApi mockoonApi;
+
+    public UserProjectRepository(NamedParameterJdbcTemplate jdbcTemplate, MockoonApi mockoonApi) {
 
         this.jdbcTemplate = jdbcTemplate;
+        this.mockoonApi = mockoonApi;
     }
 
     public Optional<UserProjectDTO> usernameProjectVisibility(String username, Integer projectId) {
 
         //Add http client
         try {
-            HttpRequest request =
-                HttpRequest.newBuilder().uri(new URI("http://localhost:3003/api/v1/projects/" + username))
-                       .GET()
-                       .build();
 
-                HttpResponse<String> response = HttpClient.newHttpClient()
-                                                          .send(request, HttpResponse.BodyHandlers.ofString());
-                response.body();
+            ProjectsMockoonDTO projectsMockoonDTO = mockoonApi.getProjectsForUsername(username);
 
-                //Check id project is into the list with projectId
-                return Optional.empty();
+            log.info("projectsMockoonDTO" + projectsMockoonDTO);
         }
         catch (Exception e) {
-            throw new RuntimeException(e);
+
+            log.error("Exception occurs ", e);
+
         }
+
+        return Optional.empty();
 
     }
 
