@@ -4,7 +4,7 @@ import it.intesys.academy.domain.Project;
 import it.intesys.academy.domain.UserProject;
 import it.intesys.academy.repository.PersonRepository;
 import it.intesys.academy.repository.ProjectRepository;
-import it.intesys.academy.repository.UserProjectRepository;
+import it.intesys.academy.repository.UserProjectsRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,13 +12,13 @@ import java.util.List;
 @Service
 public class UserProjectService {
 
-    private final UserProjectRepository userProjectRepository;
+    private final UserProjectsRepository userProjectRepository;
 
     private final ProjectRepository projectRepository;
 
     private final PersonRepository personRepository;
 
-    public UserProjectService(UserProjectRepository userProjectRepository,
+    public UserProjectService(UserProjectsRepository userProjectRepository,
                               PersonRepository personRepository,
                               ProjectRepository projectRepository) {
 

@@ -1,4 +1,4 @@
-package it.intesys.academy.repository;
+/**package it.intesys.academy.repository;
 
 import it.intesys.academy.domain.Person;
 import it.intesys.academy.domain.Project;
@@ -21,3 +21,4 @@ public interface UserProjectRepository extends ListCrudRepository<UserProject, I
     public List<UserProject> findUserProjectByPersonUsername(String username);
 
 }
+*/

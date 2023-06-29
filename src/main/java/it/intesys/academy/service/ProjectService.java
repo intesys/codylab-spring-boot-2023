@@ -36,9 +36,9 @@ public class ProjectService {
 
     private final CommentMapper commentMapper;
 
-    private final UserProjectRepository userProjectRepository;
+    private final UserProjectsRepository userProjectRepository;
 
-    public ProjectService(PersonRepository personRepository,UserProjectRepository userProjectRepository,ProjectRepository projectRepository, IssueRepository issueRepository, CommentRepository commentRepository,
+    public ProjectService(PersonRepository personRepository,UserProjectsRepository userProjectRepository,ProjectRepository projectRepository, IssueRepository issueRepository, CommentRepository commentRepository,
                           UserProjectService userProjectService, ProjectMapper projectMapper, IssueMapper issueMapper, CommentMapper commentMapper) {
 
         this.projectRepository = projectRepository;
@@ -154,7 +154,7 @@ public class ProjectService {
         if (!userProjectService.canThisUserReadThisProject(username, projectId)) {
             throw new RuntimeException("Security constraints violation");
         }
-        List<UserProject> userProjects = userProjectRepository.findUserProjectsByPersonUsernameAndProjectId(username,projectId);
+        List<UserProject> userProjects = userProjectRepository.findUserProjectsByPersonUsernameAndProjectId(username,projectId).stream().toList();
         List<Issue> issues = issueRepository.findByProjectIdIn(List.of(projectId));
         List<Integer> issuesIds = issues.stream()
                 .map(Issue::getId)
