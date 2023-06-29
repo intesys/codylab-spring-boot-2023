@@ -1,5 +1,6 @@
 package it.intesys.academy.controller.rest;
 
+import it.intesys.academy.controller.openapi.model.CommentApiDTO;
 import it.intesys.academy.controller.rest.errors.BadRequestException;
 import it.intesys.academy.dto.CommentDTO;
 import it.intesys.academy.service.CommentService;
@@ -24,32 +25,32 @@ public class CommentController {
 
 
     @PostMapping("/comments")
-    public ResponseEntity<CommentDTO> createComment(@RequestBody CommentDTO commentDTO,
+    public ResponseEntity<CommentApiDTO> createComment(@RequestBody CommentApiDTO commentApiDTO,
                                                     @RequestHeader(name = "X-User-Name") String username) {
-        if (commentDTO.getId() != null) {
+        if (commentApiDTO.getId() != null) {
             log.error("Bad request, id must be null when creating a new issue");
             throw new BadRequestException("Id must be null when creating a new comment");
         }
 
-        if (!StringUtils.hasText(commentDTO.getText())) {
+        if (!StringUtils.hasText(commentApiDTO.getText())) {
             throw new BadRequestException("Invalid DTO");
         }
 
-        return ResponseEntity.ok(commentService.createComment(commentDTO, username));
+        return ResponseEntity.ok(commentService.createComment(commentApiDTO, username));
     }
 
     @PutMapping("/comments/{commentId}")
-    public ResponseEntity<CommentDTO> updateComment(@PathVariable int commentId, @RequestBody CommentDTO commentDTO,
-                                                    @RequestHeader(name = "X-User-Name") String username) {
-        if (commentDTO.getId() == null) {
+    public ResponseEntity<CommentApiDTO> updateComment(@PathVariable int commentId, @RequestBody CommentApiDTO commentApiDTO,
+                                                       @RequestHeader(name = "X-User-Name") String username) {
+        if (commentApiDTO.getId() == null) {
 
             throw new BadRequestException("Id must be evaluated when searching a comment");
         }
-        if (commentDTO.getId() != commentId) {
+        if (commentApiDTO.getId() != commentId) {
             throw new BadRequestException("Bad request, id in path and in body must be the same");
         }
 
-        return ResponseEntity.ok(commentService.updateComment(commentDTO, username));
+        return ResponseEntity.ok(commentService.updateComment(commentApiDTO, username));
     }
     @DeleteMapping("/comments/{commentId}")
     public ResponseEntity<Void> deleteComment(@PathVariable Integer commentId,

@@ -1,5 +1,6 @@
 package it.intesys.academy.mapper;
 
+import it.intesys.academy.controller.openapi.model.CommentApiDTO;
 import it.intesys.academy.domain.Comment;
 import it.intesys.academy.domain.Issue;
 import it.intesys.academy.dto.CommentDTO;
@@ -8,13 +9,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class CommentMapper {
 
-    public Comment toEntity(CommentDTO commentDTO) {
+    public Comment toEntity(CommentApiDTO commentApiDTO) {
         Comment comment = new Comment();
-        comment.setId(commentDTO.getId());
-        comment.setText(commentDTO.getText());
-        comment.setAuthor(commentDTO.getAuthor());
+        comment.setId(commentApiDTO.getId());
+        comment.setText(commentApiDTO.getText());
+        comment.setAuthor(commentApiDTO.getAuthor());
         Issue issue = new Issue();
-        issue.setId(commentDTO.getIssueId());
+        issue.setId(commentApiDTO.getIssueId());
         comment.setIssue(issue);
         return comment;
     }
@@ -26,5 +27,13 @@ public class CommentMapper {
         commentDTO.setAuthor(comment.getAuthor());
         commentDTO.setIssueId(comment.getIssue().getId());
         return commentDTO;
+    }
+    public CommentApiDTO toApiDto(Comment comment) {
+        CommentApiDTO commentApiDTO = new CommentApiDTO();
+        commentApiDTO.setId(comment.getId());
+        commentApiDTO.setText(comment.getText());
+        commentApiDTO.setAuthor(comment.getAuthor());
+        commentApiDTO.setIssueId(comment.getIssue().getId());
+        return commentApiDTO;
     }
 }

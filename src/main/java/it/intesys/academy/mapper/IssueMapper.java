@@ -1,5 +1,7 @@
 package it.intesys.academy.mapper;
 
+import it.intesys.academy.controller.openapi.model.IssueApiDTO;
+import it.intesys.academy.controller.openapi.model.ProjectApiDTO;
 import it.intesys.academy.domain.Issue;
 import it.intesys.academy.domain.Project;
 import it.intesys.academy.dto.IssueDTO;
@@ -8,14 +10,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class IssueMapper {
 
-    public Issue toEntity(IssueDTO issueDTO) {
+    public Issue toEntity(IssueApiDTO issueApiDTO) {
         Issue issue = new Issue();
-        issue.setId(issueDTO.getId());
-        issue.setName(issueDTO.getName());
-        issue.setDescription(issueDTO.getDescription());
-        issue.setAuthor(issueDTO.getAuthor());
+        issue.setId(issueApiDTO.getId());
+        issue.setName(issueApiDTO.getName());
+        issue.setDescription(issueApiDTO.getDescription());
+        issue.setAuthor(issueApiDTO.getAuthor());
         Project project = new Project();
-        project.setId(issueDTO.getProjectId());
+        project.setId(issueApiDTO.getProjectId());
         issue.setProject(project);
         return issue;
     }
@@ -28,5 +30,14 @@ public class IssueMapper {
         issueDTO.setAuthor(issue.getAuthor());
         issueDTO.setProjectId(issue.getProject().getId());
         return issueDTO;
+    }
+    public IssueApiDTO toApiDto(Issue issue) {
+        IssueApiDTO issueApiDTO = new IssueApiDTO();
+        issueApiDTO.setId(issue.getId());
+        issueApiDTO.setName(issue.getName());
+        issueApiDTO.setDescription(issue.getDescription());
+        issueApiDTO.setAuthor(issue.getAuthor());
+        issueApiDTO.setProjectId(issue.getProject().getId());
+        return issueApiDTO;
     }
 }

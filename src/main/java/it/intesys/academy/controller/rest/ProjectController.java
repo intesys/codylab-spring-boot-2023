@@ -1,5 +1,6 @@
 package it.intesys.academy.controller.rest;
 
+import it.intesys.academy.controller.openapi.model.ProjectApiDTO;
 import it.intesys.academy.controller.rest.errors.BadRequestException;
 import it.intesys.academy.dto.ProjectDTO;
 import it.intesys.academy.service.ProjectService;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api")
 public class ProjectController {
-
+/*
     private final static Logger log = LoggerFactory.getLogger(ProjectController.class);
 
     private final ProjectService projectService;
@@ -23,27 +24,27 @@ public class ProjectController {
     }
 
     @GetMapping("/projects/{projectId}")
-    public ResponseEntity<ProjectDTO> getProject(@PathVariable int projectId,
-                                                 @RequestHeader(name = "X-User-Name") String username) {
+    public ResponseEntity<ProjectApiDTO> getProject(@PathVariable int projectId,
+                                                        @RequestHeader(name = "X-User-Name") String username) {
 
         return ResponseEntity.ok(projectService.readProjectWithIssue(projectId, username));
     }
 
 
     @PostMapping("/projects")
-    public ResponseEntity<ProjectDTO> createProject(@RequestBody ProjectDTO projectDTO,
+    public ResponseEntity<ProjectApiDTO> createProject(@RequestBody ProjectApiDTO projectApiDTO,
                                                     @RequestHeader(name = "X-User-Name") String username) {
-        if (projectDTO.getId() != null) {
+        if (projectApiDTO.getId() != null) {
             throw new BadRequestException("Bad request, id must be null when creating a new project");
 
         }
 
-        if (!StringUtils.hasText(projectDTO.getDescription())
-                || !StringUtils.hasText(projectDTO.getName())) {
+        if (!StringUtils.hasText(projectApiDTO.getDescription())
+                || !StringUtils.hasText(projectApiDTO.getName())) {
             throw new BadRequestException("Invalid DTO");
         }
 
-        return ResponseEntity.ok(projectService.createProject(projectDTO, username));
+        return ResponseEntity.ok(projectService.createProject(projectApiDTO, username));
     }
 
     @PutMapping("/projects/{projectId}")
@@ -81,7 +82,7 @@ public class ProjectController {
                                               @RequestHeader("X-User-Name") String username) {
         projectService.deleteProject(projectId, username);
         return new ResponseEntity<>(HttpStatus.OK);
-    }
+    }*/
 
 
 }

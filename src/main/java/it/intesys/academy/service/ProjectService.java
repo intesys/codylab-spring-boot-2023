@@ -42,15 +42,15 @@ public class ProjectService {
         this.issueService = issueService;
     }
 
-    public ProjectDTO readProjectWithIssue(int projectId, String username) {
+    public ProjectApiDTO readProjectWithIssue(int projectId, String username) {
 
         log.info("Reading project {} with issues, user {}", projectId, username);
 
         if (userProjectService.canThisUserReadThisProject(username, projectId)) {
-            ProjectDTO projectDTO = projectMapper.toDto(projectRepository.findById(projectId).get());
+            ProjectApiDTO projectApiDTO = projectMapper.toApiDto(projectRepository.findById(projectId).get());
             issueRepository.findByProject_Id(projectId)
-                    .forEach(issue -> projectDTO.addIssue(issueMapper.toDto(issue)));
-            return projectDTO;
+                    .forEach(issue -> projectApiDTO.addIssuesItem(issueMapper.toApiDto(issue)));
+            return projectApiDTO;
         }
 
         throw new RuntimeException("Security constraints violation");
@@ -75,25 +75,25 @@ public class ProjectService {
 
     }
 
-    public ProjectDTO createProject(ProjectDTO projectDTO, String username) {
+    public ProjectApiDTO createProject(ProjectApiDTO projectApiDTO, String username) {
 
         log.info("Creating for user {}", username);
 
 
-        Project project = projectRepository.save(projectMapper.toEntity(projectDTO));
+        Project project = projectRepository.save(projectMapper.toEntity(projectApiDTO));
         userProjectService.associateUserToProject(username, project.getId());
 
-        return projectMapper.toDto(project);
+        return projectMapper.toApiDto(project);
     }
 
-    public ProjectDTO updateProject(ProjectDTO projectDTO, String userName) {
-        if (!userProjectService.canThisUserReadThisProject(userName, projectDTO.getId())) {
-            throw new ProjectAccessException("Project permission error", projectDTO.getId());
+    public ProjectApiDTO updateProject(ProjectApiDTO projectApiDTO, String userName) {
+        if (!userProjectService.canThisUserReadThisProject(userName, projectApiDTO.getId())) {
+            throw new ProjectAccessException("Project permission error", projectApiDTO.getId());
         }
 
-        Project updatedProject = projectRepository.save(projectMapper.toEntity(projectDTO));
+        Project updatedProject = projectRepository.save(projectMapper.toEntity(projectApiDTO));
 
-        return projectMapper.toDto(updatedProject);
+        return projectMapper.toApiDto(updatedProject);
     }
 
     public ProjectDTO patchProject(ProjectDTO projectDTO, String userName) {

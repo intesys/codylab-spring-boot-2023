@@ -1,5 +1,6 @@
 package it.intesys.academy.service;
 
+import it.intesys.academy.controller.openapi.model.IssueApiDTO;
 import it.intesys.academy.controller.rest.errors.ProjectAccessException;
 import it.intesys.academy.domain.Comment;
 import it.intesys.academy.domain.Issue;
@@ -37,7 +38,7 @@ public class IssueService {
         this.commentMapper = commentMapper;
     }
 
-    public List<IssueDTO> readIssuesByProjectId(Integer projectId, String userName) {
+    public List<IssueApiDTO> readIssuesByProjectId(Integer projectId, String userName) {
 
         log.info("Reading issues for project {}", projectId);
 
@@ -48,52 +49,52 @@ public class IssueService {
 
         return issueRepository.findByProject_Id(projectId)
                 .stream()
-                .map(issueMapper::toDto)
+                .map(issueMapper::toApiDto)
                 .collect(Collectors.toList());
 
     }
 
-    public IssueDTO readIssueWithComments(Integer issueId, String userName) {
+    public IssueApiDTO readIssueWithComments(Integer issueId, String userName) {
 
         log.info("Reading issue {}", issueId);
 
-        IssueDTO issueDTO = issueMapper.toDto(issueRepository.findIssueById(issueId));
+        IssueApiDTO issueApiDTO = issueMapper.toApiDto(issueRepository.findIssueById(issueId));
 
-        if (!userProjectService.canThisUserReadThisProject(userName, issueDTO.getProjectId())) {
-            throw new ProjectAccessException("Project permission error", issueDTO.getProjectId());
+        if (!userProjectService.canThisUserReadThisProject(userName, issueApiDTO.getProjectId())) {
+            throw new ProjectAccessException("Project permission error", issueApiDTO.getProjectId());
         }
 
-        issueDTO.setComments(commentService.readCommentsByIssueId(issueId));
-        return issueDTO;
+        issueApiDTO.setComments(commentService.readCommentsByIssueId(issueId));
+        return issueApiDTO;
 
     }
 
 
-    public IssueDTO createIssue(IssueDTO issueDTO, String username) {
+    public IssueApiDTO createIssue(IssueApiDTO issueApiDTO, String username) {
 
         log.info("Creating for user {}", username);
 
 
-        Issue issue = issueRepository.save(issueMapper.toEntity(issueDTO));
+        Issue issue = issueRepository.save(issueMapper.toEntity(issueApiDTO));
 
-        return issueMapper.toDto(issue);
+        return issueMapper.toApiDto(issue);
     }
 
-    public IssueDTO updateIssue(IssueDTO issueDTO, String userName) {
+    public IssueApiDTO updateIssue(IssueApiDTO issueApiDTO, String userName) {
 
-        if (!userProjectService.canThisUserReadThisProject(userName, issueDTO.getProjectId())) {
-            throw new ProjectAccessException("Project permission error", issueDTO.getProjectId());
+        if (!userProjectService.canThisUserReadThisProject(userName, issueApiDTO.getProjectId())) {
+            throw new ProjectAccessException("Project permission error", issueApiDTO.getProjectId());
         }
 
-        Issue dbIssue = issueRepository.findIssueById(issueDTO.getId());
-        if ( dbIssue.getProject().getId() != issueDTO.getProjectId() &&
+        Issue dbIssue = issueRepository.findIssueById(issueApiDTO.getId());
+        if ( dbIssue.getProject().getId() != issueApiDTO.getProjectId() &&
                 !userProjectService.canThisUserReadThisProject(userName, dbIssue.getProject().getId())) {
-            throw new ProjectAccessException("Project permission error", issueDTO.getProjectId());
+            throw new ProjectAccessException("Project permission error", issueApiDTO.getProjectId());
         }
 
-        Issue updatedIssue = issueRepository.save(issueMapper.toEntity(issueDTO));
+        Issue updatedIssue = issueRepository.save(issueMapper.toEntity(issueApiDTO));
 
-        return issueMapper.toDto(updatedIssue);
+        return issueMapper.toApiDto(updatedIssue);
     }
 
 

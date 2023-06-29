@@ -48,10 +48,10 @@ public class MvcProjectController {
     }
 
     @PostMapping("/projects")
-    public String createNewProject(@ModelAttribute ProjectDTO projectDTO,
+    public String createNewProject(@ModelAttribute ProjectApiDTO projectApiDTO,
                                    @RequestParam String userName) {
 
-        ProjectDTO project = projectService.createProject(projectDTO, userName);
+        ProjectApiDTO project = projectService.createProject(projectApiDTO, userName);
 
         return "redirect:/mvc/projects/" + project.getId() + "?userName=" + userName;
 

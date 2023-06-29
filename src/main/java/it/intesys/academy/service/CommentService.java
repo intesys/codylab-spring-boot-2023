@@ -1,5 +1,6 @@
 package it.intesys.academy.service;
 
+import it.intesys.academy.controller.openapi.model.CommentApiDTO;
 import it.intesys.academy.domain.Comment;
 import it.intesys.academy.dto.CommentDTO;
 import it.intesys.academy.mapper.CommentMapper;
@@ -32,11 +33,11 @@ public class CommentService {
         this.issueRepository = issueRepository;
     }
 
-    public List<CommentDTO> readCommentsByIssueId(Integer issueId) {
+    public List<CommentApiDTO> readCommentsByIssueId(Integer issueId) {
 
         return commentRepository.findByIssue_Id(issueId)
                 .stream()
-                .map(commentMapper::toDto)
+                .map(commentMapper::toApiDto)
                 .collect(Collectors.toList());
 
     }
@@ -44,30 +45,30 @@ public class CommentService {
 
 
 
-    public CommentDTO createComment(CommentDTO commentDTO, String username) {
+    public CommentApiDTO createComment(CommentApiDTO commentApiDTO, String username) {
 
         log.info("Creating for user {}", username);
 
 
-        Comment comment = commentRepository.save(commentMapper.toEntity(commentDTO));
+        Comment comment = commentRepository.save(commentMapper.toEntity(commentApiDTO));
 
-        return commentMapper.toDto(comment);
+        return commentMapper.toApiDto(comment);
     }
 
-    public CommentDTO updateComment(CommentDTO commentDTO, String userName) {
+    public CommentApiDTO updateComment(CommentApiDTO commentApiDTO, String userName) {
 
-        if (!userProjectService.canThisUserReadThisProject(userName, issueRepository.findIssueById(commentDTO.getIssueId()).getProject().getId())) {
+        if (!userProjectService.canThisUserReadThisProject(userName, issueRepository.findIssueById(commentApiDTO.getIssueId()).getProject().getId())) {
             throw new RuntimeException("Security constraints violation");
         }
 
-        Comment dbComment = commentRepository.findCommentById(commentDTO.getId());
-        if ( dbComment.getIssue().getId() != commentDTO.getIssueId()) {
+        Comment dbComment = commentRepository.findCommentById(commentApiDTO.getId());
+        if ( dbComment.getIssue().getId() != commentApiDTO.getIssueId()) {
             throw new RuntimeException("Security constraints violation");
         }
 
-        Comment updatedComment = commentRepository.save(commentMapper.toEntity(commentDTO));
+        Comment updatedComment = commentRepository.save(commentMapper.toEntity(commentApiDTO));
 
-        return commentMapper.toDto(updatedComment);
+        return commentMapper.toApiDto(updatedComment);
     }
 
 
