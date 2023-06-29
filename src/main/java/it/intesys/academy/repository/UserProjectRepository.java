@@ -1,6 +1,5 @@
 package it.intesys.academy.repository;
 
-import it.intesys.academy.dto.UserProjectDTO;
 import it.intesys.academy.mockoon.client.MockoonApi;
 import it.intesys.academy.mockoon.client.model.ProjectsMockoonDTO;
 import org.slf4j.Logger;
@@ -10,7 +9,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @Repository
 public class UserProjectRepository {
@@ -27,22 +25,11 @@ public class UserProjectRepository {
         this.mockoonApi = mockoonApi;
     }
 
-    public Optional<UserProjectDTO> usernameProjectVisibility(String username, Integer projectId) {
+    public boolean usernameProjectVisibility(String username, Integer projectId) {
 
-        //Add http client
-        try {
+        ProjectsMockoonDTO projectsMockoonDTO = mockoonApi.getProjectsForUsername(username);
 
-            ProjectsMockoonDTO projectsMockoonDTO = mockoonApi.getProjectsForUsername(username);
-
-            log.info("projectsMockoonDTO" + projectsMockoonDTO);
-        }
-        catch (Exception e) {
-
-            log.error("Exception occurs ", e);
-
-        }
-
-        return Optional.empty();
+        return projectsMockoonDTO.getProjects().stream().anyMatch(projectMockoonDTO -> projectMockoonDTO.getId() == projectId);
 
     }
 
