@@ -1,5 +1,6 @@
 package it.intesys.academy.service;
 
+import it.intesys.academy.controller.openapi.model.IssueApiDTO;
 import it.intesys.academy.controller.rest.errors.ProjectAccessException;
 import it.intesys.academy.domain.Comment;
 import it.intesys.academy.domain.Issue;
@@ -39,7 +40,7 @@ public class IssueService {
         this.commentMapper = commentMapper;
     }
 
-    public List<IssueDTO> readIssuesByProjectId(Integer projectId, String userName) {
+    public List<IssueApiDTO> readIssuesByProjectId(Integer projectId, String userName) {
 
         log.info("Reading issues for project {}", projectId);
 
@@ -54,11 +55,11 @@ public class IssueService {
 
     }
 
-    public IssueDTO readIssueWithComments(Integer issueId, String userName) {
+    public IssueApiDTO readIssueWithComments(Integer issueId, String userName) {
 
         log.info("Reading issue {}", issueId);
 
-        IssueDTO issueDTO = issueMapper.toDto(issueRepository.findIssueById(issueId));
+        IssueApiDTO issueDTO = issueMapper.toDto(issueRepository.findIssueById(issueId));
 
         if (!userProjectService.canThisUserReadThisProject(userName, issueDTO.getProjectId())) {
             throw new ProjectAccessException("Project Permission error",issueDTO.getProjectId());
@@ -72,7 +73,7 @@ public class IssueService {
 
     }
 
-    public IssueDTO createIssue(IssueDTO issueDTO, String username) {
+    public IssueApiDTO createIssue(IssueApiDTO issueDTO, String username) {
 
         log.info("Creating for user {}", username);
 
@@ -82,7 +83,7 @@ public class IssueService {
         return issueMapper.toDto(issue);
     }
 
-    public IssueDTO updateIssue(IssueDTO issueDTO, String userName) {
+    public IssueApiDTO updateIssue(IssueApiDTO issueDTO, String userName) {
 
         if (!userProjectService.canThisUserReadThisProject(userName, issueDTO.getProjectId())) {
             throw new RuntimeException("Security constraints violation");

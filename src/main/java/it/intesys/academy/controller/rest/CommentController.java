@@ -1,5 +1,6 @@
 package it.intesys.academy.controller.rest;
 
+import it.intesys.academy.controller.openapi.model.CommentApiDTO;
 import it.intesys.academy.dto.CommentDTO;
 import it.intesys.academy.dto.IssueDTO;
 import it.intesys.academy.service.CommentService;
@@ -25,21 +26,21 @@ public class CommentController {
     }
 
     @GetMapping("/comments")
-    public ResponseEntity<List<CommentDTO>> getComments(
+    public ResponseEntity<List<CommentApiDTO>> getComments(
             @RequestParam Integer issueId, @RequestHeader(name = "X-User-Name") String username) {
 
         return ResponseEntity.ok(commentService.readCommentsByIssueId(issueId,username));
     }
 
     @GetMapping("/comments/{commentId}")
-    public ResponseEntity<CommentDTO> getComment(@PathVariable int commentId,
+    public ResponseEntity<CommentApiDTO> getComment(@PathVariable int commentId,
                                              @RequestHeader(name = "X-User-Name") String username) {
 
         return ResponseEntity.ok(commentService.readComments(commentId, username));
     }
 
     @PostMapping("/comments")
-    public ResponseEntity<CommentDTO> createComment(@RequestBody CommentDTO commentDTO,
+    public ResponseEntity<CommentApiDTO> createComment(@RequestBody CommentApiDTO commentDTO,
                                                 @RequestHeader(name = "X-User-Name") String username) {
         if (commentDTO.getId() != null) {
             log.error("Bad request, id must be null when creating a new issue");
@@ -54,7 +55,7 @@ public class CommentController {
     }
 
     @PutMapping("/comments/{commentId}")
-    public ResponseEntity<CommentDTO> updateComment(@PathVariable int commentId, @RequestBody CommentDTO commentDTO,
+    public ResponseEntity<CommentApiDTO> updateComment(@PathVariable int commentId, @RequestBody CommentApiDTO commentDTO,
                                                 @RequestHeader(name = "X-User-Name") String username) {
         if (commentDTO.getId() == null) {
             log.error("Bad request, id must not be null when updating a issue");

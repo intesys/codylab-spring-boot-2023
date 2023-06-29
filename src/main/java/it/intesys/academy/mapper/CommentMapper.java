@@ -1,5 +1,6 @@
 package it.intesys.academy.mapper;
 
+import it.intesys.academy.controller.openapi.model.CommentApiDTO;
 import it.intesys.academy.domain.Comment;
 import it.intesys.academy.domain.Issue;
 import it.intesys.academy.dto.CommentDTO;
@@ -9,8 +10,8 @@ import javax.swing.text.html.parser.Entity;
 
 @Component
 public class CommentMapper {
-    public CommentDTO toDTO(Comment comment){
-        CommentDTO commentDTO = new CommentDTO();
+    public CommentApiDTO toDTO(Comment comment){
+        CommentApiDTO commentDTO = new CommentApiDTO();
         commentDTO.setId(comment.getId());
         commentDTO.setDescription(comment.getDescription());
         commentDTO.setAuthor(comment.getAuthor());
@@ -18,7 +19,7 @@ public class CommentMapper {
         return commentDTO;
     }
 
-    public Comment toEntity(CommentDTO commentDTO){
+    public Comment toEntity(CommentApiDTO commentDTO){
         Comment comment = new Comment();
         comment.setId(commentDTO.getId());
         comment.setDescription(commentDTO.getDescription());

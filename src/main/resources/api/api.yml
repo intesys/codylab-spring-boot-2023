@@ -428,6 +428,11 @@ components:
         projectId:
           type: integer
           format: int32
+        comments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Comment'
+
     Project:
       type: object
       properties:
@@ -438,6 +443,13 @@ components:
           type: string
         description:
           type: string
+        authorId:
+          type: integer
+          format: int32
+        issues:
+          type: array
+          items:
+            $ref: '#/components/schemas/Issue'
     Person:
       type: object
       properties:

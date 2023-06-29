@@ -1,5 +1,6 @@
 package it.intesys.academy.controller.rest;
 
+import it.intesys.academy.controller.openapi.model.ProjectApiDTO;
 import it.intesys.academy.dto.ProjectDTO;
 import it.intesys.academy.service.ProjectService;
 import org.slf4j.Logger;
@@ -24,20 +25,20 @@ public class ProjectController {
     }
 
     @GetMapping("/projects")
-    public ResponseEntity<List<ProjectDTO>> getProjects(@RequestHeader(name = "X-User-Name") String userName) {
+    public ResponseEntity<List<ProjectApiDTO>> getProjects(@RequestHeader(name = "X-User-Name") String userName) {
 
         return ResponseEntity.ok(projectService.readProjectsWithIssues(userName));
     }
 
     @GetMapping("/projects/{projectId}")
-    public ResponseEntity<ProjectDTO> getProject(@PathVariable int projectId,
+    public ResponseEntity<ProjectApiDTO> getProject(@PathVariable int projectId,
                                                  @RequestHeader(name = "X-User-Name") String username) {
 
         return ResponseEntity.ok(projectService.readProjectWithIssue(projectId, username));
     }
 
     @PostMapping("/projects")
-    public ResponseEntity<ProjectDTO> createProject(@RequestBody ProjectDTO projectDTO,
+    public ResponseEntity<ProjectApiDTO> createProject(@RequestBody ProjectApiDTO projectDTO,
                                                     @RequestHeader(name = "X-User-Name") String username) {
         if (projectDTO.getId() != null) {
             log.error("Bad request, id must be null when creating a new project");
@@ -53,7 +54,7 @@ public class ProjectController {
     }
 
     @PutMapping("/projects/{projectId}")
-    public ResponseEntity<ProjectDTO> updateProject(@PathVariable int projectId, @RequestBody ProjectDTO projectDTO,
+    public ResponseEntity<ProjectApiDTO> updateProject(@PathVariable int projectId, @RequestBody ProjectApiDTO projectDTO,
                                                     @RequestHeader(name = "X-User-Name") String username) {
         if (projectDTO.getId() == null) {
             log.error("Bad request, id must not be null when updating a project");
@@ -68,7 +69,7 @@ public class ProjectController {
     }
 
     @PatchMapping("/projects/{projectId}")
-    public ResponseEntity<ProjectDTO> patchProject(@PathVariable int projectId, @RequestBody ProjectDTO projectDTO,
+    public ResponseEntity<ProjectApiDTO> patchProject(@PathVariable int projectId, @RequestBody ProjectApiDTO projectDTO,
                                                    @RequestHeader("X-User-Name") String username) {
         if (projectDTO.getId() == null) {
             log.error("Bad request, id must not be null when updating a project");

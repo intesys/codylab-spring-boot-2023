@@ -1,5 +1,7 @@
 package it.intesys.academy.service;
 
+import it.intesys.academy.controller.openapi.model.IssueApiDTO;
+import it.intesys.academy.controller.openapi.model.ProjectApiDTO;
 import it.intesys.academy.domain.*;
 import it.intesys.academy.dto.IssueDTO;
 import it.intesys.academy.dto.ProjectDTO;
@@ -50,20 +52,20 @@ public class ProjectService {
         this.personRepository = personRepository;
     }
 
-    public ProjectDTO readProjectWithIssue(int projectId, String username) {
+    public ProjectApiDTO readProjectWithIssue(int projectId, String username) {
 
         log.info("Reading project {} with issues, user {}", projectId, username);
 
         if (userProjectService.canThisUserReadThisProject(username, projectId)) {
-            ProjectDTO projectDTO = projectMapper.toDto(projectRepository.findById(projectId).get());
+            ProjectApiDTO projectDTO = projectMapper.toDto(projectRepository.findById(projectId).get());
             List<Issue> issues= issueRepository.findByProjectIdIn(List.of(projectId));
             for(Issue issue:issues){
-                IssueDTO issueDTO = issueMapper.toDto(issue);
+                IssueApiDTO issueDTO = issueMapper.toDto(issue);
                 List<Comment> comments= commentRepository.findCommentsByIssueId(issueDTO.getId());
                 for(Comment comment : comments){
-                    issueDTO.addComment(commentMapper.toDTO(comment));
+                    issueDTO.addCommentsItem(commentMapper.toDTO(comment));
                 }
-                projectDTO.addIssue(issueDTO);
+                projectDTO.addIssuesItem(issueDTO);
             }
             return projectDTO;
         }
@@ -72,7 +74,7 @@ public class ProjectService {
 
     }
 
-    public ProjectDTO readProject(int projectId, String username) {
+    public ProjectApiDTO readProject(int projectId, String username) {
 
         log.info("Reading project {} , user {}", projectId, username);
 
@@ -83,14 +85,14 @@ public class ProjectService {
         throw new RuntimeException("Security constraints violation");
     }
 
-    public List<ProjectDTO> readProjectsWithIssues(String username) {
+    public List<ProjectApiDTO> readProjectsWithIssues(String username) {
 
         log.info("Reading projects for user {}", username);
         return readProjectsWithIssues(userProjectService.getUserProjects(username));
 
     }
 
-    public ProjectDTO createProject(ProjectDTO projectDTO, String username) {
+    public ProjectApiDTO createProject(ProjectApiDTO projectDTO, String username) {
 
         log.info("Creating for user {}", username);
         Project projectN = projectMapper.toEntity(projectDTO);
@@ -103,7 +105,7 @@ public class ProjectService {
         return projectMapper.toDto(project);
     }
 
-    public ProjectDTO updateProject(ProjectDTO projectDTO, String userName) {
+    public ProjectApiDTO updateProject(ProjectApiDTO projectDTO, String userName) {
         if (!userProjectService.canThisUserReadThisProject(userName, projectDTO.getId())) {
             throw new RuntimeException("Security constraints violation");
         }
@@ -113,7 +115,7 @@ public class ProjectService {
         return projectMapper.toDto(updatedProject);
     }
 
-    public ProjectDTO patchProject(ProjectDTO projectDTO, String userName) {
+    public ProjectApiDTO patchProject(ProjectApiDTO projectDTO, String userName) {
         if (!userProjectService.canThisUserReadThisProject(userName, projectDTO.getId())) {
             throw new RuntimeException("Security constraints violation");
         }
@@ -131,7 +133,7 @@ public class ProjectService {
         return projectMapper.toDto(projectRepository.save(dbProject));
     }
 
-    private List<ProjectDTO> readProjectsWithIssues(List<Integer> userProjectIds) {
+    private List<ProjectApiDTO> readProjectsWithIssues(List<Integer> userProjectIds) {
 
         return projectRepository.findByIdIn(userProjectIds)
                 .stream()

@@ -1,5 +1,6 @@
 package it.intesys.academy.mapper;
 
+import it.intesys.academy.controller.openapi.model.IssueApiDTO;
 import it.intesys.academy.domain.Issue;
 import it.intesys.academy.dto.IssueDTO;
 import it.intesys.academy.domain.Issue;
@@ -9,20 +10,20 @@ import org.springframework.stereotype.Component;
 @Component
 public class IssueMapper {
 
-    public Issue toEntity(IssueDTO issueDTO) {
+    public Issue toEntity(IssueApiDTO issueDTO) {
         Issue issue = new Issue();
         issue.setId(issueDTO.getId());
         issue.setName(issueDTO.getName());
         issue.setDescription(issueDTO.getDescription());
         issue.setAuthor(issueDTO.getAuthor());
         Project project = new Project();
-        project.setId(issueDTO.getProjectId());
+            project.setId(issueDTO.getProjectId());
         issue.setProject(project);
         return issue;
     }
 
-    public IssueDTO toDto(Issue issue) {
-        IssueDTO issueDTO = new IssueDTO();
+    public IssueApiDTO toDto(Issue issue) {
+        IssueApiDTO issueDTO = new IssueApiDTO();
         issueDTO.setId(issue.getId());
         issueDTO.setName(issue.getName());
         issueDTO.setDescription(issue.getDescription());

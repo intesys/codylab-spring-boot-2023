@@ -1,5 +1,6 @@
 package it.intesys.academy.controller.rest;
 
+import it.intesys.academy.controller.openapi.model.IssueApiDTO;
 import it.intesys.academy.controller.rest.errors.BadRequestException;
 import it.intesys.academy.dto.IssueDTO;
 import it.intesys.academy.service.IssueService;
@@ -25,21 +26,21 @@ public class IssueController {
     }
 
     @GetMapping("/issues")
-    public ResponseEntity<List<IssueDTO>> getIssues(
+    public ResponseEntity<List<IssueApiDTO>> getIssues(
             @RequestParam Integer projectId, @RequestHeader(name = "X-User-Name") String userName) {
 
         return ResponseEntity.ok(issueService.readIssuesByProjectId(projectId, userName));
     }
 
     @GetMapping("/issues/{issueId}")
-    public ResponseEntity<IssueDTO> getIssue(@PathVariable int issueId,
-                                                 @RequestHeader(name = "X-User-Name") String username) {
+    public ResponseEntity<IssueApiDTO> getIssue(@PathVariable int issueId,
+                                                @RequestHeader(name = "X-User-Name") String username) {
 
         return ResponseEntity.ok(issueService.readIssueWithComments(issueId, username));
     }
 
     @PostMapping("/issues")
-    public ResponseEntity<IssueDTO> createIssue(@RequestBody IssueDTO issueDTO,
+    public ResponseEntity<IssueApiDTO> createIssue(@RequestBody IssueApiDTO issueDTO,
                                                     @RequestHeader(name = "X-User-Name") String username) {
         if (issueDTO.getId() != null) {
             log.error("Bad request, id must be null when creating a new issue");
@@ -55,7 +56,7 @@ public class IssueController {
     }
 
     @PutMapping("/issues/{issueId}")
-    public ResponseEntity<IssueDTO> updateIssue(@PathVariable int issueId, @RequestBody IssueDTO issueDTO,
+    public ResponseEntity<IssueApiDTO> updateIssue(@PathVariable int issueId, @RequestBody IssueDTO issueDTO,
                                                     @RequestHeader(name = "X-User-Name") String username) {
         if (issueDTO.getId() == null) {
             log.error("Bad request, id must not be null when updating a issue");

@@ -1,5 +1,6 @@
 package it.intesys.academy.service;
 
+import it.intesys.academy.controller.openapi.model.CommentApiDTO;
 import it.intesys.academy.controller.rest.CommentController;
 import it.intesys.academy.domain.Comment;
 import it.intesys.academy.domain.Issue;
@@ -34,7 +35,7 @@ public class CommentService {
         this.commentMapper = commentMapper;
     }
 
-    public List<CommentDTO> readCommentsByIssueId(Integer issueId, String userName) {
+    public List<CommentApiDTO> readCommentsByIssueId(Integer issueId, String userName) {
 
         log.info("Reading comments for issue {}", issueId);
         Integer projectId = issueRepository.findById(issueId).get()
@@ -49,11 +50,11 @@ public class CommentService {
                 .toList();
     }
 
-    public CommentDTO readComments(Integer commentId, String userName) {
+    public CommentApiDTO readComments(Integer commentId, String userName) {
 
         log.info("Reading comment {}", commentId);
 
-        CommentDTO commentDTO = commentMapper.toDTO(commentRepository.findCommentById(commentId));
+        CommentApiDTO commentDTO = commentMapper.toDTO(commentRepository.findCommentById(commentId));
         Integer projectId = issueRepository.findById(commentDTO.getIssueId()).get()
                 .getProject().getId();
 
@@ -64,7 +65,7 @@ public class CommentService {
 
     }
 
-    public CommentDTO createComment(CommentDTO commentDTO, String username) {
+    public CommentApiDTO createComment(CommentApiDTO commentDTO, String username) {
 
         log.info("Creating for user {}", username);
 
@@ -73,7 +74,7 @@ public class CommentService {
         return commentMapper.toDTO(comment);
     }
 
-    public CommentDTO updateComment(CommentDTO commentDTO, String userName) {
+    public CommentApiDTO updateComment(CommentApiDTO commentDTO, String userName) {
         Integer issueId = commentDTO.getIssueId();
         Integer projectId = issueRepository.findIssueById(issueId).getProject().getId();
 

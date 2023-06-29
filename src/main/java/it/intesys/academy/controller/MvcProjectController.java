@@ -1,5 +1,6 @@
 package it.intesys.academy.controller;
 
+import it.intesys.academy.controller.openapi.model.ProjectApiDTO;
 import it.intesys.academy.dto.ProjectDTO;
 import it.intesys.academy.service.ProjectService;
 import org.springframework.stereotype.Controller;
@@ -46,8 +47,8 @@ public class MvcProjectController {
     }
 
     @PostMapping("/projects")
-    public String postNewProject(@ModelAttribute ProjectDTO projectDTO, @RequestParam String userName){
-        ProjectDTO newprojectDTO = projectService.createProject(projectDTO,userName);
+    public String postNewProject(@ModelAttribute ProjectApiDTO projectApiDTO, @RequestParam String userName){
+        ProjectApiDTO newprojectDTO = projectService.createProject(projectApiDTO,userName);
         return "redirect:/mvc/projects/"+ newprojectDTO.getId() +"?userName="+userName;
     }
 
