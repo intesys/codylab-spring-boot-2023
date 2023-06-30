@@ -1,5 +1,6 @@
 package it.intesys.academy;
 
+import it.intesys.academy.mockoon.client.MockoonApi;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -15,6 +16,13 @@ public class IssueTracker {
     @Bean
     public RestTemplate restTemplate(){
         return new RestTemplate();
+    }
+
+    @Bean
+    public MockoonApi mockoonApi(){
+        MockoonApi mockoonApi =  new MockoonApi();
+        mockoonApi.getApiClient().setBasePath("http://localhost:3003/api/v1");
+        return mockoonApi;
     }
 
 
