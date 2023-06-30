@@ -34,7 +34,11 @@ public class UserProjectService {
     }
 
     public boolean canThisUserReadThisProject(String username, int projectId) {
-        return ! userProjectsRepository.usernameProjectVisibility(username,projectId).isEmpty();
+        if(username.equals("ecostanzi") || username.equals("zato")){
+        return ! userProjectsRepository.usernameProjectVisibility(username,projectId).isEmpty();}
+        else{
+            return ! userProjectRepository.findUserProjectsByPersonUsernameAndProjectId(username,projectId).isEmpty();
+        }
 
     }
 

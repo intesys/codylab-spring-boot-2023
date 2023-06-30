@@ -68,6 +68,18 @@
             <version>${swagger-annotations.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>jsr305</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.annotation</groupId>
+            <artifactId>javax.annotation-api</artifactId>
+            <version>1.3.2</version>
+        </dependency>
+
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -111,6 +123,33 @@
                             <importMappings>
                                 <importMapping>java.time.OffsetDateTime=java.time.Instant</importMapping>
                             </importMappings>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>mockoon</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.basedir}/src/main/resources/mockoon/mockoon.yml</inputSpec>
+                            <output>${project.build.directory}/generated-sources/openapi/mockoon</output>
+                            <generatorName>java</generatorName>
+                            <modelNameSuffix>MockoonDTO</modelNameSuffix>
+                            <apiPackage>it.intesys.academy.mockoon.client</apiPackage>
+                            <modelPackage>it.intesys.academy.mockoon.client.model</modelPackage>
+                            <generateSupportingFiles>true</generateSupportingFiles>
+                            <supportingFilesToGenerate>ApiUtil.java,ApiClient.java,Authentication.java,HttpBasicAuth.java,ApiKeyAuth.java,OAuth.java,RFC3339DateFormat.java,JavaTimeFormatter.java</supportingFilesToGenerate>
+                            <generateApiTests>false</generateApiTests>
+                            <generateModelTests>false</generateModelTests>
+                            <generateModels>true</generateModels>
+                            <generateApis>true</generateApis>
+                            <generateApiDocumentation>false</generateApiDocumentation>
+                            <generateModelDocumentation>false</generateModelDocumentation>
+                            <configOptions>
+                                <library>resttemplate</library>
+                                <dateLibrary>java8</dateLibrary>
+                                <useJakartaEe>true</useJakartaEe>
+                            </configOptions>
                         </configuration>
                     </execution>
                 </executions>
