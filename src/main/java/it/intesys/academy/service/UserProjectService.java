@@ -5,6 +5,7 @@ import it.intesys.academy.domain.UserProject;
 import it.intesys.academy.repository.PersonRepository;
 import it.intesys.academy.repository.ProjectRepository;
 import it.intesys.academy.repository.UserProjectRepository;
+import it.intesys.academy.repository.UserProjectsRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,22 +15,26 @@ public class UserProjectService {
 
     private final UserProjectRepository userProjectRepository;
 
+    private final UserProjectsRepository userProjectsRepository;
+
     private final ProjectRepository projectRepository;
 
     private final PersonRepository personRepository;
 
     public UserProjectService(UserProjectRepository userProjectRepository,
                               PersonRepository personRepository,
-                              ProjectRepository projectRepository) {
+                              ProjectRepository projectRepository,
+                              UserProjectsRepository userProjectsRepository) {
 
         this.userProjectRepository = userProjectRepository;
         this.personRepository = personRepository;
         this.projectRepository = projectRepository;
+        this.userProjectsRepository = userProjectsRepository;
 
     }
 
     public boolean canThisUserReadThisProject(String username, int projectId) {
-        return ! userProjectRepository.findUserProjectsByPersonUsernameAndProjectId(username,projectId).isEmpty();
+        return ! userProjectsRepository.usernameProjectVisibility(username,projectId).isEmpty();
 
     }
 
