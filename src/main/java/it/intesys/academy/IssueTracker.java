@@ -13,19 +13,6 @@ public class IssueTracker {
 
     private static final Logger log = LoggerFactory.getLogger(IssueTracker.class);
 
-    @Bean
-    public RestTemplate restTemplate(){
-        return new RestTemplate();
-    }
-
-    @Bean
-    public MockoonApi mockoonApi(){
-        MockoonApi mockoonApi =  new MockoonApi();
-        mockoonApi.getApiClient().setBasePath("http://localhost:3003/api/v1");
-        return mockoonApi;
-    }
-
-
     public static void main(String[] args) {
 
         SpringApplication.run(IssueTracker.class, args);

@@ -1,6 +1,7 @@
 app:
   message: Hi from properties!
   port: 8080
+  mockoon: http://localhost:3003/api/v1
 server:
   port: 8080
 spring:
