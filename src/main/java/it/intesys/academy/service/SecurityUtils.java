@@ -1,5 +1,6 @@
 package it.intesys.academy.service;
 
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 public class SecurityUtils {
@@ -8,5 +9,14 @@ public class SecurityUtils {
         return SecurityContextHolder.getContext()
                 .getAuthentication()
                 .getName();
+    }
+
+    public static boolean hasAuthority(String authority) {
+        return SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getAuthorities()
+                .stream()
+                .map(GrantedAuthority::getAuthority)
+                .anyMatch(a -> a.equals(authority));
     }
 }

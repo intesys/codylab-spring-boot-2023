@@ -1,5 +1,6 @@
 package it.intesys.academy.service;
 
+import it.intesys.academy.controller.rest.errors.ForbiddenException;
 import it.intesys.academy.controller.rest.errors.ProjectPermissionException;
 import it.intesys.academy.domain.Issue;
 import it.intesys.academy.dto.IssueDTO;
@@ -74,6 +75,9 @@ public class IssueService {
 
         log.info("Creating for user {}", userName);
 
+        if (!SecurityUtils.hasAuthority("ROLE_ADMIN")) {
+            throw new ForbiddenException("Cannot create issue");
+        }
 
         Issue issue = issueRepository.createIssue(issueMapper.toEntity(issueDTO));
 
@@ -83,6 +87,10 @@ public class IssueService {
     public IssueDTO updateIssue(IssueDTO issueDTO) {
 
         var userName = SecurityUtils.getCurrentUser();
+
+        if (!SecurityUtils.hasAuthority("ROLE_ADMIN")) {
+            throw new ForbiddenException("Cannot update issue");
+        }
 
         if (!userProjectService.canThisUserReadThisProject(userName, issueDTO.getId())) {
             throw new ProjectPermissionException("Access to project " + issueDTO.getProjectId() + " forbidden");
@@ -102,6 +110,10 @@ public class IssueService {
     public void deleteIssue(Integer issueId) {
 
         var userName = SecurityUtils.getCurrentUser();
+
+        if (!SecurityUtils.hasAuthority("ROLE_ADMIN")) {
+            throw new ForbiddenException("Cannot update issue");
+        }
 
         Issue dbIssue = issueRepository.readIssue(issueId);
         if (!userProjectService.canThisUserReadThisProject(userName, dbIssue.getProject().getId())) {
