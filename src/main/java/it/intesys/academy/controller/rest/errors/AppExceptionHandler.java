@@ -5,6 +5,7 @@ import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import org.springframework.security.access.AccessDeniedException;
 
 import java.net.URI;
 
@@ -17,6 +18,12 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
         problemDetail.setTitle(e.getMessage());
         problemDetail.setType(URI.create("https://api.issuetracker.com/errors/internal-server-error"));
         return problemDetail;
+
+
+    }
+    @ExceptionHandler(AccessDeniedException.class)
+    ProblemDetail handleAccessDenied(AccessDeniedException e) {
+        return null;
     }
 }
 
