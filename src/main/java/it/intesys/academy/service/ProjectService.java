@@ -4,20 +4,19 @@ import it.intesys.academy.controller.openapi.model.IssueApiDTO;
 import it.intesys.academy.controller.openapi.model.ProjectApiDTO;
 import it.intesys.academy.controller.rest.errors.ForbiddenException;
 import it.intesys.academy.domain.*;
-import it.intesys.academy.dto.IssueDTO;
-import it.intesys.academy.dto.ProjectDTO;
 import it.intesys.academy.mapper.CommentMapper;
 import it.intesys.academy.mapper.IssueMapper;
 import it.intesys.academy.mapper.ProjectMapper;
 import it.intesys.academy.repository.*;
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@Transactional
 public class ProjectService {
 
     private static final Logger log = LoggerFactory.getLogger(ProjectService.class);
@@ -97,11 +96,11 @@ public class ProjectService {
 
     }
 
-    public ProjectApiDTO createProject(ProjectApiDTO projectDTO, String username) {
+    public ProjectApiDTO createProject(ProjectApiDTO projectDTO) {
         if(SecurityUtils.getRoles().contains("ROLE_ADMIN")){
             throw new ForbiddenException("Create Project not permitted");
         }
-        var userName = SecurityUtils.getUserName();
+        var username = SecurityUtils.getUserName();
 
         log.info("Creating for user {}", username);
         Project projectN = projectMapper.toEntity(projectDTO);
@@ -114,17 +113,19 @@ public class ProjectService {
         return projectMapper.toDto(project);
     }
 
-    public ProjectApiDTO updateProject(ProjectApiDTO projectDTO, String userName) {
+    public ProjectApiDTO updateProject(ProjectApiDTO projectDTO) {
+        var userName = SecurityUtils.getUserName();
         if (!userProjectService.canThisUserReadThisProject(userName, projectDTO.getId())) {
-            throw new RuntimeException("Security constraints violation");
+            throw new ForbiddenException("Update Project not permitted");
         }
 
-        Project updatedProject = projectRepository.save(projectMapper.toEntity(projectDTO));
+        Project project = projectRepository.save(projectMapper.toEntity(projectDTO));
 
-        return projectMapper.toDto(updatedProject);
+        return readProjectWithIssue(project.getId());
     }
 
-    public ProjectApiDTO patchProject(ProjectApiDTO projectDTO, String userName) {
+    public ProjectApiDTO patchProject(ProjectApiDTO projectDTO) {
+        var userName = SecurityUtils.getUserName();
         if (!userProjectService.canThisUserReadThisProject(userName, projectDTO.getId())) {
             throw new RuntimeException("Security constraints violation");
         }
@@ -151,7 +152,8 @@ public class ProjectService {
 
     }
 
-    public void deleteProject(Integer projectId, String username) {
+    public void deleteProject(Integer projectId) {
+        var username = SecurityUtils.getUserName();
         if (!userProjectService.canThisUserReadThisProject(username, projectId)) {
             throw new RuntimeException("Security constraints violation");
         }
@@ -159,7 +161,8 @@ public class ProjectService {
         projectRepository.deleteById(projectId);
     }
 
-    public void deleteAllFromProject(Integer projectId, String username){
+    public void deleteAllFromProject(Integer projectId){
+        var username = SecurityUtils.getUserName();
         if (!userProjectService.canThisUserReadThisProject(username, projectId)) {
             throw new RuntimeException("Security constraints violation");
         }

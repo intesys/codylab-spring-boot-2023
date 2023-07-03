@@ -43,12 +43,6 @@ public class SecurityConfiguration {
                         .roles("USER", "ADMIN")
                         .build();
 
-        /**UserDetails mattiaz =
-                User.withUsername("Zattoni")
-                        .password("$2a$10$LjeELgJn3ADcXFTuaW.t7OaQIntcPFC8DmVHvT7hF5WvATj.79v.q") //bcrypt 'password' generated here https://www.browserling.com/tools/bcrypt
-                        .roles("USER", "ADMIN")
-                        .build();**/
-
         UserDetails enricoo =
                 User.withUsername("eoliosi")
                         .password("$2a$10$5mghN9s6Is0RfzRbrolrcOxFBCkoWZ.YUlbg/uwFaqACxCvwJtQKG") //bcrypt 'password' generated here https://www.browserling.com/tools/bcrypt

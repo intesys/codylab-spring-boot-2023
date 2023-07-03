@@ -32,6 +32,11 @@ public class ProjectApiDelegateImpl implements ProjectsApiDelegate{
 
     @Override
     public ResponseEntity<ProjectApiDTO> createProject(String xUserName, ProjectApiDTO projectApiDTO) {
-        return ResponseEntity.ok(projectService.createProject(projectApiDTO,xUserName));
+        return ResponseEntity.ok(projectService.createProject(projectApiDTO));
+    }
+
+    @Override
+    public ResponseEntity<ProjectApiDTO> updateProject(Integer projectId, String xUserName, ProjectApiDTO projectApiDTO) {
+        return ResponseEntity.ok(projectService.updateProject(projectApiDTO));
     }
 }

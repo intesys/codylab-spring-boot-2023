@@ -37,8 +37,7 @@ public class ProjectController {
     }
 
     @PostMapping("/projects")
-    public ResponseEntity<ProjectApiDTO> createProject(@RequestBody ProjectApiDTO projectDTO,
-                                                    @RequestHeader(name = "X-User-Name") String username) {
+    public ResponseEntity<ProjectApiDTO> createProject(@RequestBody ProjectApiDTO projectDTO) {
         if (projectDTO.getId() != null) {
             log.error("Bad request, id must be null when creating a new project");
             return ResponseEntity.badRequest().build();
@@ -49,12 +48,11 @@ public class ProjectController {
             throw new RuntimeException("Invalid DTO");
         }
 
-        return ResponseEntity.ok(projectService.createProject(projectDTO, username));
+        return ResponseEntity.ok(projectService.createProject(projectDTO));
     }
 
     @PutMapping("/projects/{projectId}")
-    public ResponseEntity<ProjectApiDTO> updateProject(@PathVariable int projectId, @RequestBody ProjectApiDTO projectDTO,
-                                                    @RequestHeader(name = "X-User-Name") String username) {
+    public ResponseEntity<ProjectApiDTO> updateProject(@PathVariable int projectId, @RequestBody ProjectApiDTO projectDTO) {
         if (projectDTO.getId() == null) {
             log.error("Bad request, id must not be null when updating a project");
             return ResponseEntity.badRequest().build();
@@ -64,12 +62,11 @@ public class ProjectController {
             return ResponseEntity.badRequest().build();
         }
 
-        return ResponseEntity.ok(projectService.updateProject(projectDTO, username));
+        return ResponseEntity.ok(projectService.updateProject(projectDTO));
     }
 
     @PatchMapping("/projects/{projectId}")
-    public ResponseEntity<ProjectApiDTO> patchProject(@PathVariable int projectId, @RequestBody ProjectApiDTO projectDTO,
-                                                   @RequestHeader("X-User-Name") String username) {
+    public ResponseEntity<ProjectApiDTO> patchProject(@PathVariable int projectId, @RequestBody ProjectApiDTO projectDTO){
         if (projectDTO.getId() == null) {
             log.error("Bad request, id must not be null when updating a project");
             return ResponseEntity.badRequest().build();
@@ -79,13 +76,12 @@ public class ProjectController {
             return ResponseEntity.badRequest().build();
         }
 
-        return ResponseEntity.ok(projectService.patchProject(projectDTO, username));
+        return ResponseEntity.ok(projectService.patchProject(projectDTO));
     }
 
     @DeleteMapping("/projects/{projectId}")
-    public ResponseEntity<Void> deleteProject(@PathVariable Integer projectId,
-                                              @RequestHeader("X-User-Name") String username) {
-        projectService.deleteProject(projectId, username);
+    public ResponseEntity<Void> deleteProject(@PathVariable Integer projectId) {
+        projectService.deleteProject(projectId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
