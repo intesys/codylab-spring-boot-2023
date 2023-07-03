@@ -1,6 +1,5 @@
 package it.intesys.academy.service;
 
-import it.intesys.academy.controller.rest.errors.ForbiddenException;
 import it.intesys.academy.controller.rest.errors.ProjectPermissionException;
 import it.intesys.academy.domain.Issue;
 import it.intesys.academy.dto.IssueDTO;
@@ -9,7 +8,10 @@ import it.intesys.academy.repository.CommentRepository;
 import it.intesys.academy.repository.IssueRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -69,28 +71,23 @@ public class IssueService {
 
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @Transactional
     public IssueDTO createIssue(IssueDTO issueDTO) {
 
         var userName = SecurityUtils.getCurrentUser();
 
         log.info("Creating for user {}", userName);
 
-        if (!SecurityUtils.hasAuthority("ROLE_ADMIN")) {
-            throw new ForbiddenException("Cannot create issue");
-        }
-
         Issue issue = issueRepository.createIssue(issueMapper.toEntity(issueDTO));
 
         return issueMapper.toDto(issue);
     }
 
+    @Secured("ROLE_ADMIN")
     public IssueDTO updateIssue(IssueDTO issueDTO) {
 
         var userName = SecurityUtils.getCurrentUser();
-
-        if (!SecurityUtils.hasAuthority("ROLE_ADMIN")) {
-            throw new ForbiddenException("Cannot update issue");
-        }
 
         if (!userProjectService.canThisUserReadThisProject(userName, issueDTO.getId())) {
             throw new ProjectPermissionException("Access to project " + issueDTO.getProjectId() + " forbidden");
@@ -107,13 +104,11 @@ public class IssueService {
         return issueMapper.toDto(updatedIssue);
     }
 
+
+    @Secured("ROLE_ADMIN")
     public void deleteIssue(Integer issueId) {
 
         var userName = SecurityUtils.getCurrentUser();
-
-        if (!SecurityUtils.hasAuthority("ROLE_ADMIN")) {
-            throw new ForbiddenException("Cannot update issue");
-        }
 
         Issue dbIssue = issueRepository.readIssue(issueId);
         if (!userProjectService.canThisUserReadThisProject(userName, dbIssue.getProject().getId())) {
