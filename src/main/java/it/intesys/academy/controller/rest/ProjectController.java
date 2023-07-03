@@ -25,16 +25,15 @@ public class ProjectController {
     }
 
     @GetMapping("/projects")
-    public ResponseEntity<List<ProjectApiDTO>> getProjects(@RequestHeader(name = "X-User-Name") String userName) {
+    public ResponseEntity<List<ProjectApiDTO>> getProjects() {
 
-        return ResponseEntity.ok(projectService.readProjectsWithIssues(userName));
+        return ResponseEntity.ok(projectService.readProjectsWithIssues());
     }
 
     @GetMapping("/projects/{projectId}")
-    public ResponseEntity<ProjectApiDTO> getProject(@PathVariable int projectId,
-                                                 @RequestHeader(name = "X-User-Name") String username) {
+    public ResponseEntity<ProjectApiDTO> getProject(@PathVariable int projectId) {
 
-        return ResponseEntity.ok(projectService.readProjectWithIssue(projectId, username));
+        return ResponseEntity.ok(projectService.readProjectWithIssue(projectId));
     }
 
     @PostMapping("/projects")

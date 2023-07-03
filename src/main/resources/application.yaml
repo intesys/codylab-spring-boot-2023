@@ -2,14 +2,19 @@ app:
   message: Hi from properties!
   port: 8080
   mockoon: http://localhost:3003/api/v1
+
 server:
   port: 8080
+
 spring:
   datasource:
     driver-class-name: org.h2.Driver
     url: jdbc:h2:C:\Users\matti\OneDrive\Desktop\Stage\06.01.2023\lesson2
     username: sa
     password: password
+    hikari:
+      maximum-pool-size: 10
+      connection-timeout: 3000
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
     show-sql: true

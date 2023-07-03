@@ -2,6 +2,7 @@ package it.intesys.academy.service;
 
 import it.intesys.academy.controller.openapi.model.IssueApiDTO;
 import it.intesys.academy.controller.openapi.model.ProjectApiDTO;
+import it.intesys.academy.controller.rest.errors.ForbiddenException;
 import it.intesys.academy.domain.*;
 import it.intesys.academy.dto.IssueDTO;
 import it.intesys.academy.dto.ProjectDTO;
@@ -11,6 +12,7 @@ import it.intesys.academy.mapper.ProjectMapper;
 import it.intesys.academy.repository.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -52,7 +54,9 @@ public class ProjectService {
         this.personRepository = personRepository;
     }
 
-    public ProjectApiDTO readProjectWithIssue(int projectId, String username) {
+    public ProjectApiDTO readProjectWithIssue(int projectId) {
+
+        var username = SecurityUtils.getUserName();
 
         log.info("Reading project {} with issues, user {}", projectId, username);
 
@@ -85,14 +89,19 @@ public class ProjectService {
         throw new RuntimeException("Security constraints violation");
     }
 
-    public List<ProjectApiDTO> readProjectsWithIssues(String username) {
-
+    public List<ProjectApiDTO> readProjectsWithIssues() {
+        var username = SecurityUtils.getUserName();
+        log.info(username);
         log.info("Reading projects for user {}", username);
         return readProjectsWithIssues(userProjectService.getUserProjects(username));
 
     }
 
     public ProjectApiDTO createProject(ProjectApiDTO projectDTO, String username) {
+        if(SecurityUtils.getRoles().contains("ROLE_ADMIN")){
+            throw new ForbiddenException("Create Project not permitted");
+        }
+        var userName = SecurityUtils.getUserName();
 
         log.info("Creating for user {}", username);
         Project projectN = projectMapper.toEntity(projectDTO);

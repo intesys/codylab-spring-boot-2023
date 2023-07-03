@@ -20,12 +20,12 @@ public class ProjectApiDelegateImpl implements ProjectsApiDelegate{
 
     @Override
     public ResponseEntity<ProjectApiDTO> getProject(Integer projectId, String xUserName) {
-        return ResponseEntity.ok(projectService.readProjectWithIssue(projectId,xUserName));
+        return ResponseEntity.ok(projectService.readProjectWithIssue(projectId));
     }
 
     @Override
     public ResponseEntity<List<ProjectApiDTO>> getProjects(String xUserName) {
-        return ResponseEntity.ok(projectService.readProjectsWithIssues(xUserName));
+        return ResponseEntity.ok(projectService.readProjectsWithIssues());
     }
 
 

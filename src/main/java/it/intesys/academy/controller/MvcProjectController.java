@@ -22,7 +22,7 @@ public class MvcProjectController {
     public String getProjectList(Model model, @RequestParam String userName) {
 
         model.addAttribute("username", userName);
-        model.addAttribute("projects", projectService.readProjectsWithIssues(userName));
+        model.addAttribute("projects", projectService.readProjectsWithIssues());
 
         return "index";
 
@@ -34,7 +34,7 @@ public class MvcProjectController {
                                     @RequestParam String userName) {
 
         model.addAttribute("username", userName);
-        model.addAttribute("project", projectService.readProjectWithIssue(projectId, userName));
+        model.addAttribute("project", projectService.readProjectWithIssue(projectId));
 
         return "project";
 
