@@ -1,6 +1,7 @@
 package it.intesys.academy.service;
 
 import it.intesys.academy.controller.openapi.model.IssueApiDTO;
+import it.intesys.academy.controller.rest.errors.ForbiddenException;
 import it.intesys.academy.controller.rest.errors.ProjectAccessException;
 import it.intesys.academy.domain.Comment;
 import it.intesys.academy.domain.Issue;
@@ -38,9 +39,10 @@ public class IssueService {
         this.commentMapper = commentMapper;
     }
 
-    public List<IssueApiDTO> readIssuesByProjectId(Integer projectId, String userName) {
+    public List<IssueApiDTO> readIssuesByProjectId(Integer projectId) {
 
         log.info("Reading issues for project {}", projectId);
+        var userName = SecurityUtils.getCurrentUser();
 
         if (!userProjectService.canThisUserReadThisProject(userName, projectId)) {
             throw new ProjectAccessException("Project permission error", projectId);
@@ -54,11 +56,13 @@ public class IssueService {
 
     }
 
-    public IssueApiDTO readIssueWithComments(Integer issueId, String userName) {
+    public IssueApiDTO readIssueWithComments(Integer issueId) {
 
         log.info("Reading issue {}", issueId);
 
         IssueApiDTO issueApiDTO = issueMapper.toApiDto(issueRepository.findIssueById(issueId));
+
+        var userName = SecurityUtils.getCurrentUser();
 
         if (!userProjectService.canThisUserReadThisProject(userName, issueApiDTO.getProjectId())) {
             throw new ProjectAccessException("Project permission error", issueApiDTO.getProjectId());
@@ -70,9 +74,7 @@ public class IssueService {
     }
 
 
-    public IssueApiDTO createIssue(IssueApiDTO issueApiDTO, String username) {
-
-        log.info("Creating for user {}", username);
+    public IssueApiDTO createIssue(IssueApiDTO issueApiDTO) {
 
 
         Issue issue = issueRepository.save(issueMapper.toEntity(issueApiDTO));
@@ -80,7 +82,9 @@ public class IssueService {
         return issueMapper.toApiDto(issue);
     }
 
-    public IssueApiDTO updateIssue(IssueApiDTO issueApiDTO, String userName) {
+    public IssueApiDTO updateIssue(IssueApiDTO issueApiDTO) {
+
+        var userName = SecurityUtils.getCurrentUser();
 
         if (!userProjectService.canThisUserReadThisProject(userName, issueApiDTO.getProjectId())) {
             throw new ProjectAccessException("Project permission error", issueApiDTO.getProjectId());
@@ -98,14 +102,15 @@ public class IssueService {
     }
 
 
-    public void deleteIssue(Integer issueId, String username) {
+    public void deleteIssue(Integer issueId) {
+        var username = SecurityUtils.getCurrentUser();
         Issue dbIssue = issueRepository.findIssueById(issueId);
-        if (!userProjectService.canThisUserReadThisProject(username, dbIssue.getProject().getId())) {
-            throw new RuntimeException("Security constraints violation");
+        if (!SecurityUtils.hasAuthority("ROLE_ADMIN")) {
+            throw new ForbiddenException("Cannot delete issue");
         }
 
         for (Comment comment : commentService.readCommentsByIssueId(issueId).stream().map(commentMapper::toEntity).toList()) {
-            commentService.deleteComment(comment.getId(), username);
+            commentService.deleteComment(comment.getId());
         }
     }
 

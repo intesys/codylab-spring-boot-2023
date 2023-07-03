@@ -19,18 +19,18 @@ public class IssueApiDelegateImpl implements IssuesApiDelegate{
     }
 
     @Override
-    public ResponseEntity<IssueApiDTO> getIssue(Integer issueId, String xUserName) {
-        return ResponseEntity.ok(issueService.readIssueWithComments(issueId, xUserName));
+    public ResponseEntity<IssueApiDTO> getIssue(Integer issueId) {
+        return ResponseEntity.ok(issueService.readIssueWithComments(issueId));
     }
 
     @Override
-    public ResponseEntity<List<IssueApiDTO>> getIssues(String xUserName, Integer projectId) {
-        return ResponseEntity.ok(issueService.readIssuesByProjectId(projectId, xUserName));
+    public ResponseEntity<List<IssueApiDTO>> getIssues(Integer projectId) {
+        return ResponseEntity.ok(issueService.readIssuesByProjectId(projectId));
 
     }
 
     @Override
-    public ResponseEntity<IssueApiDTO> createIssue(String xUserName, IssueApiDTO issueApiDTO) {
+    public ResponseEntity<IssueApiDTO> createIssue(IssueApiDTO issueApiDTO) {
         if (issueApiDTO.getId() != null) {
             throw new BadRequestException("Id must be null when creating a new issue");
         }
@@ -40,11 +40,11 @@ public class IssueApiDelegateImpl implements IssuesApiDelegate{
             throw new BadRequestException("Invalid DTO");
         }
 
-        return ResponseEntity.ok(issueService.createIssue(issueApiDTO, xUserName));
+        return ResponseEntity.ok(issueService.createIssue(issueApiDTO));
     }
 
     @Override
-    public ResponseEntity<IssueApiDTO> updateIssue(Integer issueId, String xUserName, IssueApiDTO issueApiDTO) {
+    public ResponseEntity<IssueApiDTO> updateIssue(Integer issueId, IssueApiDTO issueApiDTO) {
 
         if (issueApiDTO.getId() == null) {
             return ResponseEntity.badRequest().build();
@@ -53,12 +53,12 @@ public class IssueApiDelegateImpl implements IssuesApiDelegate{
             return ResponseEntity.badRequest().build();
         }
 
-        return ResponseEntity.ok(issueService.updateIssue(issueApiDTO, xUserName));
+        return ResponseEntity.ok(issueService.updateIssue(issueApiDTO));
     }
 
     @Override
-    public ResponseEntity<Void> deleteIssue(Integer issueId, String xUserName) {
-        issueService.deleteIssue(issueId, xUserName);
+    public ResponseEntity<Void> deleteIssue(Integer issueId) {
+        issueService.deleteIssue(issueId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

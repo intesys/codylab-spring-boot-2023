@@ -13,3 +13,13 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
     show-sql: true
+
+springdoc:
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+  packages-to-scan: it.intesys.academy.controller.rest
+logging:
+  level:
+    root: info
+    org.springframework.security: debug

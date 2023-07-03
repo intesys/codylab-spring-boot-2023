@@ -1,6 +1,7 @@
 package it.intesys.academy.service;
 
 import it.intesys.academy.controller.openapi.model.ProjectApiDTO;
+import it.intesys.academy.controller.rest.errors.ForbiddenException;
 import it.intesys.academy.controller.rest.errors.ProjectAccessException;
 import it.intesys.academy.domain.Issue;
 import it.intesys.academy.domain.Project;
@@ -11,6 +12,7 @@ import it.intesys.academy.repository.IssueRepository;
 import it.intesys.academy.repository.ProjectRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -42,9 +44,9 @@ public class ProjectService {
         this.issueService = issueService;
     }
 
-    public ProjectApiDTO readProjectWithIssue(int projectId, String username) {
+    public ProjectApiDTO readProjectWithIssue(int projectId) {
 
-        log.info("Reading project {} with issues, user {}", projectId, username);
+        var username = SecurityUtils.getCurrentUser();
 
         if (userProjectService.alternativePermissionToProjects(username, projectId)) {
             ProjectApiDTO projectApiDTO = projectMapper.toApiDto(projectRepository.findById(projectId).get());
@@ -57,9 +59,9 @@ public class ProjectService {
 
     }
 
-    public ProjectDTO readProject(int projectId, String username) {
+    public ProjectDTO readProject(int projectId) {
 
-        log.info("Reading project {} , user {}", projectId, username);
+        var username = SecurityUtils.getCurrentUser();
 
         if (userProjectService.canThisUserReadThisProject(username, projectId)) {
             return projectMapper.toDto(projectRepository.findById(projectId).get());
@@ -68,17 +70,19 @@ public class ProjectService {
         throw new RuntimeException("Security constraints violation");
     }
 
-    public List<ProjectApiDTO> readProjectsWithIssues(String username) {
+    public List<ProjectApiDTO> readProjectsWithIssues() {
 
-        log.info("Reading projects for user {}", username);
-        return readProjectsWithIssues(userProjectService.getUserProjects(username));
+        if (!SecurityUtils.hasAuthority("ROLE_ADMIN")) {
+            throw new ForbiddenException("Cannot delete project");
+        }
+
+        return readAllProjects();
 
     }
 
-    public ProjectApiDTO createProject(ProjectApiDTO projectApiDTO, String username) {
+    public ProjectApiDTO createProject(ProjectApiDTO projectApiDTO) {
 
-        log.info("Creating for user {}", username);
-
+        var username = SecurityUtils.getCurrentUser();
 
         Project project = projectRepository.save(projectMapper.toEntity(projectApiDTO));
         userProjectService.associateUserToProject(username, project.getId());
@@ -86,7 +90,10 @@ public class ProjectService {
         return projectMapper.toApiDto(project);
     }
 
-    public ProjectApiDTO updateProject(ProjectApiDTO projectApiDTO, String userName) {
+    public ProjectApiDTO updateProject(ProjectApiDTO projectApiDTO) {
+
+        var userName = SecurityUtils.getCurrentUser();
+
         if (!userProjectService.canThisUserReadThisProject(userName, projectApiDTO.getId())) {
             throw new ProjectAccessException("Project permission error", projectApiDTO.getId());
         }
@@ -96,7 +103,10 @@ public class ProjectService {
         return projectMapper.toApiDto(updatedProject);
     }
 
-    public ProjectDTO patchProject(ProjectDTO projectDTO, String userName) {
+    public ProjectDTO patchProject(ProjectDTO projectDTO) {
+
+        var userName = SecurityUtils.getCurrentUser();
+
         if (!userProjectService.canThisUserReadThisProject(userName, projectDTO.getId())) {
             throw new ProjectAccessException("Project permission error", projectDTO.getId());
         }
@@ -122,13 +132,22 @@ public class ProjectService {
                 .toList();
 
     }
+    private List<ProjectApiDTO> readAllProjects(){
 
-    public void deleteProject(Integer projectId, String username) {
-        if (!userProjectService.canThisUserReadThisProject(username, projectId)) {
-            throw new ProjectAccessException("Project permission error", projectId);
-        }
-        for (Issue issue : issueService.readIssuesByProjectId(projectId, username).stream().map(issueMapper::toEntity).toList()) {
-            issueService.deleteIssue(issue.getId(), username);
+        return projectRepository.findAll()
+                .stream()
+                .map(projectMapper::toApiDtoWithIssues)
+                .toList();
+    }
+
+
+@Secured("ROLE_ADMIN")
+    public void deleteProject(Integer projectId) {
+
+        var username = SecurityUtils.getCurrentUser();
+
+        for (Issue issue : issueService.readIssuesByProjectId(projectId).stream().map(issueMapper::toEntity).toList()) {
+            issueService.deleteIssue(issue.getId());
         }
         userProjectService.deleteUserProject(username, projectId);
         projectRepository.deleteById(projectId);

@@ -19,11 +19,8 @@ public class CommentApiDelegateImpl implements CommentsApiDelegate{
     }
 
 
-
-
-
     @Override
-    public ResponseEntity<CommentApiDTO> createComment(String xUserName, CommentApiDTO commentApiDTO) {
+    public ResponseEntity<CommentApiDTO> createComment(CommentApiDTO commentApiDTO) {
         if (commentApiDTO.getId() != null) {
             throw new BadRequestException("Id must be null when creating a new comment");
         }
@@ -31,12 +28,12 @@ public class CommentApiDelegateImpl implements CommentsApiDelegate{
             throw new BadRequestException("Invalid DTO");
         }
 
-        return ResponseEntity.ok(commentService.createComment(commentApiDTO, xUserName));
+        return ResponseEntity.ok(commentService.createComment(commentApiDTO));
     }
 
     @Override
-    public ResponseEntity<Void> deleteComment(Integer commentId, String xUserName) {
-        commentService.deleteComment(commentId, xUserName);
+    public ResponseEntity<Void> deleteComment(Integer commentId) {
+        commentService.deleteComment(commentId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

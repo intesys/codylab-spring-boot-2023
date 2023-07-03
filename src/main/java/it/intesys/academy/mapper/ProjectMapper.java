@@ -29,9 +29,11 @@ public class ProjectMapper {
     }
 
     public ProjectApiDTO toApiDtoWithIssues(Project project) {
-        ProjectApiDTO projectDTO = toApiDto(project);
-        //project.getIssues().forEach(issue -> projectDTO.addIssue(issueMapper.toDto(issue)));
-        return projectDTO;
+        ProjectApiDTO projectApiDTO = toApiDto(project);
+
+        project.getIssues().forEach(issue -> projectApiDTO.addIssuesItem(issueMapper.toApiDto(issue)));
+
+        return projectApiDTO;
     }
 
     public Project toEntity(ProjectDTO projectDTO) {

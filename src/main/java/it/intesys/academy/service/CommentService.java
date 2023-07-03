@@ -1,6 +1,7 @@
 package it.intesys.academy.service;
 
 import it.intesys.academy.controller.openapi.model.CommentApiDTO;
+import it.intesys.academy.controller.rest.errors.ForbiddenException;
 import it.intesys.academy.domain.Comment;
 import it.intesys.academy.dto.CommentDTO;
 import it.intesys.academy.mapper.CommentMapper;
@@ -8,6 +9,7 @@ import it.intesys.academy.repository.CommentRepository;
 import it.intesys.academy.repository.IssueRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -45,9 +47,8 @@ public class CommentService {
 
 
 
-    public CommentApiDTO createComment(CommentApiDTO commentApiDTO, String username) {
+    public CommentApiDTO createComment(CommentApiDTO commentApiDTO) {
 
-        log.info("Creating for user {}", username);
 
 
         Comment comment = commentRepository.save(commentMapper.toEntity(commentApiDTO));
@@ -55,7 +56,9 @@ public class CommentService {
         return commentMapper.toApiDto(comment);
     }
 
-    public CommentApiDTO updateComment(CommentApiDTO commentApiDTO, String userName) {
+    public CommentApiDTO updateComment(CommentApiDTO commentApiDTO) {
+
+        var userName = SecurityUtils.getCurrentUser();
 
         if (!userProjectService.canThisUserReadThisProject(userName, issueRepository.findIssueById(commentApiDTO.getIssueId()).getProject().getId())) {
             throw new RuntimeException("Security constraints violation");
@@ -71,13 +74,12 @@ public class CommentService {
         return commentMapper.toApiDto(updatedComment);
     }
 
-
-    public void deleteComment(Integer commentId, String username) {
+    public void deleteComment(Integer commentId) {
 
         Comment dbComment = commentRepository.findCommentById(commentId);
 
-        if (!userProjectService.canThisUserReadThisProject(username, issueRepository.findIssueById(dbComment.getIssue().getId()).getProject().getId())) {
-            throw new RuntimeException("Security constraints violation");
+        if (!SecurityUtils.hasAuthority("ROLE_ADMIN")) {
+            throw new ForbiddenException("Cannot delete comment");
         }
 
         commentRepository.deleteById(dbComment.getId());

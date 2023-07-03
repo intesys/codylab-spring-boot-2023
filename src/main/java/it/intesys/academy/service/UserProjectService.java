@@ -1,5 +1,6 @@
 package it.intesys.academy.service;
 
+import it.intesys.academy.controller.rest.errors.ForbiddenException;
 import it.intesys.academy.controller.rest.errors.ProjectAccessException;
 import it.intesys.academy.domain.Person;
 import it.intesys.academy.domain.Project;
@@ -50,8 +51,9 @@ public class UserProjectService {
         userProjectRepository.save(userProject);
     }
     public void deleteUserProject(String username, Integer projectId){
-        if(!getUserProjects(username).contains(projectId)){
-            throw new ProjectAccessException("Project permission error", projectId);
+
+        if (!SecurityUtils.hasAuthority("ROLE_ADMIN")) {
+            throw new ForbiddenException("Cannot delete a user-project relation");
         }
 
         for (UserProject us:userProjectRepository.findByProject_Id(projectId)) {

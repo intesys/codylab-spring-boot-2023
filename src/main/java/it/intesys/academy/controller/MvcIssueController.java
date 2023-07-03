@@ -4,6 +4,7 @@ import it.intesys.academy.controller.openapi.model.IssueApiDTO;
 import it.intesys.academy.dto.IssueDTO;
 import it.intesys.academy.service.IssueService;
 import it.intesys.academy.service.ProjectService;
+import it.intesys.academy.service.SecurityUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,13 +30,13 @@ public class MvcIssueController {
 
     @GetMapping("/issues/{issueId}")
     public String getIssueDetails(Model model,
-                                  @PathVariable("issueId") Integer issueId,
-                                  @RequestParam String userName) {
+                                  @PathVariable("issueId") Integer issueId ){
 
-        IssueApiDTO issueApiDTO = issueService.readIssueWithComments(issueId, userName);
+        IssueApiDTO issueApiDTO = issueService.readIssueWithComments(issueId);
+        var userName = SecurityUtils.getCurrentUser();
         model.addAttribute("issue", issueApiDTO);
         model.addAttribute("username", userName);
-        model.addAttribute("project", projectService.readProject(issueApiDTO.getProjectId(), userName));
+        model.addAttribute("project", projectService.readProject(issueApiDTO.getProjectId()));
 
         return "issue";
 

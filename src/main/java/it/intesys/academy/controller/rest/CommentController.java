@@ -25,8 +25,7 @@ public class CommentController {
 
 
     @PostMapping("/comments")
-    public ResponseEntity<CommentApiDTO> createComment(@RequestBody CommentApiDTO commentApiDTO,
-                                                    @RequestHeader(name = "X-User-Name") String username) {
+    public ResponseEntity<CommentApiDTO> createComment(@RequestBody CommentApiDTO commentApiDTO) {
         if (commentApiDTO.getId() != null) {
             log.error("Bad request, id must be null when creating a new issue");
             throw new BadRequestException("Id must be null when creating a new comment");
@@ -36,12 +35,11 @@ public class CommentController {
             throw new BadRequestException("Invalid DTO");
         }
 
-        return ResponseEntity.ok(commentService.createComment(commentApiDTO, username));
+        return ResponseEntity.ok(commentService.createComment(commentApiDTO));
     }
 
     @PutMapping("/comments/{commentId}")
-    public ResponseEntity<CommentApiDTO> updateComment(@PathVariable int commentId, @RequestBody CommentApiDTO commentApiDTO,
-                                                       @RequestHeader(name = "X-User-Name") String username) {
+    public ResponseEntity<CommentApiDTO> updateComment(@PathVariable int commentId, @RequestBody CommentApiDTO commentApiDTO) {
         if (commentApiDTO.getId() == null) {
 
             throw new BadRequestException("Id must be evaluated when searching a comment");
@@ -50,12 +48,11 @@ public class CommentController {
             throw new BadRequestException("Bad request, id in path and in body must be the same");
         }
 
-        return ResponseEntity.ok(commentService.updateComment(commentApiDTO, username));
+        return ResponseEntity.ok(commentService.updateComment(commentApiDTO));
     }
     @DeleteMapping("/comments/{commentId}")
-    public ResponseEntity<Void> deleteComment(@PathVariable Integer commentId,
-                                              @RequestHeader("X-User-Name") String username) {
-        commentService.deleteComment(commentId, username);
+    public ResponseEntity<Void> deleteComment(@PathVariable Integer commentId) {
+        commentService.deleteComment(commentId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

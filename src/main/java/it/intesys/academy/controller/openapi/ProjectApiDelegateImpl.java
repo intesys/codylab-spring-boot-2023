@@ -19,19 +19,19 @@ public class ProjectApiDelegateImpl implements ProjectsApiDelegate{
     }
 
     @Override
-    public ResponseEntity<List<ProjectApiDTO>> getProjects(String xUserName) {
-        List<ProjectApiDTO> projects = projectService.readProjectsWithIssues(xUserName);
+    public ResponseEntity<List<ProjectApiDTO>> getProjects() {
+        List<ProjectApiDTO> projects = projectService.readProjectsWithIssues();
         return ResponseEntity.ok(projects);
     }
 
     @Override
-    public ResponseEntity<ProjectApiDTO> getProject(Integer projectId, String xUserName) {
+    public ResponseEntity<ProjectApiDTO> getProject(Integer projectId) {
 
-        return ResponseEntity.ok(projectService.readProjectWithIssue(projectId, xUserName));
+        return ResponseEntity.ok(projectService.readProjectWithIssue(projectId));
     }
 
     @Override
-    public ResponseEntity<ProjectApiDTO> createProject(String xUserName, ProjectApiDTO projectApiDTO) {
+    public ResponseEntity<ProjectApiDTO> createProject(ProjectApiDTO projectApiDTO) {
         if (projectApiDTO.getId() != null) {
             throw new BadRequestException("Bad request, id must be null when creating a new project");
 
@@ -42,11 +42,11 @@ public class ProjectApiDelegateImpl implements ProjectsApiDelegate{
             throw new BadRequestException("Invalid DTO");
         }
 
-        return ResponseEntity.ok(projectService.createProject(projectApiDTO, xUserName));
+        return ResponseEntity.ok(projectService.createProject(projectApiDTO));
     }
 
     @Override
-    public ResponseEntity<ProjectApiDTO> updateProject(Integer projectId, String xUserName, ProjectApiDTO projectApiDTO) {
+    public ResponseEntity<ProjectApiDTO> updateProject(Integer projectId, ProjectApiDTO projectApiDTO) {
         if (projectApiDTO.getId() == null) {
             throw new BadRequestException("Bad request, id must not be null when updating a project");
 
@@ -56,12 +56,12 @@ public class ProjectApiDelegateImpl implements ProjectsApiDelegate{
 
         }
 
-        return ResponseEntity.ok(projectService.updateProject(projectApiDTO, xUserName));
+        return ResponseEntity.ok(projectService.updateProject(projectApiDTO));
     }
 
     @Override
-    public ResponseEntity<Void> deleteProject(Integer projectId, String xUserName) {
-        projectService.deleteProject(projectId, xUserName);
+    public ResponseEntity<Void> deleteProject(Integer projectId) {
+        projectService.deleteProject(projectId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
