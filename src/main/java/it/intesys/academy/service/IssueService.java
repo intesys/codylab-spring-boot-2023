@@ -8,6 +8,7 @@ import it.intesys.academy.repository.CommentRepository;
 import it.intesys.academy.repository.IssueRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -34,9 +35,11 @@ public class IssueService {
         this.issueMapper = issueMapper;
     }
 
-    public List<IssueDTO> readIssuesByProjectId(Integer projectId, String userName) {
+    public List<IssueDTO> readIssuesByProjectId(Integer projectId) {
 
         log.info("Reading issues for project {}", projectId);
+
+        var userName = SecurityUtils.getUserName();
 
         if (!userProjectService.canThisUserReadThisProject(userName, projectId)) {
             throw new ProjectPermissionException("Access to project " + projectId + " forbidden");
@@ -64,9 +67,11 @@ public class IssueService {
 
     }
 
-    public IssueDTO createIssue(IssueDTO issueDTO, String username) {
+    @Secured("ROLE_ADMIN")
+    public IssueDTO createIssue(IssueDTO issueDTO) {
 
-        log.info("Creating for user {}", username);
+        var userName = SecurityUtils.getUserName();
+        log.info("Creating for user {}", userName);
 
 
         Issue issue = issueRepository.createIssue(issueMapper.toEntity(issueDTO));

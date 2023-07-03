@@ -26,10 +26,9 @@ public class IssueController {
     }
 
     @GetMapping("/issues")
-    public ResponseEntity<List<IssueDTO>> getIssues(
-            @RequestParam Integer projectId, @RequestHeader(name = "X-User-Name") String userName) {
+    public ResponseEntity<List<IssueDTO>> getIssues(@RequestParam Integer projectId) {
 
-        return ResponseEntity.ok(issueService.readIssuesByProjectId(projectId, userName));
+        return ResponseEntity.ok(issueService.readIssuesByProjectId(projectId));
     }
 
     @GetMapping("/issues/{issueId}")
@@ -40,8 +39,7 @@ public class IssueController {
     }
 
     @PostMapping("/issues")
-    public ResponseEntity<IssueDTO> createIssue(@RequestBody IssueDTO issueDTO,
-                                                    @RequestHeader(name = "X-User-Name") String username) {
+    public ResponseEntity<IssueDTO> createIssue(@RequestBody IssueDTO issueDTO) {
         if (issueDTO.getId() != null) {
             log.error("Bad request, id must be null when creating a new issue");
             return ResponseEntity.badRequest().build();
@@ -52,7 +50,7 @@ public class IssueController {
             throw new RuntimeException("Invalid DTO");
         }
 
-        return ResponseEntity.ok(issueService.createIssue(issueDTO, username));
+        return ResponseEntity.ok(issueService.createIssue(issueDTO));
     }
 
     @PutMapping("/issues/{issueId}")
