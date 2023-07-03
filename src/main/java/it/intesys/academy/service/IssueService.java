@@ -11,6 +11,7 @@ import it.intesys.academy.repository.CommentRepository;
 import it.intesys.academy.repository.IssueRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -74,6 +75,7 @@ public class IssueService {
 
     }
 
+    @Secured("ROLE_ADMIN")
     public IssueApiDTO createIssue(IssueApiDTO issueDTO) {
         var username = SecurityUtils.getUserName();
         log.info("Creating for user {}", username);
