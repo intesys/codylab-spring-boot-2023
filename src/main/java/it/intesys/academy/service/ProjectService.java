@@ -63,8 +63,10 @@ public class ProjectService {
             ProjectApiDTO projectDTO = projectMapper.toDto(projectRepository.findById(projectId).get());
             List<Issue> issues= issueRepository.findByProjectIdIn(List.of(projectId));
             for(Issue issue:issues){
+                log.info("Reading issue {}, project {}", issue, projectId);
                 IssueApiDTO issueDTO = issueMapper.toDto(issue);
-                List<Comment> comments= commentRepository.findCommentsByIssueId(issueDTO.getId());
+                List<Comment> comments= commentRepository.findCommentsByIssueId(issue.getId());
+
                 for(Comment comment : comments){
                     issueDTO.addCommentsItem(commentMapper.toDTO(comment));
                 }

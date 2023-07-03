@@ -25,7 +25,7 @@ public class CommentMapper {
         comment.setDescription(commentDTO.getDescription());
         comment.setAuthor(commentDTO.getAuthor());
         Issue issue = new Issue();
-        issue.setId(commentDTO.getIssueId());
+            issue.setId(commentDTO.getIssueId());
         comment.setIssue(issue);
         return comment;
     }

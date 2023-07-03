@@ -23,11 +23,6 @@ paths:
           schema:
             type: integer
             format: int32
-        - name: X-User-Name
-          in: header
-          required: true
-          schema:
-            type: string
       responses:
         '200':
           description: OK
@@ -46,11 +41,6 @@ paths:
           schema:
             type: integer
             format: int32
-        - name: X-User-Name
-          in: header
-          required: true
-          schema:
-            type: string
       requestBody:
         content:
           application/json:
@@ -75,11 +65,6 @@ paths:
           schema:
             type: integer
             format: int32
-        - name: X-User-Name
-          in: header
-          required: true
-          schema:
-            type: string
       responses:
         '200':
           description: OK
@@ -94,11 +79,6 @@ paths:
           schema:
             type: integer
             format: int32
-        - name: X-User-Name
-          in: header
-          required: true
-          schema:
-            type: string
       requestBody:
         content:
           application/json:
@@ -118,12 +98,6 @@ paths:
       tags:
         - Project
       operationId: getProjects
-      parameters:
-        - name: X-User-Name
-          in: header
-          required: true
-          schema:
-            type: string
       responses:
         '200':
           description: OK
@@ -137,12 +111,6 @@ paths:
       tags:
         - Project
       operationId: createProject
-      parameters:
-        - name: X-User-Name
-          in: header
-          required: true
-          schema:
-            type: string
       requestBody:
         content:
           application/json:
@@ -163,11 +131,6 @@ paths:
         - Issue
       operationId: getIssues
       parameters:
-        - name: X-User-Name
-          in: header
-          required: true
-          schema:
-            type: string
         - name: projectId
           in: query
           required: true
@@ -187,12 +150,6 @@ paths:
       tags:
         - Issue
       operationId: createIssue
-      parameters:
-        - name: X-User-Name
-          in: header
-          required: true
-          schema:
-            type: string
       requestBody:
         content:
           application/json:
@@ -219,11 +176,6 @@ paths:
           schema:
             type: integer
             format: int32
-        - name: X-User-Name
-          in: header
-          required: true
-          schema:
-            type: string
       responses:
         '200':
           description: OK
@@ -241,11 +193,6 @@ paths:
           schema:
             type: integer
             format: int32
-        - name: X-User-Name
-          in: header
-          required: true
-          schema:
-            type: string
       requestBody:
         content:
           application/json:
@@ -269,11 +216,6 @@ paths:
           schema:
             type: integer
             format: int32
-        - name: X-User-Name
-          in: header
-          required: true
-          schema:
-            type: string
       responses:
         '200':
           description: OK
@@ -290,11 +232,6 @@ paths:
           schema:
             type: integer
             format: int32
-        - name: X-User-Name
-          in: header
-          required: true
-          schema:
-            type: string
       responses:
         '200':
           description: OK
@@ -306,12 +243,6 @@ paths:
       tags:
         - Comment
       operationId: createComment
-      parameters:
-        - name: X-User-Name
-          in: header
-          required: true
-          schema:
-            type: string
       requestBody:
         content:
           application/json:
@@ -338,11 +269,6 @@ paths:
           schema:
             type: integer
             format: int32
-        - name: X-User-Name
-          in: header
-          required: true
-          schema:
-            type: string
       responses:
         '200':
           description: OK
@@ -360,11 +286,6 @@ paths:
           schema:
             type: integer
             format: int32
-        - name: X-User-Name
-          in: header
-          required: true
-          schema:
-            type: string
       requestBody:
         content:
           application/json:
@@ -387,11 +308,6 @@ paths:
           schema:
             type: integer
             format: int32
-        - name: X-User-Name
-          in: header
-          required: true
-          schema:
-            type: string
       responses:
         '200':
           description: OK

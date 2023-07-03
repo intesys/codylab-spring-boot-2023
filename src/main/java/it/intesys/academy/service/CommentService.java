@@ -35,8 +35,9 @@ public class CommentService {
         this.commentMapper = commentMapper;
     }
 
-    public List<CommentApiDTO> readCommentsByIssueId(Integer issueId, String userName) {
+    public List<CommentApiDTO> readCommentsByIssueId(Integer issueId) {
 
+        var userName = SecurityUtils.getUserName();
         log.info("Reading comments for issue {}", issueId);
         Integer projectId = issueRepository.findById(issueId).get()
                 .getProject().getId();
@@ -50,8 +51,9 @@ public class CommentService {
                 .toList();
     }
 
-    public CommentApiDTO readComments(Integer commentId, String userName) {
+    public CommentApiDTO readComments(Integer commentId) {
 
+        var userName = SecurityUtils.getUserName();
         log.info("Reading comment {}", commentId);
 
         CommentApiDTO commentDTO = commentMapper.toDTO(commentRepository.findCommentById(commentId));
@@ -65,8 +67,8 @@ public class CommentService {
 
     }
 
-    public CommentApiDTO createComment(CommentApiDTO commentDTO, String username) {
-
+    public CommentApiDTO createComment(CommentApiDTO commentDTO) {
+        var username = SecurityUtils.getUserName();
         log.info("Creating for user {}", username);
 
         Comment comment = commentRepository.save(commentMapper.toEntity(commentDTO));
@@ -74,7 +76,8 @@ public class CommentService {
         return commentMapper.toDTO(comment);
     }
 
-    public CommentApiDTO updateComment(CommentApiDTO commentDTO, String userName) {
+    public CommentApiDTO updateComment(CommentApiDTO commentDTO) {
+        var userName = SecurityUtils.getUserName();
         Integer issueId = commentDTO.getIssueId();
         Integer projectId = issueRepository.findIssueById(issueId).getProject().getId();
 
@@ -87,7 +90,8 @@ public class CommentService {
         return commentMapper.toDTO(updatedComment);
     }
 
-    public void deleteComment(Integer commentId, String username) {
+    public void deleteComment(Integer commentId) {
+        var username = SecurityUtils.getUserName();
         Comment comment = commentRepository.findCommentById(commentId);
         Integer projectId = issueRepository.findById(comment.getIssue().getId()).get()
                 .getProject().getId();

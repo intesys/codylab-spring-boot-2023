@@ -1,8 +1,6 @@
 package it.intesys.academy.controller.rest;
 
 import it.intesys.academy.controller.openapi.model.CommentApiDTO;
-import it.intesys.academy.dto.CommentDTO;
-import it.intesys.academy.dto.IssueDTO;
 import it.intesys.academy.service.CommentService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,22 +24,19 @@ public class CommentController {
     }
 
     @GetMapping("/comments")
-    public ResponseEntity<List<CommentApiDTO>> getComments(
-            @RequestParam Integer issueId, @RequestHeader(name = "X-User-Name") String username) {
+    public ResponseEntity<List<CommentApiDTO>> getComments(@RequestParam Integer issueId) {
 
-        return ResponseEntity.ok(commentService.readCommentsByIssueId(issueId,username));
+        return ResponseEntity.ok(commentService.readCommentsByIssueId(issueId));
     }
 
     @GetMapping("/comments/{commentId}")
-    public ResponseEntity<CommentApiDTO> getComment(@PathVariable int commentId,
-                                             @RequestHeader(name = "X-User-Name") String username) {
+    public ResponseEntity<CommentApiDTO> getComment(@PathVariable int commentId) {
 
-        return ResponseEntity.ok(commentService.readComments(commentId, username));
+        return ResponseEntity.ok(commentService.readComments(commentId));
     }
 
     @PostMapping("/comments")
-    public ResponseEntity<CommentApiDTO> createComment(@RequestBody CommentApiDTO commentDTO,
-                                                @RequestHeader(name = "X-User-Name") String username) {
+    public ResponseEntity<CommentApiDTO> createComment(@RequestBody CommentApiDTO commentDTO) {
         if (commentDTO.getId() != null) {
             log.error("Bad request, id must be null when creating a new issue");
             return ResponseEntity.badRequest().build();
@@ -51,12 +46,11 @@ public class CommentController {
             throw new RuntimeException("Invalid DTO");
         }
 
-        return ResponseEntity.ok(commentService.createComment(commentDTO, username));
+        return ResponseEntity.ok(commentService.createComment(commentDTO));
     }
 
     @PutMapping("/comments/{commentId}")
-    public ResponseEntity<CommentApiDTO> updateComment(@PathVariable int commentId, @RequestBody CommentApiDTO commentDTO,
-                                                @RequestHeader(name = "X-User-Name") String username) {
+    public ResponseEntity<CommentApiDTO> updateComment(@PathVariable int commentId, @RequestBody CommentApiDTO commentDTO) {
         if (commentDTO.getId() == null) {
             log.error("Bad request, id must not be null when updating a issue");
             return ResponseEntity.badRequest().build();
@@ -66,13 +60,12 @@ public class CommentController {
             return ResponseEntity.badRequest().build();
         }
 
-        return ResponseEntity.ok(commentService.updateComment(commentDTO, username));
+        return ResponseEntity.ok(commentService.updateComment(commentDTO));
     }
 
     @DeleteMapping("/comments/{commentId}")
-    public ResponseEntity<Void> deleteComment(@PathVariable Integer commentId,
-                                            @RequestHeader("X-User-Name") String username) {
-        commentService.deleteComment(commentId, username);
+    public ResponseEntity<Void> deleteComment(@PathVariable Integer commentId) {
+        commentService.deleteComment(commentId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
