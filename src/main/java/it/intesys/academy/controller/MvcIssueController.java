@@ -31,7 +31,7 @@ public class MvcIssueController {
                                   @PathVariable("issueId") Integer issueId,
                                   @RequestParam String userName) {
 
-        IssueDTO issueDTO = issueService.readIssueWithComments(issueId, userName);
+        IssueDTO issueDTO = issueService.readIssueWithComments(issueId);
         model.addAttribute("issue", issueDTO);
         model.addAttribute("username", userName);
         model.addAttribute("project", projectService.readProject(issueDTO.getProjectId(), userName));

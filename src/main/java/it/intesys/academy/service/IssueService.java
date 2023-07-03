@@ -34,9 +34,11 @@ public class IssueService {
         this.issueMapper = issueMapper;
     }
 
-    public List<IssueDTO> readIssuesByProjectId(Integer projectId, String userName) {
+    public List<IssueDTO> readIssuesByProjectId(Integer projectId) {
 
         log.info("Reading issues for project {}", projectId);
+
+        var userName = SecurityUtils.getCurrentUser();
 
         if (!userProjectService.canThisUserReadThisProject(userName, projectId)) {
             throw new ProjectPermissionException("Access to project " + projectId + " forbidden");
@@ -49,9 +51,11 @@ public class IssueService {
 
     }
 
-    public IssueDTO readIssueWithComments(Integer issueId, String userName) {
+    public IssueDTO readIssueWithComments(Integer issueId) {
 
         log.info("Reading issue {}", issueId);
+
+        var userName = SecurityUtils.getCurrentUser();
 
         IssueDTO issueDTO = issueMapper.toDto(issueRepository.readIssue(issueId));
 
@@ -64,9 +68,11 @@ public class IssueService {
 
     }
 
-    public IssueDTO createIssue(IssueDTO issueDTO, String username) {
+    public IssueDTO createIssue(IssueDTO issueDTO) {
 
-        log.info("Creating for user {}", username);
+        var userName = SecurityUtils.getCurrentUser();
+
+        log.info("Creating for user {}", userName);
 
 
         Issue issue = issueRepository.createIssue(issueMapper.toEntity(issueDTO));
@@ -74,7 +80,9 @@ public class IssueService {
         return issueMapper.toDto(issue);
     }
 
-    public IssueDTO updateIssue(IssueDTO issueDTO, String userName) {
+    public IssueDTO updateIssue(IssueDTO issueDTO) {
+
+        var userName = SecurityUtils.getCurrentUser();
 
         if (!userProjectService.canThisUserReadThisProject(userName, issueDTO.getId())) {
             throw new ProjectPermissionException("Access to project " + issueDTO.getProjectId() + " forbidden");
@@ -91,9 +99,12 @@ public class IssueService {
         return issueMapper.toDto(updatedIssue);
     }
 
-    public void deleteIssue(Integer issueId, String username) {
+    public void deleteIssue(Integer issueId) {
+
+        var userName = SecurityUtils.getCurrentUser();
+
         Issue dbIssue = issueRepository.readIssue(issueId);
-        if (!userProjectService.canThisUserReadThisProject(username, dbIssue.getProject().getId())) {
+        if (!userProjectService.canThisUserReadThisProject(userName, dbIssue.getProject().getId())) {
             throw new ProjectPermissionException("Access to project " + dbIssue.getProject().getId() + " forbidden");
         }
 
