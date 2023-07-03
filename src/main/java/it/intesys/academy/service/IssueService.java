@@ -40,8 +40,9 @@ public class IssueService {
         this.commentMapper = commentMapper;
     }
 
-    public List<IssueApiDTO> readIssuesByProjectId(Integer projectId, String userName) {
+    public List<IssueApiDTO> readIssuesByProjectId(Integer projectId) {
 
+        var userName = SecurityUtils.getUserName();
         log.info("Reading issues for project {}", projectId);
 
         if (!userProjectService.canThisUserReadThisProject(userName, projectId)) {
@@ -55,8 +56,8 @@ public class IssueService {
 
     }
 
-    public IssueApiDTO readIssueWithComments(Integer issueId, String userName) {
-
+    public IssueApiDTO readIssueWithComments(Integer issueId) {
+        var userName = SecurityUtils.getUserName();
         log.info("Reading issue {}", issueId);
 
         IssueApiDTO issueDTO = issueMapper.toDto(issueRepository.findIssueById(issueId));
@@ -73,8 +74,8 @@ public class IssueService {
 
     }
 
-    public IssueApiDTO createIssue(IssueApiDTO issueDTO, String username) {
-
+    public IssueApiDTO createIssue(IssueApiDTO issueDTO) {
+        var username = SecurityUtils.getUserName();
         log.info("Creating for user {}", username);
 
 
@@ -83,24 +84,29 @@ public class IssueService {
         return issueMapper.toDto(issue);
     }
 
-    public IssueApiDTO updateIssue(IssueApiDTO issueDTO, String userName) {
+    public IssueApiDTO updateIssue(IssueApiDTO issueDTO) {
+
+        var userName = SecurityUtils.getUserName();
 
         if (!userProjectService.canThisUserReadThisProject(userName, issueDTO.getProjectId())) {
             throw new RuntimeException("Security constraints violation");
         }
+        log.info("Eccomi qua "+issueDTO.getName());
 
         Issue dbIssue = issueRepository.findIssueById(issueDTO.getId());
         if ( dbIssue.getProject().getId() != issueDTO.getProjectId() &&
                 !userProjectService.canThisUserReadThisProject(userName, dbIssue.getProject().getId())) {
             throw new ProjectAccessException("Project Permission error",dbIssue.getProject().getId());
         }
+        log.info("Eccomi qua "+dbIssue.getName());
 
         Issue updatedIssue = issueRepository.save(issueMapper.toEntity(issueDTO));
 
         return issueMapper.toDto(updatedIssue);
     }
 
-    public void deleteIssue(Integer issueId, String username) {
+    public void deleteIssue(Integer issueId) {
+        var username = SecurityUtils.getUserName();
         Issue dbIssue = issueRepository.findIssueById(issueId);
         if (!userProjectService.canThisUserReadThisProject(username, dbIssue.getProject().getId())) {
             throw new ProjectAccessException("Project Permission error",dbIssue.getProject().getId());
@@ -109,7 +115,8 @@ public class IssueService {
         issueRepository.deleteById(issueId);
     }
 
-    public void deleteAllFromIssue(Integer issueId, String username) {
+    public void deleteAllFromIssue(Integer issueId) {
+        var username = SecurityUtils.getUserName();
         Issue dbIssue = issueRepository.findIssueById(issueId);
         if (!userProjectService.canThisUserReadThisProject(username, dbIssue.getProject().getId())) {
             throw new ProjectAccessException("Project Permission error",dbIssue.getProject().getId());

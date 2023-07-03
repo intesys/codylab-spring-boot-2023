@@ -77,8 +77,8 @@ public class ProjectService {
 
     }
 
-    public ProjectApiDTO readProject(int projectId, String username) {
-
+    public ProjectApiDTO readProject(int projectId) {
+        var username = SecurityUtils.getUserName();
         log.info("Reading project {} , user {}", projectId, username);
 
         if (userProjectService.canThisUserReadThisProject(username, projectId)) {
