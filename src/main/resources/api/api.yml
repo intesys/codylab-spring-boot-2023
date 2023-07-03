@@ -278,7 +278,6 @@ paths:
         '200':
           description: OK
 
-
   /comments:
     get:
       tags:
@@ -378,7 +377,6 @@ paths:
             'application/json':
               schema:
                 $ref: '#/components/schemas/Comment'
-
     delete:
       tags:
         - Comment
@@ -397,7 +395,6 @@ paths:
       responses:
         '200':
           description: OK
-
 components:
   schemas:
     Comment:
@@ -432,7 +429,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Comment'
-
     Project:
       type: object
       properties:
