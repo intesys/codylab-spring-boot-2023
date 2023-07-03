@@ -17,7 +17,7 @@ public class UserProjectService {
 
     public boolean canThisUserReadThisProject(String username, int projectId) {
 
-        return userProjectRepository.usernameProjectVisibility(username, projectId);
+        return userProjectRepository.usernameProjectVisibility2(username, projectId);
 
     }
 

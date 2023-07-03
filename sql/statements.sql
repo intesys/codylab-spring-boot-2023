@@ -34,8 +34,8 @@ CREATE TABLE UserProject (
                              FOREIGN KEY (projectId) REFERENCES Project(id)
 );
 
-INSERT INTO UserProject (username, projectId) VALUES ('eoliosi', 1);
-INSERT INTO UserProject (username, projectId) VALUES ('ecostanzi', 2);
+INSERT INTO UserProject (username, projectId) VALUES ('mrossi', 1);
+INSERT INTO UserProject (username, projectId) VALUES ('gverdi', 2);
 
 CREATE TABLE Comment (
                          id int not null auto_increment,

@@ -1,5 +1,7 @@
 package it.intesys.academy.repository;
 
+import it.intesys.academy.domain.Project;
+import it.intesys.academy.dto.ProjectDTO;
 import it.intesys.academy.mockoon.client.MockoonApi;
 import it.intesys.academy.mockoon.client.model.ProjectsMockoonDTO;
 import org.slf4j.Logger;
@@ -31,6 +33,13 @@ public class UserProjectRepository {
 
         return projectsMockoonDTO.getProjects().stream().anyMatch(projectMockoonDTO -> projectMockoonDTO.getId() == projectId);
 
+    }
+
+    public boolean usernameProjectVisibility2(String username, Integer projectId){
+        List<Integer> projectId_ = jdbcTemplate.queryForList("SELECT projectId FROM UserProject where username = :username",
+                Map.of("username", username),
+                Integer.class);
+            return projectId_.contains(projectId);
     }
 
     public List<Integer> getUserProjects(String username) {

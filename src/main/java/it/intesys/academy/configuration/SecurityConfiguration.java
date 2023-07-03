@@ -33,19 +33,19 @@ public class SecurityConfiguration {
 
         @Bean
         public UserDetailsService userDetailsService() {
-            UserDetails mrossi =
-                    User.withUsername("mrossi")
+            UserDetails eoliosi =
+                    User.withUsername("eoliosi")
                             .password("$2a$10$LjeELgJn3ADcXFTuaW.t7OaQIntcPFC8DmVHvT7hF5WvATj.79v.q")
                             .roles("USER", "ADMIN")
                             .build();
 
-            UserDetails gverdi =
-                    User.withUsername("gverdi")
+            UserDetails ecostanzi =
+                    User.withUsername("ecostanzi")
                             .password("$2a$10$5mghN9s6Is0RfzRbrolrcOxFBCkoWZ.YUlbg/uwFaqACxCvwJtQKG")
                             .roles("USER")
                             .build();
 
-            return new InMemoryUserDetailsManager(mrossi, gverdi);
+            return new InMemoryUserDetailsManager(eoliosi, ecostanzi);
         }
 
         @Bean
