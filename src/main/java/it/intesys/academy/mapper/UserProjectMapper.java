@@ -18,7 +18,7 @@ public class UserProjectMapper {
     public UserProjectDTO toDTO(User_Projects userProjects){
         UserProjectDTO userProjectDTO = new UserProjectDTO();
         userProjectDTO.setId(userProjects.getId());
-        userProjectDTO.setUsername(userProjects.getUsername());
+        userProjectDTO.setUsername(userProjects);
         userProjectDTO.setProjectId(userProjects.getProjectId());
         return userProjectDTO;
     }

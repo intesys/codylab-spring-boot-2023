@@ -24,20 +24,20 @@ public class UserProjectRepository {
         this.em = em;
     }
 
-    public Optional<User_Projects> usernameProjectVisibility(String username, Integer projectId) {
+    public Optional<User_Projects> usernameProjectVisibility(Integer authorid, Integer projectId) {
 
-        User_Projects userProjects = em.createQuery("FROM User_Projects where projectId = (:projectId) and username = (:username)",User_Projects.class)
+        User_Projects userProjects = em.createQuery("FROM User_Projects where projectId = (:projectId) and  authorid= (:authorid)",User_Projects.class)
                 .setParameter("projectId", projectId)
-                .setParameter("username", username)
+                .setParameter("authorId", authorId)
                 .getSingleResult();
 
         return Optional.ofNullable(userProjects);
     }
 
-    public List<User_Projects> getUserProjects(String username) {
+    public List<User_Projects> getUserProjects(Integer authorId) {
 
-        return em.createQuery("from User_Projects where username=:username",User_Projects.class)
-                .setParameter("username",username)
+        return em.createQuery("from User_Projects where authorid=:authorId",User_Projects.class)
+                .setParameter("authorId",authorId)
                 .getResultList();
     }
 

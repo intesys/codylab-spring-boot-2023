@@ -25,7 +25,8 @@ public class UserProjectService {
 
     public boolean canThisUserReadThisProject(String username, int projectId) {
 
-        return ! userProjectRepository.usernameProjectVisibility(username, projectId).isEmpty();
+
+        return ! userProjectRepository.usernameProjectVisibility(authorId, projectId).isEmpty();
 
     }
 

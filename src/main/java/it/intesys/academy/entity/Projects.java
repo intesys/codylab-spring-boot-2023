@@ -3,7 +3,7 @@ package it.intesys.academy.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name ="projects")
+@Table(name ="project")
 public class Projects {
 
     @Id
@@ -16,6 +16,9 @@ public class Projects {
 
     @Column(name = "description")
     private String description;
+
+    @ManyToOne
+    private Person person;
 
     public Integer getId() {
         return id;
@@ -39,5 +42,13 @@ public class Projects {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Person getPerson() {
+        return person;
+    }
+
+    public void setPerson(Person person) {
+        this.person = person;
     }
 }
