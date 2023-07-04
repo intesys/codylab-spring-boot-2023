@@ -12,6 +12,15 @@ tags:
     description: Issue API
 components:
   schemas:
+    ProjectSettings:
+      type: object
+      properties:
+        project_id:
+          type: integer
+          format: int32
+        show_released_issues:
+          type: boolean
+
     Comment:
       type: object
       properties:
@@ -58,6 +67,9 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Issue'
+        projectDetail:
+          $ref: '#/components/schemas/ProjectSettings'
+
     Person:
       type: object
       properties:

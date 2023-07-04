@@ -10,11 +10,13 @@ import it.intesys.academy.mapper.IssueMapper;
 import it.intesys.academy.mapper.ProjectMapper;
 import it.intesys.academy.repository.IssueRepository;
 import it.intesys.academy.repository.ProjectRepository;
+import it.intesys.academy.repository.ProjectSettingsRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -32,9 +34,9 @@ public class ProjectService {
 
     private final IssueMapper issueMapper;
     private final IssueService issueService;
-
+    private final ProjectSettingsRepository projectSettingsRepository;
     public ProjectService(ProjectRepository projectRepository, IssueRepository issueRepository,
-                          UserProjectService userProjectService, ProjectMapper projectMapper, IssueMapper issueMapper, IssueService issueService) {
+                          UserProjectService userProjectService, ProjectMapper projectMapper, IssueMapper issueMapper, IssueService issueService, ProjectSettingsRepository projectSettingsRepository) {
 
         this.projectRepository = projectRepository;
         this.issueRepository = issueRepository;
@@ -42,6 +44,7 @@ public class ProjectService {
         this.projectMapper = projectMapper;
         this.issueMapper = issueMapper;
         this.issueService = issueService;
+        this.projectSettingsRepository = projectSettingsRepository;
     }
 
     public ProjectApiDTO readProjectWithIssue(int projectId) {
@@ -125,19 +128,23 @@ public class ProjectService {
     }
 
     private List<ProjectApiDTO> readProjectsWithIssues(List<Integer> userProjectIds) {
+        List<ProjectApiDTO> projectList = new ArrayList<>();
+        for (Project project: projectRepository.findByIdIn(userProjectIds)) {
+            project.setDetails(projectSettingsRepository.getProjectSettingsByProjectId(project.getId()));
+            projectList.add(projectMapper.toApiDtoWithIssues(project));
+        }
+        return projectList;
 
-        return projectRepository.findByIdIn(userProjectIds)
-                .stream()
-                .map(projectMapper::toApiDtoWithIssues)
-                .toList();
 
     }
     private List<ProjectApiDTO> readAllProjects(){
 
-        return projectRepository.findAll()
-                .stream()
-                .map(projectMapper::toApiDtoWithIssues)
-                .toList();
+        List<ProjectApiDTO> projectList = new ArrayList<>();
+        for (Project project: projectRepository.findAll()) {
+            project.setDetails(projectSettingsRepository.getProjectSettingsByProjectId(project.getId()));
+            projectList.add(projectMapper.toApiDtoWithIssues(project));
+        }
+        return projectList;
     }
 
 

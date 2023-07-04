@@ -1,5 +1,7 @@
 package it.intesys.academy.dto;
 
+import it.intesys.academy.domain.ProjectSettings;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -13,6 +15,15 @@ public class ProjectDTO {
     private String description;
 
     private ArrayList<IssueDTO> issues = new ArrayList<>();
+    private ProjectSettings projectSettings;
+
+    public ProjectSettings getProjectSettings() {
+        return projectSettings;
+    }
+
+    public void setProjectSettings(ProjectSettings projectSettings) {
+        this.projectSettings = projectSettings;
+    }
 
     public void addIssue(IssueDTO issue) {
         issues.add(issue);

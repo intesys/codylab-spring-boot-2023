@@ -9,9 +9,11 @@ import org.springframework.stereotype.Component;
 public class ProjectMapper {
 
     private final IssueMapper issueMapper;
+    private final ProjectSettingsMapper projectSettingsMapper;
 
-    public ProjectMapper(IssueMapper issueMapper) {
+    public ProjectMapper(IssueMapper issueMapper, ProjectSettingsMapper projectSettingsMapper) {
         this.issueMapper = issueMapper;
+        this.projectSettingsMapper = projectSettingsMapper;
     }
 
     public ProjectDTO toDto(Project project) {
@@ -29,6 +31,7 @@ public class ProjectMapper {
     }
 
     public ProjectApiDTO toApiDtoWithIssues(Project project) {
+
         ProjectApiDTO projectApiDTO = toApiDto(project);
 
         project.getIssues().forEach(issue -> projectApiDTO.addIssuesItem(issueMapper.toApiDto(issue)));
@@ -57,6 +60,7 @@ public class ProjectMapper {
         projectApiDTO.setId(project.getId());
         projectApiDTO.setName(project.getName());
         projectApiDTO.setDescription(project.getDescription());
+        projectApiDTO.setProjectDetail(projectSettingsMapper.toApiDto(project.getDetails()));
         return projectApiDTO;
     }
 }

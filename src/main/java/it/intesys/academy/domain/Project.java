@@ -1,14 +1,6 @@
 package it.intesys.academy.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.util.List;
 
@@ -29,6 +21,17 @@ public class Project {
 
     @OneToMany(mappedBy = "project")
     private List<Issue> issues;
+
+    @OneToOne(mappedBy = "project", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
+    private ProjectSettings details;
+
+    public ProjectSettings getDetails() {
+        return details;
+    }
+
+    public void setDetails(ProjectSettings details) {
+        this.details = details;
+    }
 
     @ManyToOne
     @JoinColumn(name = "authorid")
