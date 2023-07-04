@@ -106,11 +106,11 @@ public class ProjectService {
 
         log.info("Creating for user {}", username);
         Project projectN = projectMapper.toEntity(projectDTO);
-        Person personN = personRepository.findPersonByUsername(username);
+        Person personN = personRepository.findById(projectDTO.getAuthorId()).get();
         projectN.setUser(personN);
 
         Project project = projectRepository.save(projectN);
-        userProjectService.associateUserToProject(username, project.getId());
+        userProjectService.associateUserToProject(personN.getUsername(), project.getId());
 
         return projectMapper.toDto(project);
     }
