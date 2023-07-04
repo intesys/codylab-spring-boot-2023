@@ -1,14 +1,10 @@
 package it.intesys.academy.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name="Person")
@@ -30,6 +26,14 @@ public class Person {
 
     @OneToMany(mappedBy = "person")
     private List<Project> projects;
+
+    @ManyToMany
+    @JoinTable(
+            name = "person_project",
+            joinColumns = { @JoinColumn(name = "person_id", referencedColumnName = "id") },
+            inverseJoinColumns = { @JoinColumn(name = "project_id", referencedColumnName = "id") }
+    )
+    private Set<Project> userProjects = new HashSet<>();
 
     public Integer getId() {
 

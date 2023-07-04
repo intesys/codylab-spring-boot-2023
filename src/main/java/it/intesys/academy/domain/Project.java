@@ -1,16 +1,9 @@
 package it.intesys.academy.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name="Project")
@@ -33,6 +26,12 @@ public class Project {
     @ManyToOne
     @JoinColumn(name = "authorid")
     private Person person;
+
+    @OneToOne(mappedBy = "project", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
+    private ProjectSettings details;
+
+    @ManyToMany(mappedBy = "userProjects")
+    Set<Person> enabledUsers;
 
     public Integer getId() {
         return id;
@@ -76,4 +75,27 @@ public class Project {
         this.person = person;
     }
 
+    public ProjectSettings getDetails() {
+        return details;
+    }
+
+    public void setDetails(ProjectSettings details) {
+        this.details = details;
+    }
+
+    public Person getPerson() {
+        return person;
+    }
+
+    public void setPerson(Person person) {
+        this.person = person;
+    }
+
+    public Set<Person> getEnabledUsers() {
+        return enabledUsers;
+    }
+
+    public void setEnabledUsers(Set<Person> enabledUsers) {
+        this.enabledUsers = enabledUsers;
+    }
 }
