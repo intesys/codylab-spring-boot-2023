@@ -18,12 +18,13 @@ public class Project {
 
     @Column(name="description")
     private String description;
+    @OneToOne(mappedBy = "project", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
+    private ProjectSettings details;
 
     @OneToMany(mappedBy = "project")
     private List<Issue> issues;
 
-    @OneToOne(mappedBy = "project", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
-    private ProjectSettings details;
+
 
     public ProjectSettings getDetails() {
         return details;

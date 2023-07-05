@@ -11,6 +11,6 @@ import java.util.List;
 
 @Repository
 public interface ProjectSettingsRepository extends ListCrudRepository<ProjectSettings, Integer>, ListPagingAndSortingRepository<ProjectSettings, Integer> {
-    ProjectSettings getProjectSettingsByProjectId(Integer projectid);
+    ProjectSettings findByProjectId(Integer id);
 
 }

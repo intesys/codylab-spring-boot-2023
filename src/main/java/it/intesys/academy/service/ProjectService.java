@@ -11,6 +11,7 @@ import it.intesys.academy.mapper.ProjectMapper;
 import it.intesys.academy.repository.IssueRepository;
 import it.intesys.academy.repository.ProjectRepository;
 import it.intesys.academy.repository.ProjectSettingsRepository;
+import jakarta.persistence.EntityManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.annotation.Secured;
@@ -127,7 +128,7 @@ public class ProjectService {
         return projectMapper.toDto(projectRepository.save(dbProject));
     }
 
-    private List<ProjectApiDTO> readProjectsWithIssues(List<Integer> userProjectIds) {
+/*    private List<ProjectApiDTO> readProjectsWithIssues(List<Integer> userProjectIds) {
         List<ProjectApiDTO> projectList = new ArrayList<>();
         for (Project project: projectRepository.findByIdIn(userProjectIds)) {
             project.setDetails(projectSettingsRepository.getProjectSettingsByProjectId(project.getId()));
@@ -136,12 +137,12 @@ public class ProjectService {
         return projectList;
 
 
-    }
+    }*/
     private List<ProjectApiDTO> readAllProjects(){
 
         List<ProjectApiDTO> projectList = new ArrayList<>();
         for (Project project: projectRepository.findAll()) {
-            project.setDetails(projectSettingsRepository.getProjectSettingsByProjectId(project.getId()));
+            project.setDetails(projectSettingsRepository.findByProjectId(project.getId()));
             projectList.add(projectMapper.toApiDtoWithIssues(project));
         }
         return projectList;
