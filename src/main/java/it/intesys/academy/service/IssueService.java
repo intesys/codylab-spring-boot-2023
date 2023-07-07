@@ -84,22 +84,21 @@ public class IssueService {
         return issueMapper.toApiDto(issue);
     }
 
-    public IssueApiDTO updateIssue(IssueApiDTO issueApiDTO, String userName) {
+    public IssueApiDTO updateIssue(IssueApiDTO issueApiDTO) {
 
-        if (!userProjectService.canThisUserReadThisProject(userName, issueApiDTO.getId())) {
-            throw new RuntimeException("Security constraints violation");
+        var username = SecurityUtils.getCurrentUser();
+        if (!SecurityUtils.hasAuthority("ROLE_ADMIN")) {
+            throw new ForbiddenException("Security constraints violation");}
+            Issue dbIssue = issueRepository.findIssueById(issueApiDTO.getId());
+            if (dbIssue.getProject().getId() != issueApiDTO.getProjectId() &&
+                    !userProjectService.canThisUserReadThisProject(username, dbIssue.getProject().getId())) {
+                throw new RuntimeException("Cannot update issue");
+            }
+
+            Issue updatedIssue = issueRepository.save(issueMapper.toEntity(issueApiDTO));
+
+            return issueMapper.toApiDto(updatedIssue);
         }
-
-        Issue dbIssue = issueRepository.findIssueById(issueApiDTO.getId());
-        if (dbIssue.getProject().getId() != issueApiDTO.getProjectId() &&
-                !userProjectService.canThisUserReadThisProject(userName, dbIssue.getProject().getId())) {
-            throw new RuntimeException("Security constraints violation");
-        }
-
-        Issue updatedIssue = issueRepository.save(issueMapper.toEntity(issueApiDTO));
-
-        return issueMapper.toApiDto(updatedIssue);
-    }
 
     public void deleteIssue(Integer issueId) {
         var username = SecurityUtils.getCurrentUser();

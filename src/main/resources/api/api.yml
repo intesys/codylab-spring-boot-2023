@@ -4,242 +4,26 @@ info:
   version: v0
 servers:
   - url: http://localhost:8081/openapi
-    description: Generated server url
+    description: Generated server URL
 tags:
   - name: Project
     description: Project API
   - name: Issue
     description: Issue API
-paths:
-  /projects/{projectId}:
-    get:
-      tags:
-        - Project
-      operationId: getProject
-      parameters:
-        - name: projectId
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int32
+  - name: Comment
+    description: Comment API
 
-      responses:
-        '200':
-          description: OK
-          content:
-            'application/json':
-              schema:
-                $ref: '#/components/schemas/Project'
-    put:
-      tags:
-        - Project
-      operationId: updateProject
-      parameters:
-        - name: projectId
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int32
-
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Project'
-        required: true
-      responses:
-        '200':
-          description: OK
-          content:
-            'application/json':
-              schema:
-                $ref: '#/components/schemas/Project'
-        '400':
-          description: Bad Request
-          content:
-            'application/json':
-              schema:
-                oneOf:
-                  - $ref: '#/components/schemas/BadParametersError'
-                  - $ref: '#/components/schemas/BadUsernameError'
-
-    delete:
-      tags:
-        - Project
-      operationId: deleteProject
-      parameters:
-        - name: projectId
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int32
-
-      responses:
-        '200':
-          description: OK
-    patch:
-      tags:
-        - Project
-      operationId: patchProject
-      parameters:
-        - name: projectId
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int32
-
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Project'
-        required: true
-      responses:
-        '200':
-          description: OK
-          content:
-            'application/json':
-              schema:
-                $ref: '#/components/schemas/Project'
-  /issues/{issueId}:
-    get:
-      tags:
-        - Issue
-      operationId: getIssue
-      parameters:
-        - name: issueId
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int32
-
-      responses:
-        '200':
-          description: OK
-          content:
-            'application/json':
-              schema:
-                $ref: '#/components/schemas/Issue'
-    put:
-      tags:
-        - Issue
-      operationId: updateIssue
-      parameters:
-        - name: issueId
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int32
-
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Issue'
-        required: true
-      responses:
-        '200':
-          description: OK
-          content:
-            'application/json':
-              schema:
-                $ref: '#/components/schemas/Issue'
-    delete:
-      tags:
-        - Issue
-      operationId: deleteIssue
-      parameters:
-        - name: issueId
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int32
-
-      responses:
-        '200':
-          description: OK
-  /projects:
-    get:
-      tags:
-        - Project
-      operationId: getProjects
-
-      responses:
-        '200':
-          description: OK
-          content:
-            'application/json':
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Project'
-    post:
-      tags:
-        - Project
-      operationId: createProject
-
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Project'
-        required: true
-      responses:
-        '200':
-          description: OK
-          content:
-            'application/json':
-              schema:
-                $ref: '#/components/schemas/Project'
-  /issues:
-    get:
-      tags:
-        - Issue
-      operationId: getIssues
-      parameters:
-        - name: projectId
-          in: query
-          required: true
-          schema:
-            type: integer
-            format: int32
-
-      responses:
-        '200':
-          description: OK
-          content:
-            'application/json':
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Issue'
-    post:
-      tags:
-        - Issue
-      operationId: createIssue
-
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Issue'
-        required: true
-      responses:
-        '200':
-          description: OK
-          content:
-            'application/json':
-              schema:
-                $ref: '#/components/schemas/Issue'
 components:
   schemas:
+    ProjectSettings:
+      type: object
+      properties:
+        project_id:
+          type: integer
+          format: int32
+        show_released_issues:
+          type: boolean
+
     Comment:
       type: object
       properties:
@@ -259,15 +43,15 @@ components:
         id:
           type: integer
           format: int32
-        projectId:
-          type: integer
-          format: int32
         name:
           type: string
         description:
           type: string
         author:
           type: string
+        projectId:
+          type: integer
+          format: int32
         comments:
           type: array
           items:
@@ -286,23 +70,323 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Issue'
-      example: {
-                 "id": 1,
-                 "name": "Project 1",
-                 "description": "Description 1"}
-    BadParametersError:
+        projectDetail:
+          $ref: '#/components/schemas/ProjectSettings'
+
+    Person:
       type: object
       properties:
-        errorType:
+        id:
+          type: integer
+          format: int32
+        username:
           type: string
-        timestamp:
+        name:
           type: string
-          format: date-time
-    BadUsernameError:
-      type: object
-      properties:
-        errorType:
+        surname:
           type: string
-        timestamp:
-          type: string
-          format: date-time
+        authorId:
+          type: integer
+          format: int32
+paths:
+  /projects/{projectId}:
+    get:
+      tags:
+        - Project
+      operationId: getProject
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+    put:
+      tags:
+        - Project
+      operationId: updateProject
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Project'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+    delete:
+      tags:
+        - Project
+      operationId: deleteProject
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: OK
+    patch:
+      tags:
+        - Project
+      operationId: patchProject
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Project'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+
+  /projects:
+    get:
+      tags:
+        - Project
+      operationId: getProjects
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Project'
+    post:
+      tags:
+        - Project
+      operationId: createProject
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Project'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+  /issues/{issueId}:
+    get:
+      tags:
+        - Issue
+      operationId: getIssue
+      parameters:
+        - name: issueId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Issue'
+    put:
+      tags:
+        - Issue
+      operationId: updateIssue
+      parameters:
+        - name: issueId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Issue'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Issue'
+    delete:
+      tags:
+        - Issue
+      operationId: deleteIssue
+      parameters:
+        - name: issueId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: OK
+    patch:
+      tags:
+        - Issue
+      operationId: patchIssue
+      parameters:
+        - name: issueId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Issue'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Issue'
+  /issues:
+    get:
+      tags:
+        - Issue
+      operationId: getIssues
+      parameters:
+        - name: projectId
+          in: query
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Issue'
+    post:
+      tags:
+        - Issue
+      operationId: createIssue
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Issue'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Issue'
+  /comments/{commentId}:
+    get:
+      tags:
+        - Comment
+      operationId: getComment
+      parameters:
+        - name: commentId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+    delete:
+      tags:
+        - Comment
+      operationId: deleteComment
+      parameters:
+        - name: commentId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: OK
+  /comments:
+    get:
+      tags:
+        - Comment
+      operationId: getComments
+      parameters:
+        - name: issueId
+          in: query
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Comment'
+    post:
+      tags:
+        - Comment
+      operationId: createComment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Comment'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'

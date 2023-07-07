@@ -14,14 +14,18 @@ spring:
     database-platform: org.hibernate.dialect.H2Dialect
     show-sql: true
 
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://user-profile-manager-keycloak.staging.intesys.it/realms/codylab
 
 springdoc:
   swagger-ui:
     enabled: true
     path: /swagger-ui.html
   packages-to-scan: it.intesys.academy.controller.rest
-
-  logging:
-    level:
-      root: info
-      org.springframework.security: debug
+logging:
+  level:
+    root: info
+    org.springframework.security: debug
