@@ -1,8 +1,9 @@
 package it.intesys.academy.service;
 
+import it.intesys.academy.controller.openapi.model.IssueApiDTO;
+import it.intesys.academy.controller.rest.errors.ForbiddenException;
 import it.intesys.academy.controller.rest.errors.ProjectAccessException;
 import it.intesys.academy.domain.Issue;
-import it.intesys.academy.dto.IssueDTO;
 import it.intesys.academy.mapper.IssueMapper;
 import it.intesys.academy.repository.CommentRepository;
 import it.intesys.academy.repository.IssueRepository;
@@ -16,7 +17,7 @@ import java.util.stream.Collectors;
 @Service
 public class IssueService {
 
-    private static final Logger log = LoggerFactory.getLogger (IssueService.class);
+    private static final Logger log = LoggerFactory.getLogger(IssueService.class);
 
     private final IssueRepository issueRepository;
 
@@ -26,85 +27,90 @@ public class IssueService {
 
     private final IssueMapper issueMapper;
 
-    public IssueService (IssueRepository issueRepository, CommentRepository commentRepository, UserProjectService userProjectService, IssueMapper issueMapper) {
+    private final CommentService commentService;
+
+    public IssueService(IssueRepository issueRepository, CommentRepository commentRepository, UserProjectService userProjectService, IssueMapper issueMapper, CommentService commentService) {
 
         this.issueRepository = issueRepository;
         this.commentRepository = commentRepository;
         this.userProjectService = userProjectService;
         this.issueMapper = issueMapper;
+        this.commentService = commentService;
     }
 
-    public List<IssueDTO> readIssuesByProjectId(Integer projectId) {
+    public List<IssueApiDTO> readIssuesByProjectId(Integer projectId) {
 
-        log.info ("Reading issues for project {}", projectId);
+        log.info("Reading issues for project {}", projectId);
 
-        var userName= SecurityUtils.getCurrentUser();
+        var userName = SecurityUtils.getCurrentUser();
 
 
         if (!userProjectService.canThisUserReadThisProject(userName, projectId)) {
             throw new ProjectAccessException("Project permission error", projectId);
         }
 
-        return issueRepository.findAllById (List.of (projectId))
+        return issueRepository.findByProject_Id(projectId)
                 .stream()
-                .map(issueMapper::toDto)
+                .map(issueMapper::toApiDto)
                 .collect(Collectors.toList());
 
     }
 
-    public IssueDTO readIssueWithComments(Integer issueId) {
+    public IssueApiDTO readIssueWithComments(Integer issueId) {
 
         log.info("Reading issue {}", issueId);
 
-        var userName= SecurityUtils.getCurrentUser();
+        var userName = SecurityUtils.getCurrentUser();
 
-        IssueDTO issueDTO = issueMapper.toDto(issueRepository.findIssueById(issueId));
+        IssueApiDTO issueApiDTO = issueMapper.toApiDto(issueRepository.findIssueById(issueId));
 
-        if (!userProjectService.canThisUserReadThisProject(userName, issueDTO.getProjectId())) {
+        if (!userProjectService.canThisUserReadThisProject(userName, issueApiDTO.getProjectId())) {
             throw new RuntimeException("Security constraints violation");
         }
 
-        issueDTO.setComments(commentRepository.findCommentsByIssueId(issueId));
-        return issueDTO;
+        issueApiDTO.setComments(commentService.readCommentsByIssueId(issueId));
+        return issueApiDTO;
 
     }
 
-    public IssueDTO createIssue(IssueDTO issueDTO) {
+    public IssueApiDTO createIssue(IssueApiDTO issueApiDTO) {
 
-        var username= SecurityUtils.getCurrentUser();
+        var username = SecurityUtils.getCurrentUser();
 
         log.info("Creating for user {}", username);
 
+        Issue issue = issueRepository.save(issueMapper.toEntity(issueApiDTO));
 
-        Issue issue = issueRepository.createIssue(issueMapper.toEntity(issueDTO));
-
-        return issueMapper.toDto(issue);
+        return issueMapper.toApiDto(issue);
     }
 
-    public IssueDTO updateIssue(IssueDTO issueDTO, String userName) {
+    public IssueApiDTO updateIssue(IssueApiDTO issueApiDTO, String userName) {
 
-        if (!userProjectService.canThisUserReadThisProject(userName, issueDTO.getId())) {
+        if (!userProjectService.canThisUserReadThisProject(userName, issueApiDTO.getId())) {
             throw new RuntimeException("Security constraints violation");
         }
 
-        Issue dbIssue = issueRepository.readIssue(issueDTO.getId());
-        if ( dbIssue.getProject().getId() != issueDTO.getProjectId() &&
+        Issue dbIssue = issueRepository.findIssueById(issueApiDTO.getId());
+        if (dbIssue.getProject().getId() != issueApiDTO.getProjectId() &&
                 !userProjectService.canThisUserReadThisProject(userName, dbIssue.getProject().getId())) {
             throw new RuntimeException("Security constraints violation");
         }
 
-        Issue updatedIssue = issueRepository.updateIssue(issueMapper.toEntity(issueDTO));
+        Issue updatedIssue = issueRepository.save(issueMapper.toEntity(issueApiDTO));
 
-        return issueMapper.toDto(updatedIssue);
+        return issueMapper.toApiDto(updatedIssue);
     }
 
-    public void deleteIssue(Integer issueId, String username) {
-        Issue dbIssue = issueRepository.readIssue(issueId);
-        if (!userProjectService.canThisUserReadThisProject(username, dbIssue.getProject().getId())) {
-            throw new RuntimeException ("Security constraints violation");
+    public void deleteIssue(Integer issueId) {
+        var username = SecurityUtils.getCurrentUser();
+        Issue dbIssue = issueRepository.findIssueById(issueId);
+        if (!SecurityUtils.hasAuthority("ROLE_ADMIN")) {
+            throw new ForbiddenException("Cannot delete issue");
+
+            //delete comments
         }
+        issueRepository.deleteIssueById(issueId);
 
-        issueRepository.deleteIssue(issueId);
+
     }
-
 }

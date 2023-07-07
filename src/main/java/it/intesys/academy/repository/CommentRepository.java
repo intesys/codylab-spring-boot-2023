@@ -1,31 +1,15 @@
 package it.intesys.academy.repository;
 
-import it.intesys.academy.dto.CommentDTO;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import it.intesys.academy.controller.openapi.model.CommentApiDTO;
+import it.intesys.academy.domain.Comment;
+import org.springframework.data.repository.ListCrudRepository;
+import org.springframework.data.repository.ListPagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Map;
 
 @Repository
-public class CommentRepository {
-
-    private final NamedParameterJdbcTemplate jdbcTemplate;
-
-    public CommentRepository(NamedParameterJdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
-
-    public List<CommentDTO> findCommentsByIssueId(Integer issueId) {
-        List<CommentDTO> comments =
-                jdbcTemplate.query("SELECT id, text, author, issueId FROM Comment WHERE issueId = :issueId",
-
-                        Map.of("issueId", issueId),
-
-                        BeanPropertyRowMapper.newInstance(CommentDTO.class));
-
-        return comments;
-
-    }
+public interface CommentRepository extends ListCrudRepository<Comment, Integer>, ListPagingAndSortingRepository<Comment, Integer> {
+    Comment findCommentById(Integer commentId);
+    List<CommentApiDTO> findCommentByIssue_Id(Integer issueId);
 }

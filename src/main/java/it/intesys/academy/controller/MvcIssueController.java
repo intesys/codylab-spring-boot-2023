@@ -1,5 +1,6 @@
 package it.intesys.academy.controller;
 
+import it.intesys.academy.controller.openapi.model.IssueApiDTO;
 import it.intesys.academy.dto.IssueDTO;
 import it.intesys.academy.service.IssueService;
 import it.intesys.academy.service.ProjectService;
@@ -31,10 +32,10 @@ public class MvcIssueController {
                                   @PathVariable("issueId") Integer issueId,
                                   @RequestParam String userName) {
 
-        IssueDTO issueDTO = issueService.readIssueWithComments(issueId);
-        model.addAttribute("issue", issueDTO);
+        IssueApiDTO issueApiDTO = issueService.readIssueWithComments(issueId);
+        model.addAttribute("issue", issueApiDTO);
         model.addAttribute("username", userName);
-        model.addAttribute("project", projectService.readProject(issueDTO.getProjectId(), userName));
+        model.addAttribute("project", projectService.readProject(issueApiDTO.getProjectId(), userName));
 
         return "issue";
 

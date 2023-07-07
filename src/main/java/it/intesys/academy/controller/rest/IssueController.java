@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/*
+
 @RestController
 @RequestMapping("/api")
 @Tag(name = "Issue", description = "Issue API")
@@ -75,5 +77,5 @@ public class IssueController {
         issueService.deleteIssue(issueId, username);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+*/
 
-}

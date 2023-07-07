@@ -11,6 +11,9 @@ import java.util.List;
 
 @Repository
 public interface IssueRepository extends ListCrudRepository<Issue, Integer>, ListPagingAndSortingRepository<Issue, Integer> {
+
+    List<Issue> findByProject_Id(Integer projectId);
     Issue findIssueById(Integer issueId);
 
+    void deleteIssueById(Integer issueID);
 }
